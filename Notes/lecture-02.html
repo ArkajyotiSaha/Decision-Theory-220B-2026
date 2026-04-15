@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="lecture-02_files/libs/clipboard/clipboard.min.js"></script>
-<script src="lecture-02_files/libs/quarto-html/tabby.min.js"></script>
-<script src="lecture-02_files/libs/quarto-html/popper.min.js"></script>
-<script src="lecture-02_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="lecture-02_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="lecture-02_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="lecture-02_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="lecture-02_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.57">
 
-  <title>Sufficiency, Convexity, and the Rao–Blackwell Theorem</title>
+  <title>Stats 220B: Statistical Decision Theory – Sufficiency, Convexity, and the Rao–Blackwell Theorem</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="lecture-02_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="lecture-02_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -29,12 +29,12 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="lecture-02_files/libs/revealjs/dist/theme/quarto.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="custom.css">
-  <link href="lecture-02_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="lecture-02_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="lecture-02_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="lecture-02_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -325,7 +325,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section class="quarto-title-block center">
+<section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Sufficiency, Convexity, and the Rao–Blackwell Theorem</h1>
   <p class="subtitle">Lecture 2</p>
 
@@ -333,7 +333,7 @@
 </div>
 
 </section>
-<section class="slide level2">
+<section id="recap-from-lecture-1" class="slide level2">
 <h2>Recap from Lecture 1</h2>
 <p>We set up the statistical decision problem: <span class="math inline">\(\Theta\)</span>, <span class="math inline">\(\mathcal{A}\)</span>, <span class="math inline">\(L(\theta, a)\)</span>, data <span class="math inline">\(X \sim P_\theta\)</span>, prior <span class="math inline">\(\pi(\theta)\)</span>.</p>
 <p>We defined decision rules <span class="math inline">\(\delta: \mathcal{X} \to \mathcal{A}\)</span>, and introduced two ways to evaluate them:</p>
@@ -346,11 +346,11 @@
 <p>Today: a foundational example, then the two main tools for <strong>simplifying</strong> decision problems – sufficiency and convexity.</p>
 </section>
 <section>
-<section class="title-slide slide level1 center">
+<section id="a-foundational-example-berger-1.6.4" class="title-slide slide level1 center">
 <h1>A foundational example (Berger § 1.6.4)</h1>
 
 </section>
-<section class="slide level2">
+<section id="the-likelihood-principle-a-striking-example-berger-ex.-15" class="slide level2">
 <h2>The Likelihood Principle: a striking example (Berger, Ex. 15)</h2>
 <p>We are given a coin and are interested in <span class="math inline">\(\theta\)</span>, the probability of heads. We want to test <span class="math inline">\(H_0: \theta = \tfrac{1}{2}\)</span> vs.&nbsp;<span class="math inline">\(H_1: \theta &gt; \tfrac{1}{2}\)</span>. An experiment is conducted. The result: 9 heads and 3 tails.</p>
 <p>But what was the experiment?</p>
@@ -360,7 +360,7 @@
 </ul>
 <p>The two likelihoods are <strong>proportional</strong> as functions of <span class="math inline">\(\theta\)</span>. The data is the same. But the experiments are very different from a frequentist perspective.</p>
 </section>
-<section class="slide level2">
+<section id="same-data-different-p-values" class="slide level2">
 <h2>Same data, different p-values</h2>
 <p>Classical significance testing gives different answers for the two experiments. The p-value is the probability, under <span class="math inline">\(H_0: \theta = \tfrac{1}{2}\)</span>, of observing a result at least as extreme as what we saw (9 heads).</p>
 <p>For the binomial model, “at least as extreme” means <span class="math inline">\(X \geq 9\)</span> out of 12 fixed flips: <span class="math display">\[\alpha_1 = P_{1/2}(X \geq 9) = \sum_{k=9}^{12} \tbinom{12}{k} (1/2)^{12} = 0.075.\]</span></p>
@@ -368,14 +368,14 @@
 <p>The p-values differ because the two models assign different probabilities to extreme outcomes, even though they agree on the observed outcome. At the 5% level, the binomial experiment does <em>not</em> reject <span class="math inline">\(H_0\)</span> (<span class="math inline">\(0.075 &gt; 0.05\)</span>), while the negative binomial experiment <em>does</em> (<span class="math inline">\(0.0325 &lt; 0.05\)</span>).</p>
 <p>Same coin, same flips, same outcomes, same likelihood – but different conclusions.</p>
 </section>
-<section class="slide level2">
+<section id="the-source-of-the-confusion" class="slide level2">
 <h2>The source of the confusion</h2>
 <p>The classical analysis gave two different answers to the same evidence. Why?</p>
 <p>Because the p-value uses information that is <strong>external to the observed data</strong>. It depends on what <em>could have happened</em> under the experimental design but did not.</p>
 <p>In the binomial model, the experiment could have produced at most 12 heads, so the “extreme” outcomes are <span class="math inline">\(X = 10, 11, 12\)</span>. In the negative binomial model, the experiment could have run indefinitely, so the “extreme” outcomes are <span class="math inline">\(X = 10, 11, 12, 13, \ldots\)</span> The p-value sums over these unobserved possibilities, and the two sums give different numbers.</p>
 <p>The actual data – 9 heads and 3 tails – is identical. The likelihood functions are proportional. The <em>only</em> difference is the set of things that could have happened but did not. The classical analysis is sensitive to this external information. Should it be?</p>
 </section>
-<section class="slide level2">
+<section id="the-likelihood-principle" class="slide level2">
 <h2>The Likelihood Principle</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -390,7 +390,7 @@
 <p>There is a principle – the Likelihood Principle – that makes a clean statement: the information about <span class="math inline">\(\theta\)</span> in the data lives in the likelihood function <span class="math inline">\(\ell(\theta) = f(x|\theta)\)</span>, and nowhere else. Not in the design, not in the sample space, not in what could have happened.</p>
 <p>The striking observation from our example is that <strong>classical analysis does not always follow this principle</strong>. The two likelihoods are proportional, so the LP says they carry the same information. But the classical p-values disagree. Classical methods sometimes use more than the likelihood – they use the sampling distribution, which depends on the experimental design.</p>
 </section>
-<section class="slide level2">
+<section id="what-this-means-for-us" class="slide level2">
 <h2>What this means for us</h2>
 <p>We are not here to settle the frequentist-Bayesian debate. The frequentist has reasons for caring about the sampling distribution, and those reasons are legitimate in many settings.</p>
 <p>But the Likelihood Principle points us toward a concrete question: <strong>what information in the data actually matters for decisions about</strong> <span class="math inline">\(\theta\)</span>?</p>
@@ -398,11 +398,11 @@
 <p>This means all the information about <span class="math inline">\(\theta\)</span> – everything that could affect a good decision – lives in <span class="math inline">\(T\)</span>. That is a claim we can make precise and prove in the decision-theoretic setting. Let us do that now.</p>
 </section></section>
 <section>
-<section class="title-slide slide level1 center">
+<section id="sufficient-statistics-in-decision-theory-berger-1.7" class="title-slide slide level1 center">
 <h1>Sufficient statistics in decision theory (Berger § 1.7)</h1>
 
 </section>
-<section class="slide level2">
+<section id="sufficiency-definition-and-factorization" class="slide level2">
 <h2>Sufficiency: definition and factorization</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -417,14 +417,14 @@
 <p><strong>Factorization theorem:</strong> <span class="math inline">\(T\)</span> is sufficient for <span class="math inline">\(\theta\)</span> if and only if <span class="math display">\[f(x|\theta) = h(x)\, g(T(x)|\theta)\]</span> for some functions <span class="math inline">\(h\)</span> (not depending on <span class="math inline">\(\theta\)</span>) and <span class="math inline">\(g\)</span>.</p>
 <p><strong>Example:</strong> If <span class="math inline">\(X_1, \ldots, X_n \overset{\text{iid}}{\sim} \mathcal{N}(\mu, \sigma^2)\)</span>, then <span class="math inline">\(T = (\bar{X}, S^2)\)</span> is sufficient for <span class="math inline">\(\theta = (\mu, \sigma^2)\)</span>.</p>
 </section>
-<section class="slide level2">
+<section id="the-partition-induced-by-t" class="slide level2">
 <h2>The partition induced by <span class="math inline">\(T\)</span></h2>
 <p>If <span class="math inline">\(T(X)\)</span> is a statistic with range <span class="math inline">\(\mathcal{T}\)</span>, it partitions the sample space <span class="math inline">\(\mathcal{X}\)</span> into sets <span class="math display">\[\mathcal{X}_t = \{x \in \mathcal{X} : T(x) = t\}, \quad t \in \mathcal{T}.\]</span></p>
 <p>These sets are disjoint and cover <span class="math inline">\(\mathcal{X}\)</span>.</p>
 <p>A decision rule <span class="math inline">\(\delta\)</span> is said to be <strong>based on</strong> <span class="math inline">\(T\)</span> if <span class="math inline">\(\delta(x)\)</span> depends on <span class="math inline">\(x\)</span> only through <span class="math inline">\(T(x)\)</span>, i.e., <span class="math inline">\(\delta(x_1) = \delta(x_2)\)</span> whenever <span class="math inline">\(T(x_1) = T(x_2)\)</span>.</p>
 <p>The question for decision theory is: can we always restrict attention to rules based on a sufficient statistic <span class="math inline">\(T\)</span>, without any loss in risk?</p>
 </section>
-<section class="slide level2">
+<section id="theorem-1-sufficiency-reduces-the-decision-problem-berger-thm.-1" class="slide level2">
 <h2>Theorem 1: sufficiency reduces the decision problem (Berger, Thm. 1)</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -439,7 +439,7 @@
 <p>The equivalent rule based on <span class="math inline">\(T\)</span> is constructed by averaging the original rule over the conditional distribution of <span class="math inline">\(X\)</span> given <span class="math inline">\(T = t\)</span>: <span class="math display">\[\delta_1^*(t, A) = E^{X|T=t}[\delta_0^*(X, A)].\]</span></p>
 <p>Sufficiency of <span class="math inline">\(T\)</span> ensures this conditional expectation does not depend on <span class="math inline">\(\theta\)</span>, so <span class="math inline">\(\delta_1^*\)</span> is a well-defined decision rule.</p>
 </section>
-<section class="slide level2">
+<section id="proof-of-theorem-1-the-key-step" class="slide level2">
 <h2>Proof of Theorem 1: the key step</h2>
 <p>We need to show <span class="math inline">\(R(\theta, \delta_1^*) = R(\theta, \delta_0^*)\)</span> for all <span class="math inline">\(\theta\)</span>.</p>
 <p>The loss of <span class="math inline">\(\delta_1^*\)</span> at a given <span class="math inline">\(t\)</span>: since <span class="math inline">\(\delta_1^*(t, \cdot)\)</span> is a distribution on <span class="math inline">\(\mathcal{A}\)</span>, its loss is the expected loss when <span class="math inline">\(a\)</span> is drawn from it: <span class="math display">\[L(\theta, \delta_1^*(t, \cdot)) = E^{\delta_1^*(t,\cdot)}[L(\theta, a)].\]</span></p>
@@ -450,7 +450,7 @@
 <p>Averaging the loss over this two-stage draw gives the iterated expectation: <span class="math display">\[E^{\delta_1^*(t,\cdot)}[L(\theta, a)] = E^{X|T=t}\!\left[E^{\delta_0^*(X,\cdot)}[L(\theta, a)]\right].\]</span></p>
 <p>The rest follows by taking expectations.</p>
 </section>
-<section class="slide level2">
+<section id="proof-of-theorem-1-completing-the-argument" class="slide level2">
 <h2>Proof of Theorem 1: completing the argument</h2>
 <p>We have established that <span class="math inline">\(L(\theta, \delta_1^*(t, \cdot)) = E^{X|T=t}\!\left[E^{\delta_0^*(X,\cdot)}[L(\theta, a)]\right]\)</span>.</p>
 <p>Now take the risk by averaging over <span class="math inline">\(T\)</span>: <span class="math display">\[\begin{aligned}
@@ -461,14 +461,14 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 \end{aligned}\]</span></p>
 <p>The tower property collapses the iterated expectation <span class="math inline">\(E^T[E^{X|T}[\cdot]]\)</span> into <span class="math inline">\(E^X[\cdot]\)</span>. After that, we just recognize the definition of <span class="math inline">\(R(\theta, \delta_0^*)\)</span>.</p>
 </section>
-<section class="slide level2">
+<section id="example-theorem-1-in-action" class="slide level2">
 <h2>Example: Theorem 1 in action</h2>
 <p>Let <span class="math inline">\(X_1, X_2 \overset{\text{iid}}{\sim} \mathrm{Bernoulli}(\theta)\)</span>. The sufficient statistic is <span class="math inline">\(T = X_1 + X_2\)</span>.</p>
 <p>Consider the rule <span class="math inline">\(\delta_0(x_1, x_2) = x_1\)</span> (just use the first observation to estimate <span class="math inline">\(\theta\)</span>). This is <em>not</em> a function of <span class="math inline">\(T\)</span>: when <span class="math inline">\(T = 1\)</span>, the data could be <span class="math inline">\((1,0)\)</span> or <span class="math inline">\((0,1)\)</span>, and <span class="math inline">\(\delta_0\)</span> gives different values.</p>
 <p>Construct the equivalent rule based on <span class="math inline">\(T\)</span>: &nbsp; <span class="math inline">\(\delta_1^*(t, A) = P(\delta_0(X) \in A \mid T = t) = P(X_1 \in A \mid T = t)\)</span>.</p>
 <p>Since <span class="math inline">\(\delta_0\)</span> is nonrandomized, this asks: given that <span class="math inline">\(T = t\)</span>, what is the distribution of the action <span class="math inline">\(\delta_0(X) = X_1\)</span>? We need the conditional distribution of <span class="math inline">\(X_1\)</span> given <span class="math inline">\(X_1 + X_2 = t\)</span>.</p>
 </section>
-<section class="slide level2">
+<section id="example-continued-computing-delta_1-case-by-case" class="slide level2">
 <h2>Example continued: computing <span class="math inline">\(\delta_1^*\)</span> case by case</h2>
 <p>The sample space is <span class="math inline">\(\{(0,0),\, (0,1),\, (1,0),\, (1,1)\}\)</span>.</p>
 <p><span class="math inline">\(T = 0\)</span>: The only possibility is <span class="math inline">\((X_1, X_2) = (0,0)\)</span>. So <span class="math inline">\(X_1 = 0\)</span> with certainty, and <span class="math inline">\(\delta_1^*\)</span> takes action <span class="math inline">\(0\)</span> with probability <span class="math inline">\(1\)</span>.</p>
@@ -476,7 +476,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p><span class="math inline">\(T = 1\)</span>: Two possibilities: <span class="math inline">\((1,0)\)</span> and <span class="math inline">\((0,1)\)</span>. By sufficiency, the conditional distribution of <span class="math inline">\((X_1, X_2)\)</span> given <span class="math inline">\(T = 1\)</span> does not depend on <span class="math inline">\(\theta\)</span>. Since <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> are exchangeable, <span class="math display">\[P(X_1 = 1 \mid T = 1) = P(X_1 = 0 \mid T = 1) = \tfrac{1}{2}.\]</span> So <span class="math inline">\(\delta_1^*\)</span> takes action <span class="math inline">\(1\)</span> with probability <span class="math inline">\(\tfrac{1}{2}\)</span> and action <span class="math inline">\(0\)</span> with probability <span class="math inline">\(\tfrac{1}{2}\)</span>.</p>
 <p>The original rule <span class="math inline">\(\delta_0\)</span> was nonrandomized, but the equivalent rule <span class="math inline">\(\delta_1^*\)</span> based on <span class="math inline">\(T\)</span> is <strong>genuinely randomized</strong> when <span class="math inline">\(T = 1\)</span>: it flips a fair coin between the two actions.</p>
 </section>
-<section class="slide level2">
+<section id="example-continued-verifying-r-equivalence" class="slide level2">
 <h2>Example continued: verifying R-equivalence</h2>
 <p>Loss: <span class="math inline">\(L(\theta, a) = (\theta - a)^2\)</span>. Compute both risks.</p>
 <p><strong>Original rule</strong> <span class="math inline">\(\delta_0(X_1, X_2) = X_1\)</span>: <span class="math display">\[R(\theta, \delta_0) = E_{P_\theta}[(\theta - X_1)^2] = \mathrm{Var}(X_1) = \theta(1-\theta).\]</span></p>
@@ -520,13 +520,13 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p><span class="math display">\[R(\theta, \delta_1^*) = (1-\theta)^2 \cdot \theta^2 + 2\theta(1-\theta)\cdot\!\left[\tfrac{1}{2}\theta^2 + \tfrac{1}{2}(1-\theta)^2\right] + \theta^2\cdot(1-\theta)^2 = \theta(1-\theta).\]</span></p>
 <p>R-equivalent, as Theorem 1 guarantees.</p>
 </section>
-<section class="slide level2">
+<section id="where-we-stand-with-this-example" class="slide level2">
 <h2>Where we stand with this example</h2>
 <p>We started with <span class="math inline">\(\delta_0(x_1, x_2) = x_1\)</span>. Theorem 1 gave us <span class="math inline">\(\delta_1^*\)</span> based on <span class="math inline">\(T\)</span> with the same risk <span class="math inline">\(\theta(1-\theta)\)</span>.</p>
 <p>But <span class="math inline">\(\delta_1^*\)</span> is randomized when <span class="math inline">\(T = 1\)</span>. We traded a clean nonrandomized rule for a randomized one with the same risk. That feels unsatisfying.</p>
 <p>Can we do better? We will return to this example once we have the right tool.</p>
 </section>
-<section class="slide level2">
+<section id="what-theorem-1-means" class="slide level2">
 <h2>What Theorem 1 means</h2>
 <p>When evaluating decision rules through risk functions, <strong>it is only necessary to consider rules based on a sufficient statistic</strong>.</p>
 <p>If a rule is not a function of the sufficient statistic, we can always find another rule that is a function of the sufficient statistic and has the same risk function. In other words:</p>
@@ -535,18 +535,18 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 </blockquote>
 <p>Instead of searching over all functions <span class="math inline">\(\delta: \mathcal{X} \to \mathcal{A}\)</span>, we can restrict to functions <span class="math inline">\(\delta: \mathcal{T} \to \mathcal{A}\)</span>, where <span class="math inline">\(\mathcal{T}\)</span> is the range of <span class="math inline">\(T\)</span>. When <span class="math inline">\(T\)</span> reduces the dimension of the data substantially (as it often does), this makes the problem much more tractable.</p>
 </section>
-<section class="slide level2">
+<section id="a-caution" class="slide level2">
 <h2>A caution</h2>
 <p>Theorem 1 says we can find an R-<em>equivalent</em> rule based on <span class="math inline">\(T\)</span>. It does not say the original rule is inadmissible.</p>
 <p>However, it will often be the case that a decision rule which is <em>not</em> solely a function of the sufficient statistic is in fact inadmissible. We will see concrete instances of this shortly, once we have the convexity tools.</p>
 <p>It is also worth noting that Theorem 1 holds for randomized rules. The equivalent rule <span class="math inline">\(\delta_1^*\)</span> based on <span class="math inline">\(T\)</span> may itself be randomized, even if the original rule <span class="math inline">\(\delta_0\)</span> was not. This is because the averaging over <span class="math inline">\(\mathcal{X}_t\)</span> can spread probability across actions.</p>
 </section></section>
 <section>
-<section class="title-slide slide level1 center">
+<section id="convexity-berger-1.8" class="title-slide slide level1 center">
 <h1>Convexity (Berger § 1.8)</h1>
 
 </section>
-<section class="slide level2">
+<section id="convex-sets-and-convex-functions" class="slide level2">
 <h2>Convex sets and convex functions</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -570,7 +570,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 </div>
 <p>The <strong>convex hull</strong> of a set <span class="math inline">\(S \subset \mathbb{R}^m\)</span> is the set of all convex combinations <span class="math inline">\(\sum_i \alpha_i x_i\)</span> with <span class="math inline">\(\alpha_i \geq 0\)</span>, <span class="math inline">\(\sum_i \alpha_i = 1\)</span>, and <span class="math inline">\(x_i \in S\)</span>. It is the smallest convex set containing <span class="math inline">\(S\)</span>.</p>
 </section>
-<section class="slide level2">
+<section id="jensens-inequality-berger-thm.-2" class="slide level2">
 <h2>Jensen’s inequality (Berger, Thm. 2)</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -584,7 +584,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 </div>
 <p><strong>Example:</strong> Since <span class="math inline">\(g(x) = x^2\)</span> is strictly convex on <span class="math inline">\(\mathbb{R}\)</span>, Jensen gives <span class="math inline">\((E[X])^2 &lt; E[X^2]\)</span> whenever <span class="math inline">\(X\)</span> has finite mean and is not a constant. This is exactly the statement <span class="math inline">\(\mathrm{Var}(X) &gt; 0\)</span>.</p>
 </section>
-<section class="slide level2">
+<section id="why-jensen-matters-for-decision-theory" class="slide level2">
 <h2>Why Jensen matters for decision theory</h2>
 <p>Jensen’s inequality will be used in two ways throughout the course:</p>
 <p><strong>1. Eliminating randomization.</strong> If the loss function <span class="math inline">\(L(\theta, a)\)</span> is convex in <span class="math inline">\(a\)</span>, we can show that randomized decision rules are unnecessary: for any randomized rule, there exists a nonrandomized rule with loss that is <em>pointwise</em> no larger.</p>
@@ -592,11 +592,11 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p>We develop these two consequences now.</p>
 </section></section>
 <section>
-<section class="title-slide slide level1 center">
+<section id="convex-loss-eliminates-randomization" class="title-slide slide level1 center">
 <h1>Convex loss eliminates randomization</h1>
 
 </section>
-<section class="slide level2">
+<section id="theorem-3-convex-loss-makes-randomization-unnecessary-berger-thm.-3" class="slide level2">
 <h2>Theorem 3: convex loss makes randomization unnecessary (Berger, Thm. 3)</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -610,7 +610,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 </div>
 <p>In particular, <span class="math inline">\(R(\theta, \delta) \leq R(\theta, \delta^*)\)</span> for all <span class="math inline">\(\theta\)</span>.</p>
 </section>
-<section class="slide level2">
+<section id="proof-of-theorem-3" class="slide level2">
 <h2>Proof of Theorem 3</h2>
 <p>The proof is a direct application of Jensen’s inequality.</p>
 <p>Since <span class="math inline">\(\mathcal{A}\)</span> is convex and <span class="math inline">\(\delta^*(x, \cdot)\)</span> is a probability distribution on <span class="math inline">\(\mathcal{A}\)</span>, we have <span class="math inline">\(\delta(x) = E^{\delta^*(x,\cdot)}[a] \in \mathcal{A}\)</span> (by the convexity lemma: the mean of a random vector supported on a convex set lies in that set).</p>
@@ -618,7 +618,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p>The inequality is Jensen, applied to the convex function <span class="math inline">\(a \mapsto L(\theta, a)\)</span>. <span class="math inline">\(\blacksquare\)</span></p>
 <p>If <span class="math inline">\(L\)</span> is <em>strictly</em> convex, the inequality is strict whenever <span class="math inline">\(\delta^*(x, \cdot)\)</span> is nondegenerate. So the nonrandomized rule is <em>strictly better</em> at every <span class="math inline">\(x\)</span> where actual randomization occurs.</p>
 </section>
-<section class="slide level2">
+<section id="returning-to-our-example-derandomizing-delta_1" class="slide level2">
 <h2>Returning to our example: derandomizing <span class="math inline">\(\delta_1^*\)</span></h2>
 <p>Recall: <span class="math inline">\(X_1, X_2 \overset{\text{iid}}{\sim} \mathrm{Bernoulli}(\theta)\)</span>, <span class="math inline">\(T = X_1 + X_2\)</span>, squared-error loss <span class="math inline">\(L(\theta, a) = (\theta - a)^2\)</span>.</p>
 <p>Theorem 1 gave us <span class="math inline">\(\delta_1^*\)</span> based on <span class="math inline">\(T\)</span>, which is R-equivalent to <span class="math inline">\(\delta_0(x_1, x_2) = x_1\)</span> but randomized when <span class="math inline">\(T = 1\)</span>: it takes action <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> each with probability <span class="math inline">\(\tfrac{1}{2}\)</span>.</p>
@@ -630,7 +630,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 </ul>
 <p>The derandomized rule is <span class="math inline">\(\delta(t) = t/2 = \bar{X}\)</span>: the sample mean.</p>
 </section>
-<section class="slide level2">
+<section id="the-improvement-is-strict" class="slide level2">
 <h2>The improvement is strict</h2>
 <p>Compare the risks:</p>
 <p><strong>Original rule</strong> <span class="math inline">\(\delta_0(X_1, X_2) = X_1\)</span> and the R-equivalent <span class="math inline">\(\delta_1^*\)</span>: <span class="math inline">\(R(\theta, \delta_0) = R(\theta, \delta_1^*) = \theta(1-\theta)\)</span>.</p>
@@ -639,7 +639,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p>What happened? Theorem 1 gave us an R-equivalent rule on <span class="math inline">\(T\)</span>, but it was randomized. Theorem 3 removed the randomization, and the strict convexity of squared-error loss turned R-equivalence into a strict improvement.</p>
 <p>There is a way to do both steps at once. That is the Rao–Blackwell theorem.</p>
 </section>
-<section class="slide level2">
+<section id="another-example-a-mixture-of-two-estimators-berger-ex.-20" class="slide level2">
 <h2>Another example: a mixture of two estimators (Berger, Ex. 20)</h2>
 <p>Let <span class="math inline">\(X \sim \mathrm{Bin}(n, \theta)\)</span>, <span class="math inline">\(\mathcal{A} = \mathbb{R}\)</span>, and <span class="math inline">\(L(\theta, a) = (\theta - a)^2\)</span> (strictly convex in <span class="math inline">\(a\)</span>).</p>
 <p>Two estimators: <span class="math inline">\(\delta_1(x) = x/n\)</span> and <span class="math inline">\(\delta_2(x) = 1\)</span>.</p>
@@ -647,7 +647,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p>The <strong>nonrandomized (derandomized) rule</strong> from Theorem 3: <span class="math display">\[\delta(x) = E^{\delta^*(x,\cdot)}[a] = \tfrac{1}{2}(x/n) + \tfrac{1}{2}(1) = \frac{x/n + 1}{2}.\]</span></p>
 <p>This is a deterministic action for each <span class="math inline">\(x\)</span>: always take the midpoint.</p>
 </section>
-<section class="slide level2">
+<section id="comparing-the-losses" class="slide level2">
 <h2>Comparing the losses</h2>
 <p>Fix <span class="math inline">\(\theta\)</span> and <span class="math inline">\(x\)</span>. Write <span class="math inline">\(\hat\theta = x/n\)</span> for brevity.</p>
 <p><strong>Randomized rule:</strong> the loss averages over the coin flip: <span class="math display">\[L(\theta, \delta^*(x,\cdot)) = \tfrac{1}{2}(\theta - \hat\theta)^2 + \tfrac{1}{2}(\theta - 1)^2.\]</span></p>
@@ -656,11 +656,11 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p>This does not depend on <span class="math inline">\(\theta\)</span> or <span class="math inline">\(n\)</span>. It is strictly positive whenever <span class="math inline">\(\hat\theta \neq 1\)</span>, i.e., whenever the randomization is nondegenerate. That is Jensen’s inequality at work.</p>
 </section></section>
 <section>
-<section class="title-slide slide level1 center">
+<section id="the-raoblackwell-theorem" class="title-slide slide level1 center">
 <h1>The Rao–Blackwell theorem</h1>
 
 </section>
-<section class="slide level2">
+<section id="combining-sufficiency-and-convexity" class="slide level2">
 <h2>Combining sufficiency and convexity</h2>
 <p>We now have two tools:</p>
 <ul>
@@ -670,20 +670,20 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 <p>We saw this in the Bernoulli example: <span class="math inline">\(\delta_0 \to \delta_1^*\)</span> (R-equivalent, randomized, based on <span class="math inline">\(T\)</span>) <span class="math inline">\(\to\)</span> <span class="math inline">\(\delta = \bar{X}\)</span> (nonrandomized, based on <span class="math inline">\(T\)</span>, strictly better).</p>
 <p>Let us now trace the two-step pipeline in general and see what formula comes out.</p>
 </section>
-<section class="slide level2">
+<section id="the-pipeline-produces-a-specific-formula" class="slide level2">
 <h2>The pipeline produces a specific formula</h2>
 <p>Start with any nonrandomized rule <span class="math inline">\(\delta_0(x)\)</span>.</p>
 <p><strong>Step 1 (Theorem 1):</strong> Build the R-equivalent randomized rule based on <span class="math inline">\(T\)</span>: <span class="math display">\[\delta_1^*(t, A) = P(\delta_0(X) \in A \mid T = t).\]</span> This is a distribution on <span class="math inline">\(\mathcal{A}\)</span> for each <span class="math inline">\(t\)</span>: draw <span class="math inline">\(X\)</span> from <span class="math inline">\(X | T = t\)</span>, apply <span class="math inline">\(\delta_0\)</span>, and see where the action lands.</p>
 <p><strong>Step 2 (Theorem 3):</strong> Derandomize by taking the expected action: <span class="math display">\[\delta(t) = E^{\delta_1^*(t,\cdot)}[a].\]</span> But the distribution <span class="math inline">\(\delta_1^*(t, \cdot)\)</span> was built by drawing <span class="math inline">\(X | T = t\)</span> and applying <span class="math inline">\(\delta_0\)</span>. So the expected action is: <span class="math display">\[E^{\delta_1^*(t,\cdot)}[a] = E^{X|T=t}[\delta_0(X)].\]</span></p>
 <p>The pipeline mechanically produces <span class="math inline">\(\delta(t) = E[\delta_0(X) \mid T = t]\)</span>. The formula is not a new idea. It is what Theorem 1 followed by Theorem 3 gives you.</p>
 </section>
-<section class="slide level2">
+<section id="formalizing-the-combined-result" class="slide level2">
 <h2>Formalizing the combined result</h2>
 <p>The two-step pipeline says: for any nonrandomized rule <span class="math inline">\(\delta_0\)</span> and convex loss, the rule <span class="math display">\[\delta_1(t) = E[\delta_0(X) \mid T = t]\]</span> is nonrandomized, based on <span class="math inline">\(T\)</span>, and has risk no larger than <span class="math inline">\(\delta_0\)</span>.</p>
 <p>The risk improvement comes from Step 2 (Jensen/Theorem 3), not from Step 1 (which only gave R-equivalence).</p>
 <p>This is exactly the Rao–Blackwell theorem. It packages the pipeline into a single statement.</p>
 </section>
-<section class="slide level2">
+<section id="the-raoblackwell-theorem-berger-thm.-4" class="slide level2">
 <h2>The Rao–Blackwell theorem (Berger, Thm. 4)</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -697,7 +697,7 @@ R(\theta, \delta_1^*) &amp;= E^T[L(\theta, \delta_1^*(T, \cdot))] \\
 </div>
 <p>In words: condition your estimator on the sufficient statistic. The result is at least as good, and usually strictly better.</p>
 </section>
-<section class="slide level2">
+<section id="proof-of-the-raoblackwell-theorem" class="slide level2">
 <h2>Proof of the Rao–Blackwell theorem</h2>
 <p>By the definition of a sufficient statistic, the conditional expectation <span class="math inline">\(E^{X|T=t}[\delta_0(X)]\)</span> does not depend on <span class="math inline">\(\theta\)</span>. So <span class="math inline">\(\delta_1\)</span> is a well-defined decision rule based on <span class="math inline">\(T\)</span>.</p>
 <p>By Jensen’s inequality (applied to the convex function <span class="math inline">\(a \mapsto L(\theta, a)\)</span>): <span class="math display">\[L(\theta, \delta_1(T)) = L\!\left(\theta,\, E^{X|T}[\delta_0(X)]\right) \leq E^{X|T}[L(\theta, \delta_0(X))].\]</span></p>
@@ -708,14 +708,14 @@ R(\theta, \delta_1) &amp;= E^T[L(\theta, \delta_1(T))] \\
 &amp;= R(\theta, \delta_0). \quad \blacksquare
 \end{aligned}\]</span></p>
 </section>
-<section class="slide level2">
+<section id="what-the-raoblackwell-theorem-gives-us" class="slide level2">
 <h2>What the Rao–Blackwell theorem gives us</h2>
 <p>The theorem has two readings:</p>
 <p><strong>As a tool for improving estimators.</strong> Given any estimator <span class="math inline">\(\delta_0\)</span>, we can improve it (in terms of risk) by conditioning on the sufficient statistic. The improved estimator <span class="math inline">\(\delta_1(t) = E[\delta_0(X) | T = t]\)</span> is always at least as good, and usually strictly better.</p>
 <p><strong>As a structural result.</strong> When the loss is convex and a sufficient statistic <span class="math inline">\(T\)</span> exists, we can restrict attention to nonrandomized rules based on <span class="math inline">\(T\)</span> without any loss in risk. The search space for good decision rules is dramatically reduced.</p>
 <p>Combining Theorems 1 and 3: <em>under convex loss with a sufficient statistic</em> <span class="math inline">\(T\)</span>, only nonrandomized rules based on <span class="math inline">\(T\)</span> need be considered.</p>
 </section>
-<section class="slide level2">
+<section id="completing-our-running-example-via-raoblackwell" class="slide level2">
 <h2>Completing our running example via Rao–Blackwell</h2>
 <p><span class="math inline">\(X_1, X_2 \overset{\text{iid}}{\sim} \mathrm{Bernoulli}(\theta)\)</span>, <span class="math inline">\(T = X_1 + X_2\)</span> sufficient, <span class="math inline">\(L(\theta, a) = (\theta - a)^2\)</span>.</p>
 <p>We started with <span class="math inline">\(\delta_0(x_1, x_2) = x_1\)</span>. Apply Rao–Blackwell directly: <span class="math display">\[\delta_1(t) = E[X_1 \mid T = t] = E[X_1 \mid X_1 + X_2 = t].\]</span></p>
@@ -760,21 +760,21 @@ R(\theta, \delta_1) &amp;= E^T[L(\theta, \delta_1(T))] \\
 </table>
 <p>Sufficiency gave R-equivalence. Convexity gave strict improvement.</p>
 </section>
-<section class="slide level2">
+<section id="another-example-improving-the-sample-median" class="slide level2">
 <h2>Another example: improving the sample median</h2>
 <p>Let <span class="math inline">\(X = (X_1, \ldots, X_n)\)</span> with <span class="math inline">\(X_i \overset{\text{iid}}{\sim} \mathcal{N}(\theta, 1)\)</span>. Estimate <span class="math inline">\(\theta\)</span> under squared-error loss.</p>
 <p>The sufficient statistic is <span class="math inline">\(T = \bar{X}\)</span>.</p>
 <p>Consider <span class="math inline">\(\delta_0(X) = \widetilde{X}\)</span>, the sample median. This is not a function of <span class="math inline">\(\bar{X}\)</span> alone (it depends on the order statistics, not just the mean). The Rao–Blackwell theorem says we can improve it: <span class="math display">\[\delta_1(\bar{x}) = E[\widetilde{X} \mid \bar{X} = \bar{x}].\]</span></p>
 <p>We will show that <span class="math inline">\(E[\widetilde{X} \mid \bar{X}] = \bar{X}\)</span>: the Rao–Blackwellized median is the mean.</p>
 </section>
-<section class="slide level2">
+<section id="proof-that-ewidetildex-mid-barx-barx" class="slide level2">
 <h2>Proof that <span class="math inline">\(E[\widetilde{X} \mid \bar{X}] = \bar{X}\)</span></h2>
 <p>Define the residuals <span class="math inline">\(W_i = X_i - \bar{X}\)</span>. Note <span class="math inline">\(\sum_{i=1}^n W_i = 0\)</span>.</p>
 <p><strong>Step 1: Decompose the median.</strong> Since <span class="math inline">\(X_i = \bar{X} + W_i\)</span>, the median of <span class="math inline">\((X_1, \ldots, X_n)\)</span> is: <span class="math display">\[\widetilde{X} = \bar{X} + \widetilde{W},\]</span> where <span class="math inline">\(\widetilde{W}\)</span> is the median of <span class="math inline">\((W_1, \ldots, W_n)\)</span>.</p>
 <p><strong>Step 2: Independence.</strong> For normal data, <span class="math inline">\(\bar{X}\)</span> and <span class="math inline">\(W = (W_1, \ldots, W_n)\)</span> are independent. (This is a standard result: <span class="math inline">\(\bar{X} \sim \mathcal{N}(\theta, 1/n)\)</span>, and <span class="math inline">\(W\)</span> lives in the subspace <span class="math inline">\(\{\sum w_i = 0\}\)</span> with a distribution that does not depend on <span class="math inline">\(\theta\)</span>.)</p>
 <p><strong>Step 3: Condition.</strong> <span class="math display">\[E[\widetilde{X} \mid \bar{X}] = E[\bar{X} + \widetilde{W} \mid \bar{X}] = \bar{X} + E[\widetilde{W} \mid \bar{X}] = \bar{X} + E[\widetilde{W}],\]</span> where the last step uses independence.</p>
 </section>
-<section class="slide level2">
+<section id="proof-continued-ewidetildew-0-by-symmetry" class="slide level2">
 <h2>Proof continued: <span class="math inline">\(E[\widetilde{W}] = 0\)</span> by symmetry</h2>
 <p>It remains to show <span class="math inline">\(E[\widetilde{W}] = 0\)</span>.</p>
 <p>The distribution of <span class="math inline">\(W = (W_1, \ldots, W_n)\)</span> is <span class="math inline">\(\mathcal{N}(0, I_n - \frac{1}{n}J_n)\)</span>, where <span class="math inline">\(J_n\)</span> is the <span class="math inline">\(n \times n\)</span> matrix of ones. This distribution is symmetric about the origin: <span class="math inline">\(W \overset{d}{=} -W\)</span>.</p>
@@ -784,17 +784,18 @@ R(\theta, \delta_1) &amp;= E^T[L(\theta, \delta_1(T))] \\
 <p>Since squared-error loss is strictly convex, Rao–Blackwell gives <span class="math inline">\(R(\theta, \bar{X}) &lt; R(\theta, \widetilde{X})\)</span> for all <span class="math inline">\(\theta\)</span> (wherever <span class="math inline">\(\widetilde{X}\)</span> and <span class="math inline">\(\bar{X}\)</span> are not a.s. equal, which is always for continuous data).</p>
 </section></section>
 <section>
-<section class="title-slide slide level1 center">
+<section id="summary" class="title-slide slide level1 center">
 <h1>Summary</h1>
 
 </section>
-<section class="slide level2">
+<section id="the-big-picture-from-today" class="slide level2">
 <h2>The big picture from today</h2>
 <p>Three results from today:</p>
 <p><strong>1. Sufficiency (Theorem 1):</strong> Any rule can be replaced by an R-equivalent rule based on the sufficient statistic <span class="math inline">\(T\)</span>. The class of rules based on <span class="math inline">\(T\)</span> is essentially complete.</p>
 <p><strong>2. Convex loss eliminates randomization (Theorem 3):</strong> Under convex loss, any randomized rule can be replaced by a nonrandomized rule with no greater risk.</p>
 <p><strong>3. Rao–Blackwell (Theorem 4):</strong> Under convex loss with a sufficient statistic, condition on <span class="math inline">\(T\)</span> to improve any estimator.</p>
 <p><strong>Combined:</strong> under convex loss, only nonrandomized decision rules based on the sufficient statistic need be considered. This is the starting point for all the optimization that follows.</p>
+
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
@@ -805,19 +806,19 @@ R(\theta, \delta_1) &amp;= E^T[L(\theta, \delta_1(T))] \\
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="lecture-02_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="lecture-02_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="lecture-02_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="lecture-02_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="lecture-02_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="lecture-02_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="lecture-02_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="lecture-02_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="lecture-02_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="lecture-02_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
