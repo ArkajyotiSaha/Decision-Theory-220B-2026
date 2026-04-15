@@ -1,0 +1,1220 @@
+[
+  {
+    "objectID": "lecture-02.html#recap-from-lecture-1",
+    "href": "lecture-02.html#recap-from-lecture-1",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Recap from Lecture 1",
+    "text": "Recap from Lecture 1\nWe set up the statistical decision problem: \\(\\Theta\\), \\(\\mathcal{A}\\), \\(L(\\theta, a)\\), data \\(X \\sim P_\\theta\\), prior \\(\\pi(\\theta)\\).\nWe defined decision rules \\(\\delta: \\mathcal{X} \\to \\mathcal{A}\\), and introduced two ways to evaluate them:\n\nFrequentist risk: \\(R(\\theta, \\delta) = E_{P_\\theta}[L(\\theta, \\delta(X))]\\). A function of \\(\\theta\\), not a number.\nBayesian expected loss / Bayes risk: \\(\\rho(\\pi, a) = E_\\pi[L(\\theta, a)]\\) and \\(r(\\pi, \\delta) = E_\\pi[R(\\theta, \\delta)]\\).\n\nWe defined admissibility, saw that risk functions cross, and introduced three selection principles: Bayes, minimax, invariance.\nWe also introduced randomized decision rules \\(\\delta^*(x, \\cdot)\\).\nToday: a foundational example, then the two main tools for simplifying decision problems – sufficiency and convexity."
+  },
+  {
+    "objectID": "lecture-02.html#the-likelihood-principle-a-striking-example-berger-ex.-15",
+    "href": "lecture-02.html#the-likelihood-principle-a-striking-example-berger-ex.-15",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The Likelihood Principle: a striking example (Berger, Ex. 15)",
+    "text": "The Likelihood Principle: a striking example (Berger, Ex. 15)\nWe are given a coin and are interested in \\(\\theta\\), the probability of heads. We want to test \\(H_0: \\theta = \\tfrac{1}{2}\\) vs. \\(H_1: \\theta &gt; \\tfrac{1}{2}\\). An experiment is conducted. The result: 9 heads and 3 tails.\nBut what was the experiment?\n\nPossibility 1: A fixed \\(n = 12\\) flips. Then \\(X = [\\text{\\# heads}] \\sim \\mathrm{Bin}(12, \\theta)\\), and the likelihood is \\[\\ell_1(\\theta) = \\tbinom{12}{9} \\theta^9(1-\\theta)^3.\\]\nPossibility 2: Flip until 3 tails appear. Then \\(X \\sim \\mathrm{NegBin}(3, 1-\\theta)\\), and the likelihood is \\[\\ell_2(\\theta) = \\tbinom{11}{9} \\theta^9(1-\\theta)^3.\\]\n\nThe two likelihoods are proportional as functions of \\(\\theta\\). The data is the same. But the experiments are very different from a frequentist perspective."
+  },
+  {
+    "objectID": "lecture-02.html#same-data-different-p-values",
+    "href": "lecture-02.html#same-data-different-p-values",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Same data, different p-values",
+    "text": "Same data, different p-values\nClassical significance testing gives different answers for the two experiments. The p-value is the probability, under \\(H_0: \\theta = \\tfrac{1}{2}\\), of observing a result at least as extreme as what we saw (9 heads).\nFor the binomial model, “at least as extreme” means \\(X \\geq 9\\) out of 12 fixed flips: \\[\\alpha_1 = P_{1/2}(X \\geq 9) = \\sum_{k=9}^{12} \\tbinom{12}{k} (1/2)^{12} = 0.075.\\]\nFor the negative binomial model, “at least as extreme” means needing \\(\\geq 9\\) heads before seeing 3 tails: \\[\\alpha_2 = P_{1/2}(X \\geq 9) = \\sum_{k=9}^{\\infty} \\tbinom{k+2}{k} (1/2)^{k+3} = 0.0325.\\]\nThe p-values differ because the two models assign different probabilities to extreme outcomes, even though they agree on the observed outcome. At the 5% level, the binomial experiment does not reject \\(H_0\\) (\\(0.075 &gt; 0.05\\)), while the negative binomial experiment does (\\(0.0325 &lt; 0.05\\)).\nSame coin, same flips, same outcomes, same likelihood – but different conclusions."
+  },
+  {
+    "objectID": "lecture-02.html#the-source-of-the-confusion",
+    "href": "lecture-02.html#the-source-of-the-confusion",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The source of the confusion",
+    "text": "The source of the confusion\nThe classical analysis gave two different answers to the same evidence. Why?\nBecause the p-value uses information that is external to the observed data. It depends on what could have happened under the experimental design but did not.\nIn the binomial model, the experiment could have produced at most 12 heads, so the “extreme” outcomes are \\(X = 10, 11, 12\\). In the negative binomial model, the experiment could have run indefinitely, so the “extreme” outcomes are \\(X = 10, 11, 12, 13, \\ldots\\) The p-value sums over these unobserved possibilities, and the two sums give different numbers.\nThe actual data – 9 heads and 3 tails – is identical. The likelihood functions are proportional. The only difference is the set of things that could have happened but did not. The classical analysis is sensitive to this external information. Should it be?"
+  },
+  {
+    "objectID": "lecture-02.html#the-likelihood-principle",
+    "href": "lecture-02.html#the-likelihood-principle",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The Likelihood Principle",
+    "text": "The Likelihood Principle\n\n\n\nDefinition (The Likelihood Principle)\n\n\nIn making inferences or decisions about \\(\\theta\\) after \\(x\\) is observed, all relevant experimental information is contained in the likelihood function for the observed \\(x\\). Two likelihood functions contain the same information about \\(\\theta\\) if they are proportional to each other (as functions of \\(\\theta\\)).\n\n\n\nThere is a principle – the Likelihood Principle – that makes a clean statement: the information about \\(\\theta\\) in the data lives in the likelihood function \\(\\ell(\\theta) = f(x|\\theta)\\), and nowhere else. Not in the design, not in the sample space, not in what could have happened.\nThe striking observation from our example is that classical analysis does not always follow this principle. The two likelihoods are proportional, so the LP says they carry the same information. But the classical p-values disagree. Classical methods sometimes use more than the likelihood – they use the sampling distribution, which depends on the experimental design."
+  },
+  {
+    "objectID": "lecture-02.html#what-this-means-for-us",
+    "href": "lecture-02.html#what-this-means-for-us",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "What this means for us",
+    "text": "What this means for us\nWe are not here to settle the frequentist-Bayesian debate. The frequentist has reasons for caring about the sampling distribution, and those reasons are legitimate in many settings.\nBut the Likelihood Principle points us toward a concrete question: what information in the data actually matters for decisions about \\(\\theta\\)?\nThe LP says: the likelihood function. If \\(T\\) is a sufficient statistic, the factorization theorem gives \\(f(x|\\theta) = h(x)\\, g(T(x)|\\theta)\\), so the likelihood depends on \\(x\\) only through \\(T(x)\\).\nThis means all the information about \\(\\theta\\) – everything that could affect a good decision – lives in \\(T\\). That is a claim we can make precise and prove in the decision-theoretic setting. Let us do that now."
+  },
+  {
+    "objectID": "lecture-02.html#sufficiency-definition-and-factorization",
+    "href": "lecture-02.html#sufficiency-definition-and-factorization",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Sufficiency: definition and factorization",
+    "text": "Sufficiency: definition and factorization\n\n\n\nDefinition\n\n\nLet \\(X\\) be a random variable whose distribution depends on \\(\\theta\\). A function \\(T = T(X)\\) is a sufficient statistic for \\(\\theta\\) if the conditional distribution of \\(X\\) given \\(T(X) = t\\) does not depend on \\(\\theta\\) (with probability one).\n\n\n\nFactorization theorem: \\(T\\) is sufficient for \\(\\theta\\) if and only if \\[f(x|\\theta) = h(x)\\, g(T(x)|\\theta)\\] for some functions \\(h\\) (not depending on \\(\\theta\\)) and \\(g\\).\nExample: If \\(X_1, \\ldots, X_n \\overset{\\text{iid}}{\\sim} \\mathcal{N}(\\mu, \\sigma^2)\\), then \\(T = (\\bar{X}, S^2)\\) is sufficient for \\(\\theta = (\\mu, \\sigma^2)\\)."
+  },
+  {
+    "objectID": "lecture-02.html#the-partition-induced-by-t",
+    "href": "lecture-02.html#the-partition-induced-by-t",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The partition induced by \\(T\\)",
+    "text": "The partition induced by \\(T\\)\nIf \\(T(X)\\) is a statistic with range \\(\\mathcal{T}\\), it partitions the sample space \\(\\mathcal{X}\\) into sets \\[\\mathcal{X}_t = \\{x \\in \\mathcal{X} : T(x) = t\\}, \\quad t \\in \\mathcal{T}.\\]\nThese sets are disjoint and cover \\(\\mathcal{X}\\).\nA decision rule \\(\\delta\\) is said to be based on \\(T\\) if \\(\\delta(x)\\) depends on \\(x\\) only through \\(T(x)\\), i.e., \\(\\delta(x_1) = \\delta(x_2)\\) whenever \\(T(x_1) = T(x_2)\\).\nThe question for decision theory is: can we always restrict attention to rules based on a sufficient statistic \\(T\\), without any loss in risk?"
+  },
+  {
+    "objectID": "lecture-02.html#theorem-1-sufficiency-reduces-the-decision-problem-berger-thm.-1",
+    "href": "lecture-02.html#theorem-1-sufficiency-reduces-the-decision-problem-berger-thm.-1",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Theorem 1: sufficiency reduces the decision problem (Berger, Thm. 1)",
+    "text": "Theorem 1: sufficiency reduces the decision problem (Berger, Thm. 1)\n\n\n\nTheorem 1\n\n\nAssume that \\(T\\) is a sufficient statistic for \\(\\theta\\), and let \\(\\delta_0^*(x, \\cdot)\\) be any randomized rule in \\(\\mathcal{D}^*\\). Then there exists a randomized rule \\(\\delta_1^*(t, \\cdot)\\), depending only on \\(T(x)\\), which is R-equivalent to \\(\\delta_0^*\\).\n\n\n\nThe equivalent rule based on \\(T\\) is constructed by averaging the original rule over the conditional distribution of \\(X\\) given \\(T = t\\): \\[\\delta_1^*(t, A) = E^{X|T=t}[\\delta_0^*(X, A)].\\]\nSufficiency of \\(T\\) ensures this conditional expectation does not depend on \\(\\theta\\), so \\(\\delta_1^*\\) is a well-defined decision rule."
+  },
+  {
+    "objectID": "lecture-02.html#proof-of-theorem-1-the-key-step",
+    "href": "lecture-02.html#proof-of-theorem-1-the-key-step",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Proof of Theorem 1: the key step",
+    "text": "Proof of Theorem 1: the key step\nWe need to show \\(R(\\theta, \\delta_1^*) = R(\\theta, \\delta_0^*)\\) for all \\(\\theta\\).\nThe loss of \\(\\delta_1^*\\) at a given \\(t\\): since \\(\\delta_1^*(t, \\cdot)\\) is a distribution on \\(\\mathcal{A}\\), its loss is the expected loss when \\(a\\) is drawn from it: \\[L(\\theta, \\delta_1^*(t, \\cdot)) = E^{\\delta_1^*(t,\\cdot)}[L(\\theta, a)].\\]\nNow, recall how \\(\\delta_1^*\\) was built: \\(\\delta_1^*(t, A) = E^{X|T=t}[\\delta_0^*(X, A)]\\). This means \\(\\delta_1^*(t, \\cdot)\\) is a mixture distribution on \\(\\mathcal{A}\\). It mixes together the distributions \\(\\delta_0^*(x, \\cdot)\\) for all \\(x\\) with \\(T(x) = t\\), weighted by \\(P(X = x \\mid T = t)\\).\nDrawing \\(a\\) from this mixture is the same as:\n   Step 1: Pick which component of the mixture you are in: draw \\(X \\sim (X \\mid T = t)\\).\n   Step 2: Draw \\(a\\) from that component: \\(a \\sim \\delta_0^*(X, \\cdot)\\).\nAveraging the loss over this two-stage draw gives the iterated expectation: \\[E^{\\delta_1^*(t,\\cdot)}[L(\\theta, a)] = E^{X|T=t}\\!\\left[E^{\\delta_0^*(X,\\cdot)}[L(\\theta, a)]\\right].\\]\nThe rest follows by taking expectations."
+  },
+  {
+    "objectID": "lecture-02.html#proof-of-theorem-1-completing-the-argument",
+    "href": "lecture-02.html#proof-of-theorem-1-completing-the-argument",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Proof of Theorem 1: completing the argument",
+    "text": "Proof of Theorem 1: completing the argument\nWe have established that \\(L(\\theta, \\delta_1^*(t, \\cdot)) = E^{X|T=t}\\!\\left[E^{\\delta_0^*(X,\\cdot)}[L(\\theta, a)]\\right]\\).\nNow take the risk by averaging over \\(T\\): \\[\\begin{aligned}\nR(\\theta, \\delta_1^*) &= E^T[L(\\theta, \\delta_1^*(T, \\cdot))] \\\\\n&= E^T\\!\\left[E^{X|T}\\!\\left[E^{\\delta_0^*(X,\\cdot)}[L(\\theta, a)]\\right]\\right] \\\\\n&= E^X\\!\\left[E^{\\delta_0^*(X,\\cdot)}[L(\\theta, a)]\\right] \\quad \\text{(tower property)} \\\\\n&= E^X[L(\\theta, \\delta_0^*(X, \\cdot))] = R(\\theta, \\delta_0^*). \\quad \\blacksquare\n\\end{aligned}\\]\nThe tower property collapses the iterated expectation \\(E^T[E^{X|T}[\\cdot]]\\) into \\(E^X[\\cdot]\\). After that, we just recognize the definition of \\(R(\\theta, \\delta_0^*)\\)."
+  },
+  {
+    "objectID": "lecture-02.html#example-theorem-1-in-action",
+    "href": "lecture-02.html#example-theorem-1-in-action",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Example: Theorem 1 in action",
+    "text": "Example: Theorem 1 in action\nLet \\(X_1, X_2 \\overset{\\text{iid}}{\\sim} \\mathrm{Bernoulli}(\\theta)\\). The sufficient statistic is \\(T = X_1 + X_2\\).\nConsider the rule \\(\\delta_0(x_1, x_2) = x_1\\) (just use the first observation to estimate \\(\\theta\\)). This is not a function of \\(T\\): when \\(T = 1\\), the data could be \\((1,0)\\) or \\((0,1)\\), and \\(\\delta_0\\) gives different values.\nConstruct the equivalent rule based on \\(T\\):   \\(\\delta_1^*(t, A) = P(\\delta_0(X) \\in A \\mid T = t) = P(X_1 \\in A \\mid T = t)\\).\nSince \\(\\delta_0\\) is nonrandomized, this asks: given that \\(T = t\\), what is the distribution of the action \\(\\delta_0(X) = X_1\\)? We need the conditional distribution of \\(X_1\\) given \\(X_1 + X_2 = t\\)."
+  },
+  {
+    "objectID": "lecture-02.html#example-continued-computing-delta_1-case-by-case",
+    "href": "lecture-02.html#example-continued-computing-delta_1-case-by-case",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Example continued: computing \\(\\delta_1^*\\) case by case",
+    "text": "Example continued: computing \\(\\delta_1^*\\) case by case\nThe sample space is \\(\\{(0,0),\\, (0,1),\\, (1,0),\\, (1,1)\\}\\).\n\\(T = 0\\): The only possibility is \\((X_1, X_2) = (0,0)\\). So \\(X_1 = 0\\) with certainty, and \\(\\delta_1^*\\) takes action \\(0\\) with probability \\(1\\).\n\\(T = 2\\): The only possibility is \\((X_1, X_2) = (1,1)\\). So \\(X_1 = 1\\) with certainty, and \\(\\delta_1^*\\) takes action \\(1\\) with probability \\(1\\).\n\\(T = 1\\): Two possibilities: \\((1,0)\\) and \\((0,1)\\). By sufficiency, the conditional distribution of \\((X_1, X_2)\\) given \\(T = 1\\) does not depend on \\(\\theta\\). Since \\(X_1\\) and \\(X_2\\) are exchangeable, \\[P(X_1 = 1 \\mid T = 1) = P(X_1 = 0 \\mid T = 1) = \\tfrac{1}{2}.\\] So \\(\\delta_1^*\\) takes action \\(1\\) with probability \\(\\tfrac{1}{2}\\) and action \\(0\\) with probability \\(\\tfrac{1}{2}\\).\nThe original rule \\(\\delta_0\\) was nonrandomized, but the equivalent rule \\(\\delta_1^*\\) based on \\(T\\) is genuinely randomized when \\(T = 1\\): it flips a fair coin between the two actions."
+  },
+  {
+    "objectID": "lecture-02.html#example-continued-verifying-r-equivalence",
+    "href": "lecture-02.html#example-continued-verifying-r-equivalence",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Example continued: verifying R-equivalence",
+    "text": "Example continued: verifying R-equivalence\nLoss: \\(L(\\theta, a) = (\\theta - a)^2\\). Compute both risks.\nOriginal rule \\(\\delta_0(X_1, X_2) = X_1\\): \\[R(\\theta, \\delta_0) = E_{P_\\theta}[(\\theta - X_1)^2] = \\mathrm{Var}(X_1) = \\theta(1-\\theta).\\]\nNew rule \\(\\delta_1^*\\) based on \\(T\\): the risk is \\(R(\\theta, \\delta_1^*) = E^T[L(\\theta, \\delta_1^*(T, \\cdot))]\\). Since \\(T \\in \\{0, 1, 2\\}\\), this is a sum over three terms, each of the form \\(P_\\theta(T = t) \\cdot L(\\theta, \\delta_1^*(t, \\cdot))\\):\n\n\n\n\n\n\n\n\n\n\\(t\\)\n\\(P_\\theta(T = t)\\)\naction distribution\n\\(L(\\theta, \\delta_1^*(t,\\cdot))\\)\n\n\n\n\n\\(0\\)\n\\((1-\\theta)^2\\)\n\\(a = 0\\) w.p. 1\n\\(\\theta^2\\)\n\n\n\\(1\\)\n\\(2\\theta(1-\\theta)\\)\n\\(a = 0\\) or \\(1\\), each w.p. \\(\\tfrac{1}{2}\\)\n\\(\\tfrac{1}{2}\\theta^2 + \\tfrac{1}{2}(1-\\theta)^2\\)\n\n\n\\(2\\)\n\\(\\theta^2\\)\n\\(a = 1\\) w.p. 1\n\\((1-\\theta)^2\\)\n\n\n\n\\[R(\\theta, \\delta_1^*) = (1-\\theta)^2 \\cdot \\theta^2 + 2\\theta(1-\\theta)\\cdot\\!\\left[\\tfrac{1}{2}\\theta^2 + \\tfrac{1}{2}(1-\\theta)^2\\right] + \\theta^2\\cdot(1-\\theta)^2 = \\theta(1-\\theta).\\]\nR-equivalent, as Theorem 1 guarantees."
+  },
+  {
+    "objectID": "lecture-02.html#where-we-stand-with-this-example",
+    "href": "lecture-02.html#where-we-stand-with-this-example",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Where we stand with this example",
+    "text": "Where we stand with this example\nWe started with \\(\\delta_0(x_1, x_2) = x_1\\). Theorem 1 gave us \\(\\delta_1^*\\) based on \\(T\\) with the same risk \\(\\theta(1-\\theta)\\).\nBut \\(\\delta_1^*\\) is randomized when \\(T = 1\\). We traded a clean nonrandomized rule for a randomized one with the same risk. That feels unsatisfying.\nCan we do better? We will return to this example once we have the right tool."
+  },
+  {
+    "objectID": "lecture-02.html#what-theorem-1-means",
+    "href": "lecture-02.html#what-theorem-1-means",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "What Theorem 1 means",
+    "text": "What Theorem 1 means\nWhen evaluating decision rules through risk functions, it is only necessary to consider rules based on a sufficient statistic.\nIf a rule is not a function of the sufficient statistic, we can always find another rule that is a function of the sufficient statistic and has the same risk function. In other words:\n\nThe class of (randomized) decision rules based on a sufficient statistic is an essentially complete class.\n\nInstead of searching over all functions \\(\\delta: \\mathcal{X} \\to \\mathcal{A}\\), we can restrict to functions \\(\\delta: \\mathcal{T} \\to \\mathcal{A}\\), where \\(\\mathcal{T}\\) is the range of \\(T\\). When \\(T\\) reduces the dimension of the data substantially (as it often does), this makes the problem much more tractable."
+  },
+  {
+    "objectID": "lecture-02.html#a-caution",
+    "href": "lecture-02.html#a-caution",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "A caution",
+    "text": "A caution\nTheorem 1 says we can find an R-equivalent rule based on \\(T\\). It does not say the original rule is inadmissible.\nHowever, it will often be the case that a decision rule which is not solely a function of the sufficient statistic is in fact inadmissible. We will see concrete instances of this shortly, once we have the convexity tools.\nIt is also worth noting that Theorem 1 holds for randomized rules. The equivalent rule \\(\\delta_1^*\\) based on \\(T\\) may itself be randomized, even if the original rule \\(\\delta_0\\) was not. This is because the averaging over \\(\\mathcal{X}_t\\) can spread probability across actions."
+  },
+  {
+    "objectID": "lecture-02.html#convex-sets-and-convex-functions",
+    "href": "lecture-02.html#convex-sets-and-convex-functions",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Convex sets and convex functions",
+    "text": "Convex sets and convex functions\n\n\n\nDefinition\n\n\nA set \\(\\Omega \\subset \\mathbb{R}^m\\) is convex if for any \\(x, y \\in \\Omega\\) and \\(0 \\leq \\alpha \\leq 1\\), \\(\\alpha x + (1-\\alpha)y \\in \\Omega\\).\n\n\n\n\n\n\nDefinition\n\n\nA real-valued function \\(g\\) defined on a convex set \\(\\Omega\\) is convex if \\(g(\\alpha x + (1-\\alpha)y) \\leq \\alpha\\, g(x) + (1-\\alpha)\\, g(y)\\) for all \\(x, y \\in \\Omega\\) and \\(0 &lt; \\alpha &lt; 1\\). It is strictly convex if the inequality is strict whenever \\(x \\neq y\\).\n\n\n\nThe convex hull of a set \\(S \\subset \\mathbb{R}^m\\) is the set of all convex combinations \\(\\sum_i \\alpha_i x_i\\) with \\(\\alpha_i \\geq 0\\), \\(\\sum_i \\alpha_i = 1\\), and \\(x_i \\in S\\). It is the smallest convex set containing \\(S\\)."
+  },
+  {
+    "objectID": "lecture-02.html#jensens-inequality-berger-thm.-2",
+    "href": "lecture-02.html#jensens-inequality-berger-thm.-2",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Jensen’s inequality (Berger, Thm. 2)",
+    "text": "Jensen’s inequality (Berger, Thm. 2)\n\n\n\nTheorem (Jensen’s Inequality)\n\n\nLet \\(g: \\Omega \\to \\mathbb{R}\\) be a convex function on a convex set \\(\\Omega \\subset \\mathbb{R}^m\\), and let \\(X\\) be a random vector with \\(E[|X|] &lt; \\infty\\) and \\(P(X \\in \\Omega) = 1\\). Then \\[g(E[X]) \\leq E[g(X)],\\] with strict inequality if \\(g\\) is strictly convex and \\(X\\) is not concentrated at a point.\n\n\n\nExample: Since \\(g(x) = x^2\\) is strictly convex on \\(\\mathbb{R}\\), Jensen gives \\((E[X])^2 &lt; E[X^2]\\) whenever \\(X\\) has finite mean and is not a constant. This is exactly the statement \\(\\mathrm{Var}(X) &gt; 0\\)."
+  },
+  {
+    "objectID": "lecture-02.html#why-jensen-matters-for-decision-theory",
+    "href": "lecture-02.html#why-jensen-matters-for-decision-theory",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Why Jensen matters for decision theory",
+    "text": "Why Jensen matters for decision theory\nJensen’s inequality will be used in two ways throughout the course:\n1. Eliminating randomization. If the loss function \\(L(\\theta, a)\\) is convex in \\(a\\), we can show that randomized decision rules are unnecessary: for any randomized rule, there exists a nonrandomized rule with loss that is pointwise no larger.\n2. The Rao–Blackwell theorem. If the loss is convex and a sufficient statistic \\(T\\) exists, we can improve any decision rule by conditioning on \\(T\\). The improved rule is nonrandomized, based on \\(T\\), and has risk no larger than the original.\nWe develop these two consequences now."
+  },
+  {
+    "objectID": "lecture-02.html#theorem-3-convex-loss-makes-randomization-unnecessary-berger-thm.-3",
+    "href": "lecture-02.html#theorem-3-convex-loss-makes-randomization-unnecessary-berger-thm.-3",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Theorem 3: convex loss makes randomization unnecessary (Berger, Thm. 3)",
+    "text": "Theorem 3: convex loss makes randomization unnecessary (Berger, Thm. 3)\n\n\n\nTheorem 3\n\n\nAssume \\(\\mathcal{A}\\) is a convex subset of \\(\\mathbb{R}^m\\), and that for each \\(\\theta \\in \\Theta\\), the loss \\(L(\\theta, a)\\) is a convex function of \\(a\\). Let \\(\\delta^*\\) be a randomized decision rule with \\(E^{\\delta^*(x,\\cdot)}[|a|] &lt; \\infty\\) for all \\(x\\). Then the nonrandomized rule \\[\\delta(x) = E^{\\delta^*(x,\\cdot)}[a]\\] satisfies \\(L(\\theta, \\delta(x)) \\leq L(\\theta, \\delta^*(x, \\cdot))\\) for all \\(x\\) and \\(\\theta\\).\n\n\n\nIn particular, \\(R(\\theta, \\delta) \\leq R(\\theta, \\delta^*)\\) for all \\(\\theta\\)."
+  },
+  {
+    "objectID": "lecture-02.html#proof-of-theorem-3",
+    "href": "lecture-02.html#proof-of-theorem-3",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Proof of Theorem 3",
+    "text": "Proof of Theorem 3\nThe proof is a direct application of Jensen’s inequality.\nSince \\(\\mathcal{A}\\) is convex and \\(\\delta^*(x, \\cdot)\\) is a probability distribution on \\(\\mathcal{A}\\), we have \\(\\delta(x) = E^{\\delta^*(x,\\cdot)}[a] \\in \\mathcal{A}\\) (by the convexity lemma: the mean of a random vector supported on a convex set lies in that set).\nThen, for each \\(\\theta\\) and \\(x\\): \\[L(\\theta, \\delta(x)) = L\\!\\left(\\theta,\\, E^{\\delta^*(x,\\cdot)}[a]\\right) \\leq E^{\\delta^*(x,\\cdot)}[L(\\theta, a)] = L(\\theta, \\delta^*(x, \\cdot)).\\]\nThe inequality is Jensen, applied to the convex function \\(a \\mapsto L(\\theta, a)\\). \\(\\blacksquare\\)\nIf \\(L\\) is strictly convex, the inequality is strict whenever \\(\\delta^*(x, \\cdot)\\) is nondegenerate. So the nonrandomized rule is strictly better at every \\(x\\) where actual randomization occurs."
+  },
+  {
+    "objectID": "lecture-02.html#returning-to-our-example-derandomizing-delta_1",
+    "href": "lecture-02.html#returning-to-our-example-derandomizing-delta_1",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Returning to our example: derandomizing \\(\\delta_1^*\\)",
+    "text": "Returning to our example: derandomizing \\(\\delta_1^*\\)\nRecall: \\(X_1, X_2 \\overset{\\text{iid}}{\\sim} \\mathrm{Bernoulli}(\\theta)\\), \\(T = X_1 + X_2\\), squared-error loss \\(L(\\theta, a) = (\\theta - a)^2\\).\nTheorem 1 gave us \\(\\delta_1^*\\) based on \\(T\\), which is R-equivalent to \\(\\delta_0(x_1, x_2) = x_1\\) but randomized when \\(T = 1\\): it takes action \\(0\\) or \\(1\\) each with probability \\(\\tfrac{1}{2}\\).\nSquared-error loss is strictly convex in \\(a\\). Apply Theorem 3. The derandomized rule is: \\(\\delta(t) = E^{\\delta_1^*(t,\\cdot)}[a]\\).\n\n\\(T = 0\\): \\(\\delta_1^*\\) puts all mass on \\(0\\). So \\(\\delta(0) = 0\\).\n\\(T = 2\\): \\(\\delta_1^*\\) puts all mass on \\(1\\). So \\(\\delta(2) = 1\\).\n\\(T = 1\\): \\(\\delta_1^*\\) puts mass \\(\\tfrac{1}{2}\\) on \\(0\\) and \\(\\tfrac{1}{2}\\) on \\(1\\). So \\(\\delta(1) = \\tfrac{1}{2}(0) + \\tfrac{1}{2}(1) = \\tfrac{1}{2}\\).\n\nThe derandomized rule is \\(\\delta(t) = t/2 = \\bar{X}\\): the sample mean."
+  },
+  {
+    "objectID": "lecture-02.html#the-improvement-is-strict",
+    "href": "lecture-02.html#the-improvement-is-strict",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The improvement is strict",
+    "text": "The improvement is strict\nCompare the risks:\nOriginal rule \\(\\delta_0(X_1, X_2) = X_1\\) and the R-equivalent \\(\\delta_1^*\\): \\(R(\\theta, \\delta_0) = R(\\theta, \\delta_1^*) = \\theta(1-\\theta)\\).\nDerandomized rule \\(\\delta(T) = T/2 = \\bar{X}\\): \\[R(\\theta, \\delta) = E_{P_\\theta}[(\\theta - \\bar{X})^2] = \\mathrm{Var}(\\bar{X}) = \\frac{\\theta(1-\\theta)}{2}.\\]\n\\(R(\\theta, \\delta) = \\frac{1}{2}\\, R(\\theta, \\delta_0)\\) for all \\(\\theta\\). Strictly smaller (whenever \\(\\theta \\neq 0, 1\\)).\nWhat happened? Theorem 1 gave us an R-equivalent rule on \\(T\\), but it was randomized. Theorem 3 removed the randomization, and the strict convexity of squared-error loss turned R-equivalence into a strict improvement.\nThere is a way to do both steps at once. That is the Rao–Blackwell theorem."
+  },
+  {
+    "objectID": "lecture-02.html#another-example-a-mixture-of-two-estimators-berger-ex.-20",
+    "href": "lecture-02.html#another-example-a-mixture-of-two-estimators-berger-ex.-20",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Another example: a mixture of two estimators (Berger, Ex. 20)",
+    "text": "Another example: a mixture of two estimators (Berger, Ex. 20)\nLet \\(X \\sim \\mathrm{Bin}(n, \\theta)\\), \\(\\mathcal{A} = \\mathbb{R}\\), and \\(L(\\theta, a) = (\\theta - a)^2\\) (strictly convex in \\(a\\)).\nTwo estimators: \\(\\delta_1(x) = x/n\\) and \\(\\delta_2(x) = 1\\).\nThe randomized rule \\(\\delta^*\\): for each observed \\(x\\), flip a fair coin. If heads, take action \\(\\delta_1(x) = x/n\\). If tails, take action \\(\\delta_2(x) = 1\\). In the notation of Definition 7: \\[\\delta^*(x, \\{a\\}) = \\begin{cases} \\tfrac{1}{2} & \\text{if } a = x/n \\\\ \\tfrac{1}{2} & \\text{if } a = 1 \\end{cases} \\quad \\text{(when } x/n \\neq 1\\text{).}\\]\nThe nonrandomized (derandomized) rule from Theorem 3: \\[\\delta(x) = E^{\\delta^*(x,\\cdot)}[a] = \\tfrac{1}{2}(x/n) + \\tfrac{1}{2}(1) = \\frac{x/n + 1}{2}.\\]\nThis is a deterministic action for each \\(x\\): always take the midpoint."
+  },
+  {
+    "objectID": "lecture-02.html#comparing-the-losses",
+    "href": "lecture-02.html#comparing-the-losses",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Comparing the losses",
+    "text": "Comparing the losses\nFix \\(\\theta\\) and \\(x\\). Write \\(\\hat\\theta = x/n\\) for brevity.\nRandomized rule: the loss averages over the coin flip: \\[L(\\theta, \\delta^*(x,\\cdot)) = \\tfrac{1}{2}(\\theta - \\hat\\theta)^2 + \\tfrac{1}{2}(\\theta - 1)^2.\\]\nDerandomized rule: the loss is deterministic: \\[L(\\theta, \\delta(x)) = \\left(\\theta - \\frac{\\hat\\theta + 1}{2}\\right)^{\\!2}.\\]\nLet \\(u = \\theta - \\hat\\theta\\) and \\(v = \\theta - 1\\). Then the randomized loss is \\(\\tfrac{1}{2}u^2 + \\tfrac{1}{2}v^2\\), the derandomized loss is \\(\\left(\\frac{u+v}{2}\\right)^{\\!2}\\), and the difference is: \\[\\tfrac{1}{2}u^2 + \\tfrac{1}{2}v^2 - \\frac{(u+v)^2}{4} = \\frac{u^2 - 2uv + v^2}{4} = \\frac{(u - v)^2}{4} = \\frac{(1 - \\hat\\theta)^2}{4} \\geq 0.\\]\nThis does not depend on \\(\\theta\\) or \\(n\\). It is strictly positive whenever \\(\\hat\\theta \\neq 1\\), i.e., whenever the randomization is nondegenerate. That is Jensen’s inequality at work."
+  },
+  {
+    "objectID": "lecture-02.html#combining-sufficiency-and-convexity",
+    "href": "lecture-02.html#combining-sufficiency-and-convexity",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Combining sufficiency and convexity",
+    "text": "Combining sufficiency and convexity\nWe now have two tools:\n\nTheorem 1 (sufficiency): any rule can be replaced by an R-equivalent rule based on \\(T\\).\nTheorem 3 (convexity): under convex loss, any randomized rule can be replaced by a nonrandomized rule with no larger loss.\n\nWe saw this in the Bernoulli example: \\(\\delta_0 \\to \\delta_1^*\\) (R-equivalent, randomized, based on \\(T\\)) \\(\\to\\) \\(\\delta = \\bar{X}\\) (nonrandomized, based on \\(T\\), strictly better).\nLet us now trace the two-step pipeline in general and see what formula comes out."
+  },
+  {
+    "objectID": "lecture-02.html#the-pipeline-produces-a-specific-formula",
+    "href": "lecture-02.html#the-pipeline-produces-a-specific-formula",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The pipeline produces a specific formula",
+    "text": "The pipeline produces a specific formula\nStart with any nonrandomized rule \\(\\delta_0(x)\\).\nStep 1 (Theorem 1): Build the R-equivalent randomized rule based on \\(T\\): \\[\\delta_1^*(t, A) = P(\\delta_0(X) \\in A \\mid T = t).\\] This is a distribution on \\(\\mathcal{A}\\) for each \\(t\\): draw \\(X\\) from \\(X | T = t\\), apply \\(\\delta_0\\), and see where the action lands.\nStep 2 (Theorem 3): Derandomize by taking the expected action: \\[\\delta(t) = E^{\\delta_1^*(t,\\cdot)}[a].\\] But the distribution \\(\\delta_1^*(t, \\cdot)\\) was built by drawing \\(X | T = t\\) and applying \\(\\delta_0\\). So the expected action is: \\[E^{\\delta_1^*(t,\\cdot)}[a] = E^{X|T=t}[\\delta_0(X)].\\]\nThe pipeline mechanically produces \\(\\delta(t) = E[\\delta_0(X) \\mid T = t]\\). The formula is not a new idea. It is what Theorem 1 followed by Theorem 3 gives you."
+  },
+  {
+    "objectID": "lecture-02.html#formalizing-the-combined-result",
+    "href": "lecture-02.html#formalizing-the-combined-result",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Formalizing the combined result",
+    "text": "Formalizing the combined result\nThe two-step pipeline says: for any nonrandomized rule \\(\\delta_0\\) and convex loss, the rule \\[\\delta_1(t) = E[\\delta_0(X) \\mid T = t]\\] is nonrandomized, based on \\(T\\), and has risk no larger than \\(\\delta_0\\).\nThe risk improvement comes from Step 2 (Jensen/Theorem 3), not from Step 1 (which only gave R-equivalence).\nThis is exactly the Rao–Blackwell theorem. It packages the pipeline into a single statement."
+  },
+  {
+    "objectID": "lecture-02.html#the-raoblackwell-theorem-berger-thm.-4",
+    "href": "lecture-02.html#the-raoblackwell-theorem-berger-thm.-4",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The Rao–Blackwell theorem (Berger, Thm. 4)",
+    "text": "The Rao–Blackwell theorem (Berger, Thm. 4)\n\n\n\nTheorem (Rao–Blackwell)\n\n\nAssume \\(\\mathcal{A}\\) is a convex subset of \\(\\mathbb{R}^m\\) and that \\(L(\\theta, a)\\) is a convex function of \\(a\\) for all \\(\\theta\\). Suppose \\(T\\) is a sufficient statistic for \\(\\theta\\), and \\(\\delta_0(x)\\) is a nonrandomized decision rule. Then the rule \\[\\delta_1(t) = E^{X|T=t}[\\delta_0(X)]\\] is R-equivalent to or R-better than \\(\\delta_0\\), provided the expectation exists.\n\n\n\nIn words: condition your estimator on the sufficient statistic. The result is at least as good, and usually strictly better."
+  },
+  {
+    "objectID": "lecture-02.html#proof-of-the-raoblackwell-theorem",
+    "href": "lecture-02.html#proof-of-the-raoblackwell-theorem",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Proof of the Rao–Blackwell theorem",
+    "text": "Proof of the Rao–Blackwell theorem\nBy the definition of a sufficient statistic, the conditional expectation \\(E^{X|T=t}[\\delta_0(X)]\\) does not depend on \\(\\theta\\). So \\(\\delta_1\\) is a well-defined decision rule based on \\(T\\).\nBy Jensen’s inequality (applied to the convex function \\(a \\mapsto L(\\theta, a)\\)): \\[L(\\theta, \\delta_1(T)) = L\\!\\left(\\theta,\\, E^{X|T}[\\delta_0(X)]\\right) \\leq E^{X|T}[L(\\theta, \\delta_0(X))].\\]\nTaking expectations over \\(T\\): \\[\\begin{aligned}\nR(\\theta, \\delta_1) &= E^T[L(\\theta, \\delta_1(T))] \\\\\n&\\leq E^T\\!\\left[E^{X|T}[L(\\theta, \\delta_0(X))]\\right] \\\\\n&= E^X[L(\\theta, \\delta_0(X))] \\quad \\text{(tower property)} \\\\\n&= R(\\theta, \\delta_0). \\quad \\blacksquare\n\\end{aligned}\\]"
+  },
+  {
+    "objectID": "lecture-02.html#what-the-raoblackwell-theorem-gives-us",
+    "href": "lecture-02.html#what-the-raoblackwell-theorem-gives-us",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "What the Rao–Blackwell theorem gives us",
+    "text": "What the Rao–Blackwell theorem gives us\nThe theorem has two readings:\nAs a tool for improving estimators. Given any estimator \\(\\delta_0\\), we can improve it (in terms of risk) by conditioning on the sufficient statistic. The improved estimator \\(\\delta_1(t) = E[\\delta_0(X) | T = t]\\) is always at least as good, and usually strictly better.\nAs a structural result. When the loss is convex and a sufficient statistic \\(T\\) exists, we can restrict attention to nonrandomized rules based on \\(T\\) without any loss in risk. The search space for good decision rules is dramatically reduced.\nCombining Theorems 1 and 3: under convex loss with a sufficient statistic \\(T\\), only nonrandomized rules based on \\(T\\) need be considered."
+  },
+  {
+    "objectID": "lecture-02.html#completing-our-running-example-via-raoblackwell",
+    "href": "lecture-02.html#completing-our-running-example-via-raoblackwell",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Completing our running example via Rao–Blackwell",
+    "text": "Completing our running example via Rao–Blackwell\n\\(X_1, X_2 \\overset{\\text{iid}}{\\sim} \\mathrm{Bernoulli}(\\theta)\\), \\(T = X_1 + X_2\\) sufficient, \\(L(\\theta, a) = (\\theta - a)^2\\).\nWe started with \\(\\delta_0(x_1, x_2) = x_1\\). Apply Rao–Blackwell directly: \\[\\delta_1(t) = E[X_1 \\mid T = t] = E[X_1 \\mid X_1 + X_2 = t].\\]\nBy symmetry, \\(E[X_1 \\mid X_1 + X_2 = t] = E[X_2 \\mid X_1 + X_2 = t] = t/2\\).\nSo \\(\\delta_1(t) = t/2 = \\bar{X}\\), exactly the same answer we obtained by doing Theorem 1 then Theorem 3 in sequence. Rao–Blackwell does both steps at once.\nThe full trajectory:\n\n\n\n\n\n\n\n\nRule\nBased on \\(T\\)?\nRisk\n\n\n\n\n\\(\\delta_0(x_1, x_2) = x_1\\)\nnot based on \\(T\\)\n\\(\\theta(1-\\theta)\\)\n\n\n\\(\\delta_1^*(t, \\cdot)\\) via Thm 1\nbased on \\(T\\), randomized\n\\(\\theta(1-\\theta)\\)\n\n\n\\(\\delta(t) = t/2\\) via Thm 3\nbased on \\(T\\), nonrandomized\n\\(\\theta(1-\\theta)/2\\)\n\n\n\\(\\delta_1(t) = t/2\\) via R-B\nbased on \\(T\\), nonrandomized\n\\(\\theta(1-\\theta)/2\\)\n\n\n\nSufficiency gave R-equivalence. Convexity gave strict improvement."
+  },
+  {
+    "objectID": "lecture-02.html#another-example-improving-the-sample-median",
+    "href": "lecture-02.html#another-example-improving-the-sample-median",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Another example: improving the sample median",
+    "text": "Another example: improving the sample median\nLet \\(X = (X_1, \\ldots, X_n)\\) with \\(X_i \\overset{\\text{iid}}{\\sim} \\mathcal{N}(\\theta, 1)\\). Estimate \\(\\theta\\) under squared-error loss.\nThe sufficient statistic is \\(T = \\bar{X}\\).\nConsider \\(\\delta_0(X) = \\widetilde{X}\\), the sample median. This is not a function of \\(\\bar{X}\\) alone (it depends on the order statistics, not just the mean). The Rao–Blackwell theorem says we can improve it: \\[\\delta_1(\\bar{x}) = E[\\widetilde{X} \\mid \\bar{X} = \\bar{x}].\\]\nWe will show that \\(E[\\widetilde{X} \\mid \\bar{X}] = \\bar{X}\\): the Rao–Blackwellized median is the mean."
+  },
+  {
+    "objectID": "lecture-02.html#proof-that-ewidetildex-mid-barx-barx",
+    "href": "lecture-02.html#proof-that-ewidetildex-mid-barx-barx",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Proof that \\(E[\\widetilde{X} \\mid \\bar{X}] = \\bar{X}\\)",
+    "text": "Proof that \\(E[\\widetilde{X} \\mid \\bar{X}] = \\bar{X}\\)\nDefine the residuals \\(W_i = X_i - \\bar{X}\\). Note \\(\\sum_{i=1}^n W_i = 0\\).\nStep 1: Decompose the median. Since \\(X_i = \\bar{X} + W_i\\), the median of \\((X_1, \\ldots, X_n)\\) is: \\[\\widetilde{X} = \\bar{X} + \\widetilde{W},\\] where \\(\\widetilde{W}\\) is the median of \\((W_1, \\ldots, W_n)\\).\nStep 2: Independence. For normal data, \\(\\bar{X}\\) and \\(W = (W_1, \\ldots, W_n)\\) are independent. (This is a standard result: \\(\\bar{X} \\sim \\mathcal{N}(\\theta, 1/n)\\), and \\(W\\) lives in the subspace \\(\\{\\sum w_i = 0\\}\\) with a distribution that does not depend on \\(\\theta\\).)\nStep 3: Condition. \\[E[\\widetilde{X} \\mid \\bar{X}] = E[\\bar{X} + \\widetilde{W} \\mid \\bar{X}] = \\bar{X} + E[\\widetilde{W} \\mid \\bar{X}] = \\bar{X} + E[\\widetilde{W}],\\] where the last step uses independence."
+  },
+  {
+    "objectID": "lecture-02.html#proof-continued-ewidetildew-0-by-symmetry",
+    "href": "lecture-02.html#proof-continued-ewidetildew-0-by-symmetry",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "Proof continued: \\(E[\\widetilde{W}] = 0\\) by symmetry",
+    "text": "Proof continued: \\(E[\\widetilde{W}] = 0\\) by symmetry\nIt remains to show \\(E[\\widetilde{W}] = 0\\).\nThe distribution of \\(W = (W_1, \\ldots, W_n)\\) is \\(\\mathcal{N}(0, I_n - \\frac{1}{n}J_n)\\), where \\(J_n\\) is the \\(n \\times n\\) matrix of ones. This distribution is symmetric about the origin: \\(W \\overset{d}{=} -W\\).\nTherefore the median satisfies: \\[\\widetilde{W} = \\text{med}(W_1, \\ldots, W_n) \\overset{d}{=} \\text{med}(-W_1, \\ldots, -W_n) = -\\widetilde{W}.\\]\nSo \\(\\widetilde{W} \\overset{d}{=} -\\widetilde{W}\\), which means \\(E[\\widetilde{W}] = -E[\\widetilde{W}]\\), hence \\(E[\\widetilde{W}] = 0\\).\nCombining: \\(E[\\widetilde{X} \\mid \\bar{X}] = \\bar{X} + 0 = \\bar{X}\\). \\(\\blacksquare\\)\nSince squared-error loss is strictly convex, Rao–Blackwell gives \\(R(\\theta, \\bar{X}) &lt; R(\\theta, \\widetilde{X})\\) for all \\(\\theta\\) (wherever \\(\\widetilde{X}\\) and \\(\\bar{X}\\) are not a.s. equal, which is always for continuous data)."
+  },
+  {
+    "objectID": "lecture-02.html#the-big-picture-from-today",
+    "href": "lecture-02.html#the-big-picture-from-today",
+    "title": "Sufficiency, Convexity, and the Rao–Blackwell Theorem",
+    "section": "The big picture from today",
+    "text": "The big picture from today\nThree results from today:\n1. Sufficiency (Theorem 1): Any rule can be replaced by an R-equivalent rule based on the sufficient statistic \\(T\\). The class of rules based on \\(T\\) is essentially complete.\n2. Convex loss eliminates randomization (Theorem 3): Under convex loss, any randomized rule can be replaced by a nonrandomized rule with no greater risk.\n3. Rao–Blackwell (Theorem 4): Under convex loss with a sufficient statistic, condition on \\(T\\) to improve any estimator.\nCombined: under convex loss, only nonrandomized decision rules based on the sufficient statistic need be considered. This is the starting point for all the optimization that follows."
+  },
+  {
+    "objectID": "lecture-03.html#recap",
+    "href": "lecture-03.html#recap",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Recap",
+    "text": "Recap\nIn Lectures 1–2 we built the decision-theoretic framework: \\(\\Theta\\), \\(\\mathcal{A}\\), \\(L(\\theta, a)\\), \\(\\delta\\), \\(R(\\theta, \\delta)\\), \\(\\rho(\\pi, a)\\), \\(r(\\pi, \\delta)\\), admissibility, three selection principles, randomized rules.\nWe proved three structural results: sufficiency reduces the problem (Theorem 1), convex loss eliminates randomization (Theorem 3), and the Rao–Blackwell theorem combines them.\nThroughout, we used the loss function \\(L(\\theta, a)\\) without asking two questions:\n\nWhere does the loss function come from?\nWhy is expected loss the right way to aggregate it?\n\nToday we address both. Reading: Berger, Chapter 2 (except Section 2.3)."
+  },
+  {
+    "objectID": "lecture-03.html#two-problems-with-value",
+    "href": "lecture-03.html#two-problems-with-value",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Two problems with “value”",
+    "text": "Two problems with “value”\nIn evaluating consequences of actions, two problems arise:\n1. Some consequences have no natural scale. Prestige, customer goodwill, reputation – important to businesses, but hard to quantify. A company considering selling its name-brand product in discount stores can estimate the immediate profit, but the long-term effect on prestige is much harder to measure.\n2. Even when a monetary scale exists, it may not reflect true value. Suppose you can do an unpleasant task for $100. At your current income, you might do it. After receiving a million dollars, you probably would not. The value of $100 depends on context."
+  },
+  {
+    "objectID": "lecture-03.html#value-is-not-linear-in-money",
+    "href": "lecture-03.html#value-is-not-linear-in-money",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Value is not linear in money",
+    "text": "Value is not linear in money\nSuppose you are offered a choice:\n   (A) Receive $10,000 for certain.\n   (B) A 50–50 chance of receiving $0 or $25,000.\nThe expected monetary value of (B) is $12,500 \\(&gt;\\) $10,000. Yet most people prefer (A).\nThis means the “value” of money is not linear in the amount. The marginal value of money is decreasing: the difference in value between $0 and $10,000 is larger than the difference between $10,000 and $25,000.\nWe need a way to assign numerical values to consequences that reflects the decision maker’s true preferences. That is what utility theory does."
+  },
+  {
+    "objectID": "lecture-03.html#the-setup",
+    "href": "lecture-03.html#the-setup",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The setup",
+    "text": "The setup\nLet \\(\\mathcal{R}\\) be the set of all possible consequences (rewards). Let \\(\\mathcal{P}\\) be the set of all probability distributions on \\(\\mathcal{R}\\).\nWe assume the decision maker can state preferences among elements of \\(\\mathcal{P}\\):\n\n\\(P_1 \\prec P_2\\): \\(P_2\\) is preferred to \\(P_1\\).\n\\(P_1 \\approx P_2\\): \\(P_1\\) and \\(P_2\\) are equivalent.\n\\(P_1 \\preceq P_2\\): \\(P_1\\) is not preferred to \\(P_2\\).\n\nA reward \\(r \\in \\mathcal{R}\\) is identified with the degenerate distribution \\((r)\\) that puts probability one on \\(r\\). So preferences apply to rewards as well.\nThe goal: find a function \\(U: \\mathcal{R} \\to \\mathbb{R}\\) such that \\(P_1 \\prec P_2 \\iff E^{P_1}[U(r)] &lt; E^{P_2}[U(r)]\\). Such a \\(U\\) is called a utility function."
+  },
+  {
+    "objectID": "lecture-03.html#constructing-a-utility-function",
+    "href": "lecture-03.html#constructing-a-utility-function",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Constructing a utility function",
+    "text": "Constructing a utility function\nAssume a utility function exists. Here is one way to build it.\nStep 1. Choose two rewards \\(r_1 \\prec r_2\\). Set \\(U(r_1) = 0\\), \\(U(r_2) = 1\\). (This fixes the scale.)\nStep 2. For any \\(r_3\\) with \\(r_1 \\prec r_3 \\prec r_2\\): find \\(\\alpha \\in (0,1)\\) such that \\(r_3 \\approx \\alpha(r_1) + (1-\\alpha)(r_2)\\). Then \\(U(r_3) = 1 - \\alpha\\).\nThe idea: \\(r_3\\) is equivalent to a gamble between \\(r_1\\) (prob. \\(\\alpha\\)) and \\(r_2\\) (prob. \\(1-\\alpha\\)). Then \\(U(r_3) = \\alpha U(r_1) + (1-\\alpha)U(r_2) = 1-\\alpha\\).\nStep 3. For \\(r_3 \\prec r_1\\): find \\(\\alpha\\) such that \\(r_1 \\approx \\alpha(r_3) + (1-\\alpha)(r_2)\\). Then \\(0 = \\alpha U(r_3) + (1-\\alpha)\\), giving \\(U(r_3) = -\\alpha/(1-\\alpha) &lt; 0\\).\nStep 4. For \\(r_2 \\prec r_3\\): find \\(\\alpha\\) such that \\(r_2 \\approx \\alpha(r_1) + (1-\\alpha)(r_3)\\). Then \\(1 = (1-\\alpha)U(r_3)\\), giving \\(U(r_3) = 1/(1-\\alpha) &gt; 1\\).\nStep 5 (Consistency). If \\(U(r_3), U(r_4), U(r_5)\\) are found with \\(r_3 \\prec r_4 \\prec r_5\\), find \\(\\alpha\\) with \\(r_4 \\approx \\alpha(r_3) + (1-\\alpha)(r_5)\\). Check: \\(U(r_4) = \\alpha U(r_3) + (1-\\alpha)U(r_5)\\)."
+  },
+  {
+    "objectID": "lecture-03.html#example-football-or-movie-berger-ex.-1-setup",
+    "href": "lecture-03.html#example-football-or-movie-berger-ex.-1-setup",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: football or movie? (Berger, Ex. 1) – setup",
+    "text": "Example: football or movie? (Berger, Ex. 1) – setup\nSaturday afternoon: \\(a_1\\) = football game, \\(a_2\\) = movie. There is a 40% chance of rain (\\(\\theta_1\\)).\nFour possible outcomes (action, weather):\n\n\n\n\n\n\n\n\n\nOutcome\nDescription\n\n\n\n\n\\(r_1 = (a_1, \\theta_1)\\)\nfootball, rain\nruined afternoon – worst\n\n\n\\(r_2 = (a_1, \\theta_2)\\)\nfootball, no rain\ngreat day – best\n\n\n\\(r_3 = (a_2, \\theta_1)\\)\nmovie, rain\ngood movie, smart choice\n\n\n\\(r_4 = (a_2, \\theta_2)\\)\nmovie, no rain\nokay, slight regret\n\n\n\nPreference ordering: \\(r_1 \\prec r_4 \\prec r_3 \\prec r_2\\).\nFix the scale: \\(U(r_1) = 0\\), \\(U(r_2) = 1\\). We need to determine \\(U(r_3)\\) and \\(U(r_4)\\)."
+  },
+  {
+    "objectID": "lecture-03.html#determining-the-utilities-two-subjective-judgments",
+    "href": "lecture-03.html#determining-the-utilities-two-subjective-judgments",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Determining the utilities: two subjective judgments",
+    "text": "Determining the utilities: two subjective judgments\nTo find \\(U(r_4)\\) and \\(U(r_3)\\), the decision maker asks: “at what gamble between \\(r_1\\) (worst) and \\(r_2\\) (best) am I indifferent to this reward?”\nJudgment 1: “I am indifferent between \\(r_4\\) (movie, no rain) and a gamble that gives \\(r_1\\) with probability 0.4 and \\(r_2\\) with probability 0.6.” That is: \\(r_4 \\approx 0.4(r_1) + 0.6(r_2)\\).\nThis gives \\(U(r_4) = 0.4 \\cdot 0 + 0.6 \\cdot 1 = 0.6\\).\nJudgment 2: “I am indifferent between \\(r_3\\) (movie, rain) and a gamble that gives \\(r_1\\) with probability 0.3 and \\(r_2\\) with probability 0.7.” That is: \\(r_3 \\approx 0.3(r_1) + 0.7(r_2)\\).\nThis gives \\(U(r_3) = 0.3 \\cdot 0 + 0.7 \\cdot 1 = 0.7\\).\nBoth of these are subjective: they come from the decision maker’s introspection. Different people could reasonably give different numbers."
+  },
+  {
+    "objectID": "lecture-03.html#the-consistency-check-a-third-judgment-that-is-not-free",
+    "href": "lecture-03.html#the-consistency-check-a-third-judgment-that-is-not-free",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The consistency check: a third judgment that is not free",
+    "text": "The consistency check: a third judgment that is not free\nWe now have \\(U(r_1) = 0\\), \\(U(r_4) = 0.6\\), \\(U(r_3) = 0.7\\), \\(U(r_2) = 1\\).\nJudgment 3: The decision maker compares \\(r_3\\) to a gamble between \\(r_4\\) and \\(r_2\\). “At what \\(\\alpha\\) am I indifferent between \\(r_3\\) and \\(\\alpha(r_4) + (1-\\alpha)(r_2)\\)?” After reflection: \\(\\alpha = 0.6\\).\nBut if the utility function from Judgments 1 and 2 is correct, then: \\[U(r_3) = \\alpha\\, U(r_4) + (1-\\alpha)\\, U(r_2) \\quad \\implies \\quad 0.7 = 0.6\\alpha + (1-\\alpha) \\quad \\implies \\quad \\alpha = 0.75.\\]\nThe decision maker said \\(\\alpha = 0.6\\), but the first two judgments force \\(\\alpha = 0.75\\). At least one of the three judgments is wrong.\nThis is the point of the consistency check: once two utilities are fixed by Judgments 1 and 2, the third comparison is determined. If it disagrees, the decision maker must go back and revise until all three are mutually consistent. Suppose the revised values are \\(U(r_4) = 0.6\\) and \\(U(r_3) = 0.75\\)."
+  },
+  {
+    "objectID": "lecture-03.html#making-the-decision",
+    "href": "lecture-03.html#making-the-decision",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Making the decision",
+    "text": "Making the decision\nWith the consistent utilities \\(U(r_1) = 0\\), \\(U(r_3) = 0.75\\), \\(U(r_4) = 0.6\\), \\(U(r_2) = 1\\):\nExpected utility of each action: \\[\\begin{aligned}\na_1 \\text{ (football)}: \\quad &\\pi(\\theta_1)\\, U(r_1) + \\pi(\\theta_2)\\, U(r_2) = (0.4)(0) + (0.6)(1) = 0.6. \\\\\na_2 \\text{ (movie)}: \\quad &\\pi(\\theta_1)\\, U(r_3) + \\pi(\\theta_2)\\, U(r_4) = (0.4)(0.75) + (0.6)(0.6) = 0.66.\n\\end{aligned}\\]\nThe optimal action: go to the movie.\nThe raw payoffs might have suggested football (higher upside). But the utility function encodes an asymmetry: a ruined afternoon (\\(U = 0\\)) is much worse than the mild regret of missing the game when it did not rain (\\(U = 0.6\\), not that bad). That asymmetry tips the balance."
+  },
+  {
+    "objectID": "lecture-03.html#the-axioms",
+    "href": "lecture-03.html#the-axioms",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The axioms",
+    "text": "The axioms\nFor the construction to work and for \\(U\\) to represent preferences, the preference ordering must be “rational.” Four axioms:\nAxiom 1 (Completeness): For any \\(P_1, P_2 \\in \\mathcal{P}\\), either \\(P_1 \\prec P_2\\), \\(P_1 \\approx P_2\\), or \\(P_2 \\prec P_1\\).\nAxiom 2 (Transitivity): If \\(P_1 \\preceq P_2\\) and \\(P_2 \\preceq P_3\\), then \\(P_1 \\preceq P_3\\).\nAxiom 3 (Independence): If \\(P_1 \\prec P_2\\), then \\(\\alpha P_1 + (1-\\alpha)P_3 \\prec \\alpha P_2 + (1-\\alpha)P_3\\) for any \\(0 &lt; \\alpha &lt; 1\\) and \\(P_3 \\in \\mathcal{P}\\).\nAxiom 4 (Continuity): If \\(P_1 \\prec P_2 \\prec P_3\\), there exist \\(0 &lt; \\alpha, \\beta &lt; 1\\) such that \\(\\alpha P_1 + (1-\\alpha) P_3 \\prec P_2\\) and \\(P_2 \\prec \\beta P_1 + (1-\\beta) P_3\\)."
+  },
+  {
+    "objectID": "lecture-03.html#interpreting-the-axioms",
+    "href": "lecture-03.html#interpreting-the-axioms",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Interpreting the axioms",
+    "text": "Interpreting the axioms\nAxioms 1 and 2 are housekeeping: you can compare anything, and your comparisons are transitive.\nAxiom 3 (independence): if you prefer \\(P_2\\) to \\(P_1\\), mixing both with the same \\(P_3\\) does not reverse the preference. Replacing \\(P_1\\) by \\(P_2\\) in one component of a mixture is always an improvement.\nAxiom 4 (continuity): no consequence is infinitely good or infinitely bad. If \\(P_1\\) were infinitely bad (say, death), there would be no \\(\\beta &gt; 0\\) for which you would risk it to get \\(P_3\\) instead of \\(P_2\\). But if death were truly infinitely bad, you would never cross a street, never drive a car. People do these things, so Axiom 4 holds in practice."
+  },
+  {
+    "objectID": "lecture-03.html#the-existence-theorem-and-uniqueness",
+    "href": "lecture-03.html#the-existence-theorem-and-uniqueness",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The existence theorem and uniqueness",
+    "text": "The existence theorem and uniqueness\n\n\n\nTheorem\n\n\nIf the preference ordering on \\(\\mathcal{P}\\) satisfies Axioms 1–4, there exists a utility function \\(U: \\mathcal{R} \\to \\mathbb{R}\\) such that \\(P_1 \\prec P_2 \\iff E^{P_1}[U(r)] &lt; E^{P_2}[U(r)]\\).\n\n\n\nWe will not prove existence. The proof constructs \\(U\\) using the procedure from earlier and verifies it represents the preferences; see DeGroot (1970). What we will prove are two properties of \\(U\\) that we will use.\nUniqueness up to affine transformation. If \\(U\\) is a utility function, so is \\(V = bU + c\\) for any \\(b &gt; 0\\). Proof: \\[\\begin{aligned}\nE^{P_1}[U(r)] &lt; E^{P_2}[U(r)] &\\iff b\\,E^{P_1}[U(r)] + c &lt; b\\,E^{P_2}[U(r)] + c \\\\\n&\\iff E^{P_1}[V(r)] &lt; E^{P_2}[V(r)].\n\\end{aligned}\\] The preferences are unchanged. \\(\\blacksquare\\)\nThis means the choice of \\(U(r_1) = 0\\) and \\(U(r_2) = 1\\) in the construction is just a convention."
+  },
+  {
+    "objectID": "lecture-03.html#axiom-4-implies-boundedness",
+    "href": "lecture-03.html#axiom-4-implies-boundedness",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Axiom 4 implies boundedness",
+    "text": "Axiom 4 implies boundedness\nThe existence theorem gives us a utility function \\(U\\). We now show it must be bounded.\n\n\n\nProposition\n\n\nIf the preference ordering satisfies Axioms 1–4 and \\(U\\) is the resulting utility function, then \\(U\\) is bounded.\n\n\n\nProof. Suppose for contradiction that \\(U\\) is unbounded above: there exist rewards \\(s_1, s_2, \\ldots \\in \\mathcal{R}\\) with \\(U(s_n) \\to \\infty\\).\nChoose weights \\(p_n &gt; 0\\) with \\(\\sum p_n = 1\\) and \\(\\sum p_n U(s_n) = \\infty\\). Define \\(Q = \\sum p_n (s_n) \\in \\mathcal{P}\\).\nNow pick any two rewards \\(a \\prec b\\). Since \\(E^Q[U(r)] = \\infty &gt; U(b) &gt; U(a)\\), we have \\((a) \\prec (b) \\prec Q\\).\nAxiom 4 applied to this triple says: there exists \\(\\alpha \\in (0,1)\\) such that \\(\\alpha(a) + (1-\\alpha)Q \\prec (b)\\), i.e., \\(E^{\\alpha(a) + (1-\\alpha)Q}[U(r)] &lt; U(b)\\).\nBut for any \\(\\alpha \\in (0,1)\\): \\[E^{\\alpha(a)+(1-\\alpha)Q}[U(r)] = \\alpha\\, U(a) + (1-\\alpha)\\cdot \\infty = \\infty &gt; U(b).\\]\nNo such \\(\\alpha\\) exists. Contradiction. A symmetric argument handles \\(U\\) unbounded below. \\(\\blacksquare\\)"
+  },
+  {
+    "objectID": "lecture-03.html#properties-of-monetary-utility-functions",
+    "href": "lecture-03.html#properties-of-monetary-utility-functions",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Properties of monetary utility functions",
+    "text": "Properties of monetary utility functions\nWhen \\(\\mathcal{R}\\) is monetary, \\(U(r)\\) typically has four features:\n(i) Linear for small \\(r\\). You would take a fair coin flip on \\(\\pm 25\\) cents. So \\(U\\) is linear near \\(r = 0\\). The “small” range depends on context: 25 cents for a student, millions for a large corporation.\n(ii) Concave for \\(r &gt; 0\\). Marginal utility \\(U'(r)\\) is decreasing, so \\(U''(r) &lt; 0\\). An additional $100 matters more at $0 than at $1,000,000.\n(iii) Different shape for gains and losses. People are often risk-seeking for losses (willing to gamble to avoid a sure loss) but risk-averse for gains. So \\(U(r)\\) may be convex for \\(r &lt; 0\\) and concave for \\(r &gt; 0\\).\n(iv) Bounded. Few would assign meaningful additional utility to money beyond $10\\(^{100}\\)."
+  },
+  {
+    "objectID": "lecture-03.html#the-st.-petersburg-paradox",
+    "href": "lecture-03.html#the-st.-petersburg-paradox",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The St. Petersburg paradox",
+    "text": "The St. Petersburg paradox\nA fair coin is flipped until a tail first appears. The reward is $2\\(^n\\), where \\(n\\) is the number of flips. The expected monetary value is: \\[\\sum_{n=1}^\\infty 2^n \\cdot P(n \\text{ flips}) = \\sum_{n=1}^\\infty 2^n \\cdot 2^{-n} = \\sum_{n=1}^\\infty 1 = \\infty.\\]\nYet few would pay more than $20 or so to play. Why?\nNote that the issue is not the small probabilities. The probabilities \\(2^{-n}\\) are indeed small for large \\(n\\), but the payoffs \\(2^n\\) grow fast enough to exactly cancel them: every term in the sum contributes 1. The expected monetary value is infinite because of this exact balance, not in spite of it."
+  },
+  {
+    "objectID": "lecture-03.html#resolving-the-paradox-bounded-utility",
+    "href": "lecture-03.html#resolving-the-paradox-bounded-utility",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Resolving the paradox: bounded utility",
+    "text": "Resolving the paradox: bounded utility\nThe resolution is about the shape of \\(U\\), not the probabilities.\nIf it costs \\(c\\) dollars to play, the true value of playing is: \\[\\sum_{n=1}^\\infty U(2^n - c) \\cdot 2^{-n}.\\]\nNo one values $\\(2^{20}\\) anywhere close to \\(2^{20}\\) times more than $1. The utility function flattens out. Since \\(U\\) is bounded (say \\(|U(r)| \\leq B\\)), every term satisfies \\(|U(2^n - c) \\cdot 2^{-n}| \\leq B \\cdot 2^{-n}\\), so the series converges to a finite number.\nMoreover, for large \\(c\\), the terms with small \\(n\\) (where most of the probability lives) have \\(2^n - c &lt; 0\\), so \\(U(2^n - c) &lt; 0\\). The sum becomes negative: the game is not worth playing.\nThe maximum fee a rational person would pay is the \\(c\\) at which the sum equals zero. This is finite, and for typical utility functions it is modest."
+  },
+  {
+    "objectID": "lecture-03.html#defining-the-loss-function",
+    "href": "lecture-03.html#defining-the-loss-function",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Defining the loss function",
+    "text": "Defining the loss function\nEach pair \\((\\theta, a)\\) determines a consequence with utility \\(U(\\theta, a)\\). The loss function is \\[L(\\theta, a) = -U(\\theta, a).\\]\nMaximizing expected utility is the same as minimizing expected loss.\nThis is the answer to our second question: why is expected loss the right criterion? Because the utility axioms tell us that expected utility is the correct measure of value under uncertainty. Expected loss inherits this justification.\nThe Bayesian expected loss \\(\\rho(\\pi, a) = E_\\pi[L(\\theta, a)]\\), the risk \\(R(\\theta, \\delta) = E_{P_\\theta}[L(\\theta, \\delta(X))]\\), the Bayes risk \\(r(\\pi, \\delta)\\), and the loss of a randomized rule – all are justified by this construction."
+  },
+  {
+    "objectID": "lecture-03.html#when-consequences-are-random",
+    "href": "lecture-03.html#when-consequences-are-random",
+    "title": "Utility Theory and the Loss Function",
+    "section": "When consequences are random",
+    "text": "When consequences are random\nOften \\((\\theta, a)\\) does not directly determine the consequence. The reward is a random variable \\(Z\\) whose distribution depends on \\(\\theta\\) and \\(a\\). Then: \\[U(\\theta, a) = E_{\\theta, a}[U(Z)], \\qquad L(\\theta, a) = -E_{\\theta, a}[U(Z)].\\]\nOne must be careful to define \\(Z\\) as the overall outcome."
+  },
+  {
+    "objectID": "lecture-03.html#example-a-game-that-looks-bad-but-is-good-berger-ex.-3",
+    "href": "lecture-03.html#example-a-game-that-looks-bad-but-is-good-berger-ex.-3",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: a game that looks bad but is good (Berger, Ex. 3)",
+    "text": "Example: a game that looks bad but is good (Berger, Ex. 3)\nA coin is flipped \\(n\\) times. Each flip: heads wins $1000, tails loses $1000, independently, \\(P(\\text{heads}) = 0.6\\). Let \\(Z_j\\) be the outcome of flip \\(j\\).\nUtility: \\(U(r) = r^{1/3}\\) for \\(r \\geq 0\\),   \\(U(r) = 2|r|^{1/3}\\) for \\(r &lt; 0\\) (losses hurt more).\nFor \\(n = 1\\):   \\(E[U(Z_1)] = (0.6)(10) + (0.4)(-20) = -2 &lt; 0\\).   Do not play.\nFor \\(n\\) flips, the naive calculation says: each flip contributes \\(-2\\), so \\(n\\) flips give \\(\\sum_{j=1}^n E[U(Z_j)] = -2n\\). Even worse. Never play.\nBut this calculation assumes \\(U(Z_1 + Z_2 + \\cdots + Z_n) = U(Z_1) + U(Z_2) + \\cdots + U(Z_n)\\).\nThat is \\(U(a + b) = U(a) + U(b)\\): linearity of \\(U\\). Our \\(U\\) is not linear."
+  },
+  {
+    "objectID": "lecture-03.html#the-correct-calculation-n-2",
+    "href": "lecture-03.html#the-correct-calculation-n-2",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The correct calculation: \\(n = 2\\)",
+    "text": "The correct calculation: \\(n = 2\\)\n\\(Z = Z_1 + Z_2\\). Let \\(H\\) = number of heads, so \\(H \\sim \\mathrm{Bin}(2, 0.6)\\) and \\(Z = 1000(2H - 2)\\).\n\n\n\n\n\n\n\n\n\n\n\\(H\\)\n\\(Z\\)\n\\(P(H)\\)\n\\(U(Z)\\)\n\\(P(H) \\cdot U(Z)\\)\n\n\n\n\n0\n\\(-2000\\)\n\\(0.16\\)\n\\(2(-2000)^{1/3} = -25.20\\)\n\\(-4.03\\)\n\n\n1\n\\(0\\)\n\\(0.48\\)\n\\(0\\)\n\\(0\\)\n\n\n2\n\\(+2000\\)\n\\(0.36\\)\n\\((2000)^{1/3} = +12.60\\)\n\\(+4.54\\)\n\n\n\n\\(E[U(Z)] = -4.03 + 0 + 4.54 = +0.50\\).\nWith one flip, \\(E[U(Z_1)] = -2\\): do not play. With two flips, \\(E[U(Z)] = +0.50\\): play.\nThe naive calculation gives \\(\\sum_{j=1}^2 E[U(Z_j)] = -4\\), which is wrong by a factor of \\(-8\\). The error comes from assuming \\(U(Z_1 + Z_2) = U(Z_1) + U(Z_2)\\)."
+  },
+  {
+    "objectID": "lecture-03.html#correct-vs.-naive-expected-utility",
+    "href": "lecture-03.html#correct-vs.-naive-expected-utility",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Correct vs. naive expected utility",
+    "text": "Correct vs. naive expected utility\n\n\n\n\\(n\\)\nNaive: \\(\\sum E[U(Z_j)] = -2n\\)\nCorrect: \\(E[U(Z)]\\)\n\n\n\n\n1\n\\(-2\\)\n\\(-2.00\\)\n\n\n2\n\\(-4\\)\n\\(+0.50\\)\n\n\n3\n\\(-6\\)\n\\(-0.17\\)\n\n\n4\n\\(-8\\)\n\\(+1.73\\)\n\n\n5\n\\(-10\\)\n\\(+1.35\\)\n\n\n6\n\\(-12\\)\n\\(+2.93\\)\n\n\n7\n\\(-14\\)\n\\(+2.69\\)\n\n\n\nThe naive calculation says the game gets worse as \\(n\\) grows. The correct calculation shows it becomes positive from \\(n = 2\\) onward (with a small dip at \\(n = 3\\)).\nAt \\(n = 1\\), both agree: the game has not been aggregated, so the nonlinearity of \\(U\\) has no effect. For \\(n \\geq 2\\), the total outcome \\(Z\\) can be large and positive, where the concavity of \\(U\\) is less punishing than the factor-of-2 penalty for losses. The diversification across flips helps.\nFor linear \\(U\\): \\(U(\\sum Z_j) = \\sum U(Z_j)\\), so the two columns would be identical. Nonlinearity is what makes them diverge."
+  },
+  {
+    "objectID": "lecture-03.html#properties-of-loss-functions",
+    "href": "lecture-03.html#properties-of-loss-functions",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Properties of loss functions",
+    "text": "Properties of loss functions\n1. Invariance under positive affine transformations.\nClaim: If \\(L\\) is a valid loss, then \\(L' = bL + c\\) (with \\(b &gt; 0\\)) leads to the same optimal decisions.\nProof (for the Bayes case): The Bayes risk is \\(r(\\pi, \\delta) = E_\\pi[R(\\theta, \\delta)]\\). Under \\(L'\\): \\[r'(\\pi, \\delta) = E_\\pi[E_{P_\\theta}[bL(\\theta, \\delta(X)) + c]] = b\\, r(\\pi, \\delta) + c.\\] Since \\(b &gt; 0\\), the \\(\\delta\\) minimizing \\(r'\\) is the same as the \\(\\delta\\) minimizing \\(r\\). \\(\\blacksquare\\)\nSo we can always shift: \\(L^*(\\theta, a) = L(\\theta, a) - \\inf_{\\theta, a} L(\\theta, a) \\geq 0\\).\n2. Regret loss. \\(\\ell(\\theta, a) = \\sup_{a'} U(\\theta, a') - U(\\theta, a)\\): the loss relative to the best action for the true \\(\\theta\\). Equivalent to \\(L\\) for Bayesian analysis, but can differ for minimax. We return to this in Chapter 5."
+  },
+  {
+    "objectID": "lecture-03.html#i.-squared-error-loss",
+    "href": "lecture-03.html#i.-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "I. Squared-error loss",
+    "text": "I. Squared-error loss\n\\[L(\\theta, a) = (\\theta - a)^2.\\]\nWhy is it popular?\n\nFor unbiased estimators, \\(R(\\theta, \\delta) = \\mathrm{Var}_{P_\\theta}(\\delta(X))\\).\nRelated to least squares theory.\nCalculations are often tractable.\n\nBerger’s honest assessment: “The above justifications really have very little merit. The question is – does squared-error loss typically reflect the true loss?”\nSquared-error loss is unbounded and convex: large errors are penalized very severely. In many real problems, the loss should be bounded and (for large errors) concave."
+  },
+  {
+    "objectID": "lecture-03.html#example-risk-of-the-sample-mean-under-squared-error-loss",
+    "href": "lecture-03.html#example-risk-of-the-sample-mean-under-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: risk of the sample mean under squared-error loss",
+    "text": "Example: risk of the sample mean under squared-error loss\n\\(X_1, \\ldots, X_n \\overset{\\text{iid}}{\\sim} \\mathcal{N}(\\theta, \\sigma^2)\\). Estimate \\(\\theta\\) with \\(\\delta(X) = \\bar{X}\\).\n\\[R(\\theta, \\delta) = E_{P_\\theta}[(\\theta - \\bar{X})^2] = \\mathrm{Var}_{P_\\theta}(\\bar{X}) = \\frac{\\sigma^2}{n}.\\]\nThe risk is constant in \\(\\theta\\) and decreases in \\(n\\).\nNow consider \\(\\delta_c(X) = c\\bar{X}\\) for some \\(c \\in \\mathbb{R}\\). Then: \\[R(\\theta, \\delta_c) = E_{P_\\theta}[(\\theta - c\\bar{X})^2] = c^2 \\frac{\\sigma^2}{n} + (1-c)^2\\theta^2.\\]\nThis is Example 4 from Lecture 1 with \\(\\sigma^2/n\\) replacing 1. Minimizing over \\(c\\) for a fixed \\(\\theta\\) gives \\(c^* = \\theta^2/(\\theta^2 + \\sigma^2/n)\\), which depends on \\(\\theta\\) – so the “optimal shrinkage” is unknowable. This tension is at the heart of the course."
+  },
+  {
+    "objectID": "lecture-03.html#the-taylor-expansion-defense-of-squared-error-loss",
+    "href": "lecture-03.html#the-taylor-expansion-defense-of-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The Taylor expansion defense of squared-error loss",
+    "text": "The Taylor expansion defense of squared-error loss\nSuppose the reward is \\(Z = h(\\theta - a, Y)\\), where \\(Y\\) is an extraneous random variable (e.g., state of the economy) independent of \\(\\theta\\) and \\(a\\).\nDefine \\(g(\\theta - a, Y) = U(h(\\theta - a, Y))\\). If the sample information is accurate, \\(\\theta - a\\) is small. Expand in Taylor series around 0: \\[g(\\theta - a, Y) \\approx g(0, Y) + (\\theta - a)g'(0, Y) + \\tfrac{1}{2}(\\theta - a)^2 g''(0, Y).\\]\nTaking expectations over \\(Y\\), with \\(K_1 = -E_Y[g(0,Y)]\\), \\(K_2 = -E_Y[g'(0,Y)]\\), \\(K_3 = -\\tfrac{1}{2}E_Y[g''(0,Y)]\\): \\[L(\\theta, a) = -E_Y[g(\\theta - a, Y)] \\approx K_1 + K_2(\\theta - a) + K_3(\\theta - a)^2.\\]\nCompleting the square (assuming \\(K_3 &gt; 0\\)): \\[L(\\theta, a) \\approx K_3\\!\\left(\\theta - a + \\frac{K_2}{2K_3}\\right)^{\\!2} + \\text{const}.\\]\nWhen \\(K_2 = 0\\) (symmetric utility in \\(y\\), symmetric \\(Y\\)), this is squared-error loss. When \\(K_2 \\neq 0\\), it is shifted squared-error: \\((\\theta - a + c)^2\\), which reduces to standard squared-error by redefining \\(\\mathcal{A}\\)."
+  },
+  {
+    "objectID": "lecture-03.html#variants-of-squared-error-loss",
+    "href": "lecture-03.html#variants-of-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Variants of squared-error loss",
+    "text": "Variants of squared-error loss\nWeighted squared-error: \\(L(\\theta, a) = w(\\theta)(\\theta - a)^2\\).\nThe weight \\(w(\\theta) &gt; 0\\) encodes that a given error may matter more at some parameter values than others.\nExample: estimating a Poisson rate \\(\\theta &gt; 0\\). An error of 1 when \\(\\theta = 0.5\\) is much worse than the same error when \\(\\theta = 100\\). The weight \\(w(\\theta) = 1/\\theta^2\\) normalizes for scale, giving \\(L(\\theta, a) = (1 - a/\\theta)^2\\).\nQuadratic loss (multivariate): \\(\\theta, a \\in \\mathbb{R}^p\\), \\(Q\\) positive definite: \\[L(\\theta, a) = (\\theta - a)^T Q (\\theta - a).\\] When \\(Q = I_p\\): \\(L(\\theta, a) = \\|\\theta - a\\|^2 = \\sum_{i=1}^p (\\theta_i - a_i)^2\\).\nWe will encounter this extensively when studying Stein estimation in Week 6."
+  },
+  {
+    "objectID": "lecture-03.html#example-risk-under-sum-of-squares-loss",
+    "href": "lecture-03.html#example-risk-under-sum-of-squares-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: risk under sum-of-squares loss",
+    "text": "Example: risk under sum-of-squares loss\n\\(X = (X_1, \\ldots, X_p)^T\\) with \\(X_i \\overset{\\text{ind}}{\\sim} \\mathcal{N}(\\theta_i, 1)\\). Estimate \\(\\theta = (\\theta_1, \\ldots, \\theta_p)^T\\) under \\(L(\\theta, a) = \\|\\theta - a\\|^2\\).\nThe natural estimator is \\(\\delta(X) = X\\). Its risk: \\[R(\\theta, \\delta) = E_{P_\\theta}\\!\\left[\\sum_{i=1}^p (\\theta_i - X_i)^2\\right] = \\sum_{i=1}^p \\mathrm{Var}_{P_\\theta}(X_i) = p.\\]\nConstant risk \\(p\\), for all \\(\\theta\\). Seems hard to improve.\nFor \\(p \\geq 3\\), James and Stein (1960) showed the estimator \\[\\delta^{JS}(X) = \\left(1 - \\frac{p-2}{\\|X\\|^2}\\right)X\\] satisfies \\(R(\\theta, \\delta^{JS}) &lt; p\\) for all \\(\\theta\\). The sample mean vector is inadmissible.\nThat result is one of the major topics later in the course. For now, it illustrates that the choice of loss (here, sum-of-squares) can have dramatic consequences for which estimators are admissible."
+  },
+  {
+    "objectID": "lecture-03.html#ii.-linear-loss",
+    "href": "lecture-03.html#ii.-linear-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "II. Linear loss",
+    "text": "II. Linear loss\nWhen the utility function is approximately linear over the relevant range, the loss is approximately linear: \\[L(\\theta, a) = \\begin{cases} K_0(\\theta - a) & \\text{if } \\theta - a \\geq 0 \\quad \\text{(underestimation)} \\\\ K_1(a - \\theta) & \\text{if } \\theta - a &lt; 0 \\quad \\text{(overestimation)} \\end{cases}\\]\n\\(K_0\\) and \\(K_1\\) encode the relative cost of under- vs. overestimation.\nWhen \\(K_0 = K_1\\): absolute error loss \\(L(\\theta, a) = |\\theta - a|\\).\nRecall Lecture 1, Example 1 (drug company): \\(L(\\theta_2, a) = (\\theta_2 - a)\\) if \\(\\theta_2 \\geq a\\) and \\(2(a - \\theta_2)\\) if \\(\\theta_2 &lt; a\\). That is linear loss with \\(K_0 = 1\\), \\(K_1 = 2\\): overestimating the adverse reaction rate costs twice as much as underestimating."
+  },
+  {
+    "objectID": "lecture-03.html#example-car-production-under-linear-loss-berger-ex.-17",
+    "href": "lecture-03.html#example-car-production-under-linear-loss-berger-ex.-17",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: car production under linear loss (Berger, Ex. 17)",
+    "text": "Example: car production under linear loss (Berger, Ex. 17)\nA company must decide how many cars \\(a\\) to produce. The demand is \\(\\theta\\) (unknown). Each car sold yields $500 profit. Each unsold car yields $1000 loss.\nIf \\(a \\leq \\theta\\): all cars sell, profit = \\(500a\\). If \\(a &gt; \\theta\\): \\(\\theta\\) cars sell, \\(a - \\theta\\) do not, profit = \\(500\\theta - 1000(a - \\theta) = 1500\\theta - 1000a\\).\nThe regret loss (loss relative to the best action if you knew \\(\\theta\\)): the best action is \\(a^* = \\theta\\) (produce exactly the demand, profit \\(500\\theta\\)). So: \\[\\ell(\\theta, a) = 500\\theta - \\text{profit}(a) = \\begin{cases} 500(\\theta - a) & \\text{if } a \\leq \\theta \\\\ 1500(a - \\theta) & \\text{if } a &gt; \\theta \\end{cases}\\]\nThis is linear loss with \\(K_0 = 500\\) (opportunity cost of underproduction) and \\(K_1 = 1500\\) (cost of overproduction). The asymmetry \\(K_1/K_0 = 3\\) reflects that unsold cars are much worse than unmet demand."
+  },
+  {
+    "objectID": "lecture-03.html#iii.-01-loss",
+    "href": "lecture-03.html#iii.-01-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "III. “0–1” loss",
+    "text": "III. “0–1” loss\nIn a two-action problem (testing \\(H_0: \\theta \\in \\Theta_0\\) vs. \\(H_1: \\theta \\in \\Theta_1\\)): \\[L(\\theta, a_i) = \\begin{cases} 0 & \\text{if } \\theta \\in \\Theta_i \\quad \\text{(correct)} \\\\ 1 & \\text{if } \\theta \\in \\Theta_j,\\ j \\neq i \\quad \\text{(incorrect)} \\end{cases}\\]\nThe risk function:\n\nWhen \\(\\theta \\in \\Theta_0\\): \\(R(\\theta, \\delta) = P_{P_\\theta}(\\text{reject } H_0)\\) = Type I error.\nWhen \\(\\theta \\in \\Theta_1\\): \\(R(\\theta, \\delta) = P_{P_\\theta}(\\text{accept } H_0)\\) = Type II error.\n\nThe Bayesian expected loss: \\(\\rho(\\pi^*, a_i) = 1 - \\pi^*(\\theta \\in \\Theta_i)\\).\nThe error probabilities from Neyman–Pearson theory are the risk function under 0–1 loss. Testing is a special case of decision theory."
+  },
+  {
+    "objectID": "lecture-03.html#example-01-loss-for-a-normal-test",
+    "href": "lecture-03.html#example-01-loss-for-a-normal-test",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: 0–1 loss for a normal test",
+    "text": "Example: 0–1 loss for a normal test\n\\(X \\sim \\mathcal{N}(\\theta, 1)\\). Test \\(H_0: \\theta \\leq 0\\) vs. \\(H_1: \\theta &gt; 0\\). Decision rule: reject \\(H_0\\) if \\(X &gt; c\\).\nUnder 0–1 loss, the risk function is: \\[R(\\theta, \\delta_c) = \\begin{cases}\nP_{P_\\theta}(X &gt; c) = 1 - \\Phi(c - \\theta) & \\text{if } \\theta \\leq 0 \\quad \\text{(Type I)} \\\\\nP_{P_\\theta}(X \\leq c) = \\Phi(c - \\theta) & \\text{if } \\theta &gt; 0 \\quad \\text{(Type II)}\n\\end{cases}\\]\nFor \\(c = 0\\): Type I error at \\(\\theta = 0\\) is \\(1 - \\Phi(0) = 0.5\\). Type II error at \\(\\theta = 1\\) is \\(\\Phi(-1) = 0.159\\).\nFor \\(c = 1.645\\): Type I error at \\(\\theta = 0\\) is \\(1 - \\Phi(1.645) = 0.05\\). Type II error at \\(\\theta = 1\\) is \\(\\Phi(0.645) = 0.74\\).\nThe familiar tradeoff between Type I and Type II error is the tradeoff between the risk function at different values of \\(\\theta\\): making \\(R(\\theta, \\delta_c)\\) smaller for \\(\\theta \\leq 0\\) makes it larger for \\(\\theta &gt; 0\\), and vice versa."
+  },
+  {
+    "objectID": "lecture-03.html#weighted-01-loss",
+    "href": "lecture-03.html#weighted-01-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Weighted 0–1 loss",
+    "text": "Weighted 0–1 loss\nBasic 0–1 loss treats the two types of error as equally costly. Rarely appropriate.\nMore realistic: \\[L(\\theta, a_i) = \\begin{cases} 0 & \\text{if correct} \\\\ K_0 & \\text{if reject } H_0 \\text{ when } \\theta \\in \\Theta_0 \\quad \\text{(Type I)} \\\\ K_1 & \\text{if accept } H_0 \\text{ when } \\theta \\in \\Theta_1 \\quad \\text{(Type II)} \\end{cases}\\]\nThe risk becomes \\(K_0 \\cdot P_{P_\\theta}(\\text{reject } H_0)\\) for \\(\\theta \\in \\Theta_0\\) and \\(K_1 \\cdot P_{P_\\theta}(\\text{accept } H_0)\\) for \\(\\theta \\in \\Theta_1\\).\nEven more generally: \\(L(\\theta, a_1) = K_0(\\theta)\\) for \\(\\theta \\in \\Theta_0\\), where the weight varies within \\(\\Theta_0\\). A Type I error may be worse when \\(\\theta\\) is far from the boundary."
+  },
+  {
+    "objectID": "lecture-03.html#inference-as-a-decision-problem",
+    "href": "lecture-03.html#inference-as-a-decision-problem",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Inference as a decision problem",
+    "text": "Inference as a decision problem\nThe most common use: representing standard inference measures as a risk or Bayesian expected loss.\nConfidence sets. Let \\(C(x) \\subseteq \\Theta\\) be a confidence rule. The loss \\[L(\\theta, C(x)) = 1 - I_{C(x)}(\\theta) = \\begin{cases} 0 & \\text{if } \\theta \\in C(x) \\\\ 1 & \\text{if } \\theta \\notin C(x) \\end{cases}\\] gives \\(R(\\theta, C) = 1 - P_{P_\\theta}(C(X) \\ni \\theta)\\): one minus the coverage probability.\nUnbiased estimation. Restrict to \\(E_{P_\\theta}[\\delta(X)] = \\theta\\) for all \\(\\theta\\). Under squared-error loss, \\(R(\\theta, \\delta) = \\mathrm{Var}_{P_\\theta}(\\delta(X))\\). The UMVUE is the decision-theoretic optimum within this restricted class."
+  },
+  {
+    "objectID": "lecture-03.html#scoring-rules-quantifying-how-well-confidence-works-berger-ex.-4",
+    "href": "lecture-03.html#scoring-rules-quantifying-how-well-confidence-works-berger-ex.-4",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Scoring rules: quantifying how well confidence works (Berger, Ex. 4)",
+    "text": "Scoring rules: quantifying how well confidence works (Berger, Ex. 4)\nA confidence rule \\(C(x)\\) with associated “confidence” \\(\\alpha(x)\\): after observing \\(x\\), we report \\(\\alpha(x)\\) as our confidence that \\(\\theta \\in C(x)\\). How well does \\(\\alpha(x)\\) reflect reality?\nThe Brier scoring rule: \\[L_C(\\theta, \\alpha(x)) = (\\alpha(x) - I_{C(x)}(\\theta))^2.\\]\nWhen \\(\\theta \\in C(x)\\): loss = \\((\\alpha(x) - 1)^2\\), small if \\(\\alpha(x) \\approx 1\\).\nWhen \\(\\theta \\notin C(x)\\): loss = \\(\\alpha(x)^2\\), small if \\(\\alpha(x) \\approx 0\\)."
+  },
+  {
+    "objectID": "lecture-03.html#scoring-rules-continued-constant-vs.-data-dependent-confidence",
+    "href": "lecture-03.html#scoring-rules-continued-constant-vs.-data-dependent-confidence",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Scoring rules continued: constant vs. data-dependent confidence",
+    "text": "Scoring rules continued: constant vs. data-dependent confidence\nConsider two choices: \\(\\alpha_1(x) \\equiv 0.75\\) (constant frequentist confidence) and \\(\\alpha_2(x) = P(\\theta \\in C(x) \\mid x)\\) (posterior probability, a data-dependent confidence).\nThe risk of \\(\\alpha_1\\) under the Brier loss: \\[R(\\theta, \\alpha_1) = E_{P_\\theta}\\!\\left[(\\alpha_1(X) - I_{C(X)}(\\theta))^2\\right] = 0.75^2 \\cdot P_{P_\\theta}(\\theta \\notin C(X)) + 0.25^2 \\cdot P_{P_\\theta}(\\theta \\in C(X)).\\]\nIf \\(C\\) has 75% coverage: \\(R(\\theta, \\alpha_1) = (0.5625)(0.25) + (0.0625)(0.75) = 0.1875\\).\nThe data-dependent confidence \\(\\alpha_2\\) adapts: it reports high confidence when the data are informative and low confidence when they are not. One can show (and we will, in Chapter 4) that \\(\\alpha_2\\) has \\(R(\\theta, \\alpha_2) \\leq R(\\theta, \\alpha_1)\\) for all \\(\\theta\\), with strict inequality for some \\(\\theta\\).\nThe data-dependent confidence dominates the constant one: it communicates better what \\(C(x)\\) is worth for the specific \\(x\\) you observed."
+  },
+  {
+    "objectID": "lecture-03.html#predictive-problems",
+    "href": "lecture-03.html#predictive-problems",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Predictive problems",
+    "text": "Predictive problems\nPredict a future observation \\(Z\\) with density \\(g(z|\\theta)\\), given data \\(X\\) with density \\(f(x|\\theta)\\).\nIf the original loss is \\(L^*(z, a)\\), the decision-theoretic reduction is: \\[L(\\theta, a) = E_{P_\\theta}[L^*(Z, a)] = \\int L^*(z, a)\\, g(z|\\theta)\\, dz.\\]\nThis reduces the prediction problem to a standard decision problem involving \\(\\theta\\)."
+  },
+  {
+    "objectID": "lecture-03.html#example-predicting-a-normal-berger-ex.-5",
+    "href": "lecture-03.html#example-predicting-a-normal-berger-ex.-5",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: predicting a normal (Berger, Ex. 5)",
+    "text": "Example: predicting a normal (Berger, Ex. 5)\n\\(Z \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), \\(L^*(z, a) = (z - a)^2\\). Then: \\[\\begin{aligned}\nL(\\theta, a) &= E_{P_\\theta}[(Z - a)^2] = E_{P_\\theta}[(Z - \\theta)^2 + 2(Z - \\theta)(\\theta - a) + (\\theta - a)^2] \\\\\n&= \\mathrm{Var}_{P_\\theta}(Z) + 0 + (\\theta - a)^2 = \\sigma^2 + (\\theta - a)^2.\n\\end{aligned}\\]\nThe cross term vanishes because \\(E_{P_\\theta}[Z - \\theta] = 0\\).\nThe constant \\(\\sigma^2\\) does not affect the choice of \\(a\\). Choosing the best prediction of \\(Z\\) is equivalent to estimating \\(\\theta\\) under squared-error loss.\nThis partially explains why decision theorists focus on estimating unknown parameters rather than predicting future observations: prediction problems often reduce to parameter estimation through the loss."
+  },
+  {
+    "objectID": "lecture-03.html#three-criticisms",
+    "href": "lecture-03.html#three-criticisms",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Three criticisms",
+    "text": "Three criticisms\n1. Inappropriate for inference. Many statisticians argue that inference problems do not have a natural loss. A physicist measuring the speed of light cannot know the losses of future users. Decision theorists can accept this and limit their domain, or argue that inference losses (scoring rules, coverage loss) still help even in pure inference settings.\n2. Difficult to construct. Utility analysis is laborious. In practice, “standard” losses are used as surrogates.\n3. Can be manipulated. Through a biased choice of prior and loss, a statistician can reach any conclusion. “Just make the other conclusions too costly, or too unlikely according to the prior.”"
+  },
+  {
+    "objectID": "lecture-03.html#the-response-robustness",
+    "href": "lecture-03.html#the-response-robustness",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The response: robustness",
+    "text": "The response: robustness\nSensitivity analysis. Show that reasonable variations in the loss do not markedly affect the conclusion. If they do, that signals the need for more careful thought – not the failure of the framework.\nExample of sensitivity to loss. Under squared-error loss, the Bayes estimator is the posterior mean. Under absolute error loss, it is the posterior median. Under asymmetric linear loss with \\(K_0/(K_0 + K_1) = q\\), it is the \\(q\\)th posterior quantile. If the posterior is symmetric and unimodal, all three agree. If the posterior is skewed, they differ substantially. In that case, the choice of loss matters, and you need to think carefully about whether overestimation and underestimation are equally bad.\n“We cannot believe that careful consideration of consequences and losses could be a detriment to statistical analysis.” (Berger)"
+  },
+  {
+    "objectID": "lecture-03.html#the-big-picture-from-today",
+    "href": "lecture-03.html#the-big-picture-from-today",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The big picture from today",
+    "text": "The big picture from today\nUtility theory (Berger § 2.1–2.2): Axioms of rational behavior guarantee the existence of a utility function. The loss function is its negative. This justifies expected loss as the decision criterion.\nFrom utility to loss (Berger § 2.4.1): \\(L(\\theta, a) = -U(\\theta, a)\\). Random consequences: \\(U(\\theta, a) = E_{\\theta,a}[U(Z)]\\). Invariance under affine transformations. Regret loss.\nStandard losses (Berger § 2.4.2):\n\nSquared-error: \\((\\theta - a)^2\\). Taylor expansion defense. Weighted, quadratic variants.\nLinear: \\(K_0, K_1\\) encode asymmetry. Car production example.\n0–1: risk = error probabilities. Weighted version.\n\nInference and prediction (Berger § 2.4.3–2.4.4): confidence sets, scoring rules, UMVUE, prediction reduced to estimation.\nWith this, we have completed the foundations (Berger Ch 1–2). Next: Bayesian decision theory (Berger § 3.3, 4.1–4.4, 4.8)."
+  },
+  {
+    "objectID": "lecture-04.html",
+    "href": "lecture-04.html",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "",
+    "text": "In Lectures 1–2 we built the decision-theoretic framework: \\(\\Theta\\), \\(\\mathcal{A}\\), \\(L(\\theta, a)\\), \\(\\delta\\), \\(R(\\theta, \\delta)\\), \\(\\rho(\\pi, a)\\), \\(r(\\pi, \\delta)\\), admissibility, three selection principles, randomized rules. We proved three structural results: sufficiency reduces the problem (Theorem 1), convex loss eliminates randomization (Theorem 3), and the Rao–Blackwell theorem combines them.\nIn Lecture 3 we grounded the framework: utility theory justifies the loss function and expected loss as the aggregation criterion.\nToday we address two topics. First, how to construct priors when no prior information is available (Berger, Section 3.3). Second, the mechanics of Bayesian decision theory: how a prior and a loss function together determine an optimal action (Berger, Sections 4.1–4.4).\nReading: Berger, Section 3.3; Sections 4.1–4.4."
+  },
+  {
+    "objectID": "lecture-04.html#recap",
+    "href": "lecture-04.html#recap",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "",
+    "text": "In Lectures 1–2 we built the decision-theoretic framework: \\(\\Theta\\), \\(\\mathcal{A}\\), \\(L(\\theta, a)\\), \\(\\delta\\), \\(R(\\theta, \\delta)\\), \\(\\rho(\\pi, a)\\), \\(r(\\pi, \\delta)\\), admissibility, three selection principles, randomized rules. We proved three structural results: sufficiency reduces the problem (Theorem 1), convex loss eliminates randomization (Theorem 3), and the Rao–Blackwell theorem combines them.\nIn Lecture 3 we grounded the framework: utility theory justifies the loss function and expected loss as the aggregation criterion.\nToday we address two topics. First, how to construct priors when no prior information is available (Berger, Section 3.3). Second, the mechanics of Bayesian decision theory: how a prior and a loss function together determine an optimal action (Berger, Sections 4.1–4.4).\nReading: Berger, Section 3.3; Sections 4.1–4.4."
+  },
+  {
+    "objectID": "lecture-04.html#motivation",
+    "href": "lecture-04.html#motivation",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "2.1 Motivation",
+    "text": "2.1 Motivation\nIn many decision problems there is no natural prior distribution for \\(\\theta\\). The experimenter may have little prior information, or may wish to report an analysis that does not depend on subjective inputs.\nA noninformative prior is intended to represent a state of prior ignorance and let the data speak for themselves. We need these priors because they appear throughout the rest of the course:\n\nAs candidates for least favorable priors in minimax theory (Chapter 5).\nAs the natural priors in invariant decision problems (Chapter 6).\nAs the object of admissibility analysis for generalized Bayes rules (Chapter 8)."
+  },
+  {
+    "objectID": "lecture-04.html#two-problems-with-the-naive-approach",
+    "href": "lecture-04.html#two-problems-with-the-naive-approach",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "2.2 Two problems with the naive approach",
+    "text": "2.2 Two problems with the naive approach\nThe first idea is to set \\(\\pi(\\theta) = \\text{constant}\\). This fails immediately.\nProblem 1: Parameterization dependence. Suppose \\(\\theta \\in \\mathbb{R}\\) and we set \\(\\pi(\\theta) = 1\\). Reparameterize: \\(\\eta = e^\\theta\\). The induced prior on \\(\\eta\\) is \\[\n\\pi^*(\\eta) = \\pi(\\log \\eta) \\cdot \\left|\\frac{d\\theta}{d\\eta}\\right| = \\frac{1}{\\eta},\n\\] which is not constant. So “constant” depends on the parameterization.\nProblem 2: Impropriety. On \\(\\mathbb{R}\\), a constant function does not integrate to a finite value. It is not a proper probability density."
+  },
+  {
+    "objectID": "lecture-04.html#location-parameters-berger-example-5",
+    "href": "lecture-04.html#location-parameters-berger-example-5",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "3.1 Location parameters (Berger, Example 5)",
+    "text": "3.1 Location parameters (Berger, Example 5)\nSuppose \\(\\mathcal{X}= \\Theta = \\mathbb{R}^p\\) and the density of \\(X\\) has the form \\[\nf(x \\mid \\theta) = f(x - \\theta),\n\\] depending on the data only through \\(x - \\theta\\). Such a density is a location density, and \\(\\theta\\) is a location parameter.\nStandard examples: \\(\\mathcal{N}(\\theta, \\sigma^2)\\) with \\(\\sigma^2\\) known; \\(t(\\alpha, \\theta, \\sigma^2)\\) with \\(\\alpha, \\sigma^2\\) known; \\(\\text{Uniform}(\\theta - 1, \\theta + 1)\\)."
+  },
+  {
+    "objectID": "lecture-04.html#derivation-via-invariance",
+    "href": "lecture-04.html#derivation-via-invariance",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "3.2 Derivation via invariance",
+    "text": "3.2 Derivation via invariance\nInstead of observing \\(X\\), imagine observing \\(Y = X + c\\) for some fixed \\(c \\in \\mathbb{R}^p\\). Define \\(\\mu = \\theta + c\\). Then \\(Y\\) has density \\(f(y - \\mu)\\), the same functional form as the original problem. The \\((X, \\theta)\\) and \\((Y, \\mu)\\) problems are structurally identical – they differ only by a shift in the origin of measurement.\nIf two problems are structurally identical, their noninformative priors should agree. Let \\(\\pi\\) and \\(\\pi^*\\) denote the noninformative priors for the \\((X, \\theta)\\) and \\((Y, \\mu)\\) problems. The structural identity argument says \\(\\pi = \\pi^*\\): \\[\nP_\\pi(\\theta \\in A) = P_{\\pi^*}(\\mu \\in A)\n\\] for any measurable set \\(A \\subseteq \\mathbb{R}^p\\). Since \\(\\mu = \\theta + c\\), a change of variables gives \\(P_{\\pi^*}(\\mu \\in A) = P_\\pi(\\theta \\in A - c)\\). Combining: \\[\nP_\\pi(\\theta \\in A) = P_\\pi(\\theta \\in A - c) \\quad \\text{for all } c \\in \\mathbb{R}^p.\n\\]\nAny prior satisfying this is called location invariant. In terms of densities: \\[\n\\int_A \\pi(\\theta)\\, d\\theta = \\int_A \\pi(\\theta - c)\\, d\\theta \\quad \\text{for all } A.\n\\] This forces \\(\\pi(\\theta) = \\pi(\\theta - c)\\) for all \\(\\theta, c\\), so \\(\\pi\\) is constant.\n\nThe noninformative prior for a location parameter is \\(\\pi(\\theta) = 1\\).\n\nThis is improper on \\(\\mathbb{R}^p\\): \\(\\int_{\\mathbb{R}^p} 1\\, d\\theta = \\infty\\)."
+  },
+  {
+    "objectID": "lecture-04.html#the-non-uniqueness-issue",
+    "href": "lecture-04.html#the-non-uniqueness-issue",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "3.3 The non-uniqueness issue",
+    "text": "3.3 The non-uniqueness issue\nThe argument above required that structurally identical problems have the same noninformative prior. But an improper prior \\(\\pi\\) and \\(K\\pi\\) (for any \\(K &gt; 0\\)) produce identical posteriors and Bayes actions. Relaxing exact equality to proportionality gives the weaker condition \\[\nP_\\pi(\\theta \\in A) = h(c)\\, P_\\pi(\\theta \\in A - c)\n\\] for some positive function \\(h\\). This leads to the functional equation \\[\n\\pi(\\theta) = h(c)\\, \\pi(\\theta - c).\n\\] Setting \\(\\theta = c\\): \\(h(c) = \\pi(c)/\\pi(0)\\), so \\[\n\\pi(\\theta - c) = \\frac{\\pi(\\theta)\\, \\pi(0)}{\\pi(c)}.\n\\]\nAny prior satisfying this is relatively location invariant. The constant prior satisfies it, but so does \\(\\pi(\\theta) = \\exp(\\theta' z)\\) for any fixed vector \\(z\\). There are many relatively location invariant priors.\nFor certain statistical problems, a natural selection from this class is the right invariant Haar measure on the relevant transformation group. The priors derived in this section are the right invariant Haar measures for the location and scale groups. We return to this in Chapter 6."
+  },
+  {
+    "objectID": "lecture-04.html#scale-parameters-berger-example-6",
+    "href": "lecture-04.html#scale-parameters-berger-example-6",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "3.4 Scale parameters (Berger, Example 6)",
+    "text": "3.4 Scale parameters (Berger, Example 6)\nA scale density has the form \\[\nf(x \\mid \\sigma) = \\sigma^{-1} g(x/\\sigma),\n\\] where \\(\\sigma &gt; 0\\). Standard examples: \\(\\mathcal{N}(0, \\sigma^2)\\); \\(\\text{Gamma}(\\alpha, \\beta)\\) with \\(\\alpha\\) fixed; \\(\\text{Exponential}(\\sigma)\\).\nDerivation. Observe \\(Y = cX\\) for some \\(c &gt; 0\\) and define \\(\\eta = c\\sigma\\). Then \\(Y\\) has density \\(\\eta^{-1}g(y/\\eta)\\), structurally identical to the original. The invariance argument gives: \\(\\pi\\) should satisfy \\[\nP_\\pi(\\sigma \\in A) = P_\\pi(\\sigma \\in c^{-1}A)\n\\] for all \\(c &gt; 0\\) and measurable \\(A \\subseteq (0, \\infty)\\). In terms of densities: \\[\n\\pi(\\sigma) = c^{-1}\\pi(c^{-1}\\sigma) \\quad \\text{for all } \\sigma, c.\n\\] Setting \\(\\sigma = c\\): \\(\\pi(c) = c^{-1}\\pi(1)\\). With \\(\\pi(1) = 1\\):\n\nThe noninformative prior for a scale parameter is \\(\\pi(\\sigma) = \\sigma^{-1}\\).\n\nAgain improper: \\(\\int_0^\\infty \\sigma^{-1}\\, d\\sigma = \\infty\\)."
+  },
+  {
+    "objectID": "lecture-04.html#benfords-law-berger-example-6-continued",
+    "href": "lecture-04.html#benfords-law-berger-example-6-continued",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "3.5 Benford’s law (Berger, Example 6 continued)",
+    "text": "3.5 Benford’s law (Berger, Example 6 continued)\nAn application of the scale-invariant prior. The distribution of first significant digits in tables of physical constants, population sizes, etc., follows Benford’s law: digit \\(i\\) occurs with relative frequency \\(\\log(1 + i^{-1})/\\log 10\\).\nIf table entries have a scale-invariant distribution \\(\\pi(u) = u^{-1}\\), then normalizing on \\((1, 10)\\) gives \\(\\pi(u) = u^{-1}/\\log 10\\), and \\[\nP(\\text{first digit} = i) = \\int_i^{i+1} \\frac{u^{-1}}{\\log 10}\\, du = \\frac{\\log(1 + i^{-1})}{\\log 10},\n\\] matching the empirical observation. Furthermore, as the interval \\((a, b)\\) expands to \\((0, \\infty)\\), these probabilities converge to the same values regardless of the choice of \\(a\\) and \\(b\\)."
+  },
+  {
+    "objectID": "lecture-04.html#location-scale-problems-berger-example-7",
+    "href": "lecture-04.html#location-scale-problems-berger-example-7",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "3.6 Location-scale problems (Berger, Example 7)",
+    "text": "3.6 Location-scale problems (Berger, Example 7)\nWhen the density has the form \\(\\sigma^{-1}f\\bigl((x - \\theta)/\\sigma\\bigr)\\) with both \\(\\theta \\in \\mathbb{R}\\) and \\(\\sigma &gt; 0\\) unknown, two approaches compete.\nApproach 1 (Jeffreys’ rule). The Fisher information matrix for \\(\\mathcal{N}(\\theta, \\sigma^2)\\) is \\[\n\\mathcal{I}(\\theta, \\sigma) = \\begin{pmatrix} \\sigma^{-2} & 0 \\\\ 0 & 2\\sigma^{-2} \\end{pmatrix}.\n\\] Jeffreys’ rule (next section) gives \\(\\pi(\\theta, \\sigma) = [\\det \\mathcal{I}(\\theta, \\sigma)]^{1/2} \\propto \\sigma^{-2}\\).\nApproach 2 (Independence). Assume \\(\\theta\\) and \\(\\sigma\\) are a priori independent. Multiply marginal noninformative priors: \\(\\pi(\\theta, \\sigma) = 1 \\cdot \\sigma^{-1} = \\sigma^{-1}\\).\nThese disagree (\\(\\sigma^{-2}\\) vs. \\(\\sigma^{-1}\\)). Jeffreys himself ultimately recommended \\(\\sigma^{-1}\\) for location-scale problems, arguing that \\([\\det \\mathcal{I}]^{1/2}\\) sometimes gives inferior results in multiparameter settings. The prior \\(\\sigma^{-1}\\) is also the right invariant Haar density for the location-scale group.\n\nConvention. For location-scale problems, use \\(\\pi(\\theta, \\sigma) = \\sigma^{-1}\\)."
+  },
+  {
+    "objectID": "lecture-04.html#definition-scalar-case",
+    "href": "lecture-04.html#definition-scalar-case",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "4.1 Definition: scalar case",
+    "text": "4.1 Definition: scalar case\nFor a general one-dimensional parameter \\(\\theta\\), Jeffreys (1961) proposed \\[\n\\pi(\\theta) = [I(\\theta)]^{1/2},\n\\] where \\(I(\\theta)\\) is the expected Fisher information: \\[\nI(\\theta) = -\\mathbb{E}_{P_\\theta}\\!\\left[\\frac{\\partial^2 \\log f(X \\mid \\theta)}{\\partial \\theta^2}\\right].\n\\]"
+  },
+  {
+    "objectID": "lecture-04.html#reparameterization-invariance",
+    "href": "lecture-04.html#reparameterization-invariance",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "4.2 Reparameterization invariance",
+    "text": "4.2 Reparameterization invariance\nUnder \\(\\eta = h(\\theta)\\), the Fisher information transforms as \\(I_\\eta(\\eta) = I_\\theta(\\theta)/[h'(\\theta)]^2\\). The Jeffreys prior transforms as \\[\n\\pi_\\eta(\\eta) = [I_\\eta(\\eta)]^{1/2} = \\frac{[I_\\theta(\\theta)]^{1/2}}{|h'(\\theta)|}.\n\\] The change-of-variables formula gives \\(\\pi_\\eta(\\eta) = \\pi_\\theta(\\theta)/|h'(\\theta)|\\), the same expression. So the Jeffreys prior is invariant under reparameterization: compute it in one parameterization and transform, or compute it directly in the new parameterization – the answer is the same.\nThis is the property that distinguishes the Jeffreys prior from the naive constant prior."
+  },
+  {
+    "objectID": "lecture-04.html#definition-vector-case",
+    "href": "lecture-04.html#definition-vector-case",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "4.3 Definition: vector case",
+    "text": "4.3 Definition: vector case\nFor \\(\\theta = (\\theta_1, \\ldots, \\theta_p)'\\): \\[\n\\pi(\\theta) = [\\det \\mathcal{I}(\\theta)]^{1/2},\n\\] where \\(\\mathcal{I}(\\theta)\\) is the \\(p \\times p\\) Fisher information matrix with \\((i,j)\\) entry \\[\n\\mathcal{I}_{ij}(\\theta) = -\\mathbb{E}_{P_\\theta}\\!\\left[\\frac{\\partial^2 \\log f(X \\mid \\theta)}{\\partial \\theta_i\\, \\partial \\theta_j}\\right].\n\\]"
+  },
+  {
+    "objectID": "lecture-04.html#verification-for-location-and-scale",
+    "href": "lecture-04.html#verification-for-location-and-scale",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "4.4 Verification for location and scale",
+    "text": "4.4 Verification for location and scale\nLocation. If \\(f(x \\mid \\theta) = f(x - \\theta)\\), then \\(\\frac{\\partial^2}{\\partial \\theta^2}\\log f(x \\mid \\theta)\\) depends on \\(x - \\theta\\). The expectation of this under \\(P_\\theta\\) does not depend on \\(\\theta\\) (substitute \\(z = x - \\theta\\)). So \\(I(\\theta)\\) is constant, and \\(\\pi(\\theta) \\propto 1\\), recovering the location-invariance result.\nScale. If \\(f(x \\mid \\sigma) = \\sigma^{-1}g(x/\\sigma)\\), a computation shows \\(I(\\sigma) \\propto \\sigma^{-2}\\), giving \\(\\pi(\\sigma) \\propto \\sigma^{-1}\\), recovering the scale-invariance result."
+  },
+  {
+    "objectID": "lecture-04.html#board-examples",
+    "href": "lecture-04.html#board-examples",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "4.5 Board examples",
+    "text": "4.5 Board examples\nBernoulli. \\(X \\sim \\text{Bernoulli}(\\theta)\\), \\(\\theta \\in (0,1)\\). Then \\[\n-\\frac{\\partial^2}{\\partial \\theta^2}\\log f(x \\mid \\theta) = \\frac{x}{\\theta^2} + \\frac{1-x}{(1-\\theta)^2}.\n\\] Taking expectations: \\(I(\\theta) = \\theta^{-1} + (1-\\theta)^{-1} = [\\theta(1-\\theta)]^{-1}\\). The Jeffreys prior is \\[\n\\pi(\\theta) = [\\theta(1-\\theta)]^{-1/2},\n\\] the density of a \\(\\text{Beta}(1/2, 1/2)\\) distribution. This is a proper prior.\nPoisson. \\(X \\sim \\text{Poisson}(\\theta)\\), \\(\\theta &gt; 0\\). Then \\(I(\\theta) = \\theta^{-1}\\), so \\(\\pi(\\theta) = \\theta^{-1/2}\\). Improper.\nNormal mean. \\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), \\(\\sigma^2\\) known. Then \\(I(\\theta) = \\sigma^{-2}\\), so \\(\\pi(\\theta) = \\sigma^{-1} \\propto 1\\) (constant). Improper."
+  },
+  {
+    "objectID": "lecture-04.html#the-multiplicity-of-noninformative-priors-berger-example-8",
+    "href": "lecture-04.html#the-multiplicity-of-noninformative-priors-berger-example-8",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "4.6 The multiplicity of noninformative priors (Berger, Example 8)",
+    "text": "4.6 The multiplicity of noninformative priors (Berger, Example 8)\nFor the binomial parameter \\(\\theta \\in [0,1]\\), several noninformative priors have been proposed:\n\n\n\n\n\n\n\n\nPrior\nSource\nFormula\n\n\n\n\n\\(\\pi_1(\\theta) = 1\\)\nBayes (1763), Laplace (1812)\n\\(\\text{Beta}(1,1)\\)\n\n\n\\(\\pi_2(\\theta) = [\\theta(1-\\theta)]^{-1}\\)\nNovick–Hall, Jaynes, Villegas\nImproper (Haldane)\n\n\n\\(\\pi_3(\\theta) \\propto [\\theta(1-\\theta)]^{-1/2}\\)\nJeffreys, Box–Tiao, Bernardo\n\\(\\text{Beta}(1/2, 1/2)\\)\n\n\n\\(\\pi_4(\\theta) \\propto \\theta^{1/1}(1-\\theta)^{1-1/1}\\)\nZellner\ncontext-dependent\n\n\n\nAll four are defensible. Whether this multiplicity matters depends on sample size: for large \\(n\\), the four posteriors are nearly identical. For small \\(n\\), they can differ, but for small \\(n\\) one typically has real prior information that should be used."
+  },
+  {
+    "objectID": "lecture-04.html#criticisms-and-caveats-berger-3.3.4",
+    "href": "lecture-04.html#criticisms-and-caveats-berger-3.3.4",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "4.7 Criticisms and caveats (Berger $$3.3.4)",
+    "text": "4.7 Criticisms and caveats (Berger $$3.3.4)\nThree points worth noting.\n1. Violation of the Likelihood Principle. The Jeffreys prior depends on the expected Fisher information, which depends on the sampling model, not just the likelihood. Different experimental designs with the same likelihood can lead to different Jeffreys priors.\n2. The marginalization paradox (Dawid, Stone, and Zidek, 1973). In certain multiparameter problems, marginalizing over a nuisance parameter under an improper prior can give results that depend on the order of integration.\n3. Poor performance in high dimensions. The noninformative prior \\(\\pi(\\theta) = 1\\) for \\(\\theta \\in \\mathbb{R}^p\\) implicitly assigns increasing prior weight to large \\(\\|\\theta\\|^2\\) as \\(p\\) grows. The resulting generalized Bayes estimator \\(\\delta^0(x) = x\\) is inadmissible for \\(p \\geq 3\\) (James and Stein, 1960). This is not an indictment of the Bayesian machinery; it is an indictment of the specific prior.\nConvention (restricted parameter spaces). If it is known that \\(\\theta &gt; 0\\) in a location problem, the noninformative prior is still \\(\\pi(\\theta) = 1\\), restricted to \\((0, \\infty)\\). The prior is inherited from the unrestricted parameter space."
+  },
+  {
+    "objectID": "lecture-04.html#why-this-section-matters-for-decision-theory-berger-4.1",
+    "href": "lecture-04.html#why-this-section-matters-for-decision-theory-berger-4.1",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "5.1 Why this section matters for decision theory (Berger $$4.1)",
+    "text": "5.1 Why this section matters for decision theory (Berger $$4.1)\nThe posterior distribution \\(\\pi(\\theta \\mid x)\\) is the key computational object in Bayesian decision theory. Once we have it, choosing the optimal action reduces to a one-dimensional minimization problem (Section 4.4). The posterior is not the goal; it is the intermediate step.\nFor second-year students: the mechanics of computing posteriors and conjugate families are review from 220A. The new content here is the treatment of improper priors (Section 4.2.3), which connects directly to the noninformative priors we just derived."
+  },
+  {
+    "objectID": "lecture-04.html#bayes-theorem-berger-4.2.1",
+    "href": "lecture-04.html#bayes-theorem-berger-4.2.1",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "5.2 Bayes’ theorem (Berger $$4.2.1)",
+    "text": "5.2 Bayes’ theorem (Berger $$4.2.1)\nFor a proper prior \\(\\pi(\\theta)\\): \\[\n\\pi(\\theta \\mid x) = \\frac{f(x \\mid \\theta)\\, \\pi(\\theta)}{m(x)}, \\qquad m(x) = \\int_\\Theta f(x \\mid \\theta)\\, \\pi(\\theta)\\, d\\theta.\n\\]\nThe marginal \\(m(x)\\) is a normalizing constant. We often write \\(\\pi(\\theta \\mid x) \\propto f(x \\mid \\theta)\\, \\pi(\\theta)\\) and identify the posterior by its kernel."
+  },
+  {
+    "objectID": "lecture-04.html#conjugate-families-berger-4.2.2",
+    "href": "lecture-04.html#conjugate-families-berger-4.2.2",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "5.3 Conjugate families (Berger $$4.2.2)",
+    "text": "5.3 Conjugate families (Berger $$4.2.2)\nA class \\(\\mathcal{G}\\) of prior distributions is conjugate for a class \\(\\mathcal{F}\\) of sampling densities if the posterior \\(\\pi(\\theta \\mid x) \\in \\mathcal{G}\\) whenever the prior \\(\\pi \\in \\mathcal{G}\\) and the sampling density \\(f \\in \\mathcal{F}\\).\nRunning example. \\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), \\(\\sigma^2\\) known. Prior: \\(\\theta \\sim \\mathcal{N}(\\mu, \\tau^2)\\). Posterior: \\[\n\\pi(\\theta \\mid x) = \\mathcal{N}\\!\\left(\\frac{\\tau^2}{\\sigma^2 + \\tau^2}\\, x + \\frac{\\sigma^2}{\\sigma^2 + \\tau^2}\\, \\mu,\\; \\frac{\\sigma^2 \\tau^2}{\\sigma^2 + \\tau^2}\\right).\n\\]\nThe posterior mean is a weighted average of \\(x\\) (data) and \\(\\mu\\) (prior mean), with weights proportional to precisions. The posterior variance is smaller than both \\(\\sigma^2\\) and \\(\\tau^2\\)."
+  },
+  {
+    "objectID": "lecture-04.html#improper-priors-and-formal-posteriors-berger-4.2.3",
+    "href": "lecture-04.html#improper-priors-and-formal-posteriors-berger-4.2.3",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "5.4 Improper priors and formal posteriors (Berger $$4.2.3)",
+    "text": "5.4 Improper priors and formal posteriors (Berger $$4.2.3)\nThe mechanics of Bayes’ theorem carry over to improper priors without modification. If \\(\\pi(\\theta)\\) is improper, define \\[\nh(x, \\theta) = f(x \\mid \\theta)\\, \\pi(\\theta), \\qquad m(x) = \\int_\\Theta f(x \\mid \\theta)\\, \\pi(\\theta)\\, d\\theta,\n\\] and, whenever \\(0 &lt; m(x) &lt; \\infty\\), \\[\n\\pi(\\theta \\mid x) = \\frac{f(x \\mid \\theta)\\, \\pi(\\theta)}{\\int_\\Theta f(x \\mid \\theta)\\, \\pi(\\theta)\\, d\\theta}.\n\\]\nThe resulting \\(\\pi(\\theta \\mid x)\\) is the formal posterior. It cannot rigorously be interpreted as a conditional distribution (since \\(\\pi\\) is not a probability measure), but the following heuristic supports the interpretation: if \\(\\{\\pi_n\\}\\) is a sequence of proper priors converging to \\(\\pi\\), then under regularity conditions \\(\\pi_n(\\theta \\mid x) \\to \\pi(\\theta \\mid x)\\)."
+  },
+  {
+    "objectID": "lecture-04.html#when-does-this-work",
+    "href": "lecture-04.html#when-does-this-work",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "5.5 When does this work?",
+    "text": "5.5 When does this work?\nThe computation is valid if and only if \\(m(x) = \\int f(x \\mid \\theta)\\, \\pi(\\theta)\\, d\\theta\\) is finite and positive for (almost) all \\(x\\). When it is, \\(\\pi(\\theta \\mid x)\\) is a proper probability density even though \\(\\pi(\\theta)\\) is not.\nNormal location – it works. \\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), \\(\\pi(\\theta) = 1\\). \\[\nm(x) = \\int_{-\\infty}^\\infty (2\\pi\\sigma^2)^{-1/2} \\exp\\!\\left\\{-\\frac{(x - \\theta)^2}{2\\sigma^2}\\right\\} d\\theta = 1.\n\\] The posterior is \\(\\pi(\\theta \\mid x) = \\mathcal{N}(x, \\sigma^2)\\). Proper.\nThis is the running normal example with the conjugate prior \\(\\mathcal{N}(\\mu, \\tau^2)\\) taken to its limit: as \\(\\tau^2 \\to \\infty\\), the posterior mean converges to \\(x\\) and the posterior variance converges to \\(\\sigma^2\\).\nNormal scale – it works. \\(X_1, \\ldots, X_n \\overset{\\text{iid}}{\\sim} \\mathcal{N}(0, \\sigma^2)\\), \\(\\pi(\\sigma) = \\sigma^{-1}\\), \\(n \\geq 1\\). \\[\nm(x) = \\int_0^\\infty \\sigma^{-n}(2\\pi)^{-n/2} \\exp\\!\\left\\{-\\frac{\\sum x_i^2}{2\\sigma^2}\\right\\}\\sigma^{-1}\\, d\\sigma.\n\\] The substitution \\(u = 1/\\sigma^2\\) shows this is a Gamma integral, finite when \\(n \\geq 1\\) and \\(\\sum x_i^2 &gt; 0\\). The posterior for \\(1/\\sigma^2\\) is Gamma; equivalently, the posterior for \\(\\sigma^2\\) is Inverse-Gamma. Proper.\nA case where it fails. \\(X \\sim \\mathcal{N}(\\theta, \\theta^2)\\) with \\(\\theta &gt; 0\\) (the mean equals the standard deviation). Consider \\(\\pi(\\theta) = \\theta^{-1}\\). \\[\nm(x) = \\int_0^\\infty \\frac{1}{\\theta^2\\sqrt{2\\pi}} \\exp\\!\\left\\{-\\frac{(x - \\theta)^2}{2\\theta^2}\\right\\} d\\theta.\n\\] The substitution \\(u = x/\\theta\\) transforms this to an integral that diverges. The formal posterior is improper, and the Bayes computation is not valid. This is a case where the “natural” noninformative prior fails."
+  },
+  {
+    "objectID": "lecture-04.html#posterior-expected-loss-berger-definition-8",
+    "href": "lecture-04.html#posterior-expected-loss-berger-definition-8",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "6.1 Posterior expected loss (Berger, Definition 8)",
+    "text": "6.1 Posterior expected loss (Berger, Definition 8)\nThe posterior expected loss of an action \\(a\\), when the posterior is \\(\\pi(\\theta \\mid x)\\), is \\[\n\\rho(\\pi(\\theta \\mid x),\\, a) = \\int_\\Theta L(\\theta, a)\\, dF^{\\pi(\\theta \\mid x)}(\\theta).\n\\]\nA (posterior) Bayes action \\(\\delta^\\pi(x)\\) is any action \\(a \\in \\mathcal{A}\\) that minimizes \\(\\rho(\\pi(\\theta \\mid x), a)\\)."
+  },
+  {
+    "objectID": "lecture-04.html#normal-form-equals-extensive-form-berger-result-1",
+    "href": "lecture-04.html#normal-form-equals-extensive-form-berger-result-1",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "6.2 Normal form equals extensive form (Berger, Result 1)",
+    "text": "6.2 Normal form equals extensive form (Berger, Result 1)\nResult 1. A Bayes rule \\(\\delta^\\pi\\) (i.e., a rule minimizing \\(r(\\pi, \\delta)\\)) can be found by choosing, for each \\(x\\) with \\(m(x) &gt; 0\\), an action that minimizes the posterior expected loss. The rule can be defined arbitrarily when \\(m(x) = 0\\).\nProof. By Fubini’s theorem (applicable since \\(L(\\theta, a) \\geq -K &gt; -\\infty\\) and all measures are finite): \\[\nr(\\pi, \\delta) = \\int_\\Theta R(\\theta, \\delta)\\, dF^\\pi(\\theta) = \\int_{\\{x:\\, m(x)&gt;0\\}} \\rho(\\pi(\\theta \\mid x),\\, \\delta(x))\\, dm(x).\n\\] A minimizing \\(\\delta\\) can be found by minimizing the integrand for each \\(x\\). \\(\\square\\)\nThis is the link between the normal form (minimizing \\(r(\\pi, \\delta)\\) over all decision rules) and the extensive form (minimizing posterior expected loss pointwise in \\(x\\)). They give the same answer. We will virtually always work in the extensive form."
+  },
+  {
+    "objectID": "lecture-04.html#generalized-bayes-rules-berger-definition-9",
+    "href": "lecture-04.html#generalized-bayes-rules-berger-definition-9",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "6.3 Generalized Bayes rules (Berger, Definition 9)",
+    "text": "6.3 Generalized Bayes rules (Berger, Definition 9)\nIf \\(\\pi\\) is an improper prior but \\(\\delta^\\pi(x)\\) minimizes the posterior expected loss for each \\(x\\) with \\(m(x) &gt; 0\\), then \\(\\delta^\\pi\\) is called a generalized Bayes rule.\nGeneralized Bayes rules inherit the computational machinery of Bayesian decision theory. Their decision-theoretic properties (admissibility, minimaxity) are more delicate. We study this in the next lecture (Section 4.8)."
+  },
+  {
+    "objectID": "lecture-04.html#bayes-estimators-under-squared-error-loss-berger-result-3",
+    "href": "lecture-04.html#bayes-estimators-under-squared-error-loss-berger-result-3",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "6.4 Bayes estimators under squared-error loss (Berger, Result 3)",
+    "text": "6.4 Bayes estimators under squared-error loss (Berger, Result 3)\nResult 3. If \\(L(\\theta, a) = (\\theta - a)^2\\), the Bayes rule is \\[\n\\delta^\\pi(x) = \\mathbb{E}^{\\pi(\\theta \\mid x)}[\\theta],\n\\] the mean of the posterior distribution.\nProof. The posterior expected loss is \\(\\mathbb{E}^{\\pi(\\theta \\mid x)}[(\\theta - a)^2]\\). Differentiate with respect to \\(a\\) and set to zero: \\[\n\\frac{d}{da}\\mathbb{E}^{\\pi(\\theta \\mid x)}[(\\theta - a)^2] = -2\\,\\mathbb{E}^{\\pi(\\theta \\mid x)}[\\theta] + 2a = 0,\n\\] so \\(a = \\mathbb{E}^{\\pi(\\theta \\mid x)}[\\theta]\\). \\(\\square\\)\nRunning example. \\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), prior \\(\\mathcal{N}(\\mu, \\tau^2)\\). The posterior mean is \\[\n\\delta^\\pi(x) = \\frac{\\tau^2}{\\sigma^2 + \\tau^2}\\, x + \\frac{\\sigma^2}{\\sigma^2 + \\tau^2}\\, \\mu.\n\\] A weighted average, shrinking \\(x\\) toward \\(\\mu\\). The amount of shrinkage depends on \\(\\tau^2/\\sigma^2\\): the more spread the prior, the less shrinkage.\nUnder the noninformative prior \\(\\pi(\\theta) = 1\\): the formal posterior is \\(\\mathcal{N}(x, \\sigma^2)\\), and the generalized Bayes estimator is \\(\\delta^0(x) = x\\). The sample mean. The noninformative prior recovers it automatically.\nQuadratic loss (multivariate). For \\(L(\\theta, a) = (\\theta - a)'Q(\\theta - a)\\) with \\(Q\\) positive definite, the Bayes estimator is still the posterior mean. The matrix \\(Q\\) has no effect on the point estimate."
+  },
+  {
+    "objectID": "lecture-04.html#bayes-estimators-under-absolute-error-loss-berger-result-5",
+    "href": "lecture-04.html#bayes-estimators-under-absolute-error-loss-berger-result-5",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "6.5 Bayes estimators under absolute-error loss (Berger, Result 5)",
+    "text": "6.5 Bayes estimators under absolute-error loss (Berger, Result 5)\nResult 5. If \\(L(\\theta, a) = |\\theta - a|\\), any median of \\(\\pi(\\theta \\mid x)\\) is a Bayes estimator.\nProof. Let \\(m\\) denote a median and let \\(a &gt; m\\). Then \\[\nL(\\theta, m) - L(\\theta, a) \\leq (m - a)\\,\\mathbf{1}_{(-\\infty, m]}(\\theta) + (a - m)\\,\\mathbf{1}_{(m, \\infty)}(\\theta).\n\\] Taking posterior expectations: \\[\n\\mathbb{E}^{\\pi(\\theta \\mid x)}[L(\\theta, m) - L(\\theta, a)] \\leq (m - a)\\,P(\\theta \\leq m \\mid x) + (a - m)\\,P(\\theta &gt; m \\mid x).\n\\] Since \\(m\\) is a median, \\(P(\\theta \\leq m \\mid x) \\geq 1/2\\) and \\(P(\\theta &gt; m \\mid x) \\leq 1/2\\). Since \\(m - a &lt; 0\\) and \\(a - m &gt; 0\\): \\[\n\\leq (m-a)\\cdot\\tfrac{1}{2} + (a-m)\\cdot\\tfrac{1}{2} = 0.\n\\] So \\(m\\) has posterior expected loss at most that of \\(a\\). A symmetric argument handles \\(a &lt; m\\). \\(\\square\\)\nRunning example. The \\(\\mathcal{N}(\\mu(x), \\sigma^2\\tau^2/(\\sigma^2 + \\tau^2))\\) posterior is symmetric, so the posterior mean and posterior median coincide. The Bayes estimator is the same under both losses.\nMore generally: when the posterior is unimodal and symmetric, the Bayes estimator under any loss of the form \\(L(|\\theta - a|)\\) with \\(L\\) increasing is the posterior median (which equals the posterior mean). The specific shape of \\(L\\) does not matter much, as long as under- and overestimation are treated symmetrically."
+  },
+  {
+    "objectID": "lecture-04.html#bayes-estimators-under-linear-loss-berger-result-6",
+    "href": "lecture-04.html#bayes-estimators-under-linear-loss-berger-result-6",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "6.6 Bayes estimators under linear loss (Berger, Result 6)",
+    "text": "6.6 Bayes estimators under linear loss (Berger, Result 6)\nResult 6. If \\[\nL(\\theta, a) = \\begin{cases} K_0(\\theta - a) & \\text{if } \\theta - a \\geq 0 \\\\ K_1(a - \\theta) & \\text{if } \\theta - a &lt; 0, \\end{cases}\n\\] any \\(\\bigl(K_0/(K_0 + K_1)\\bigr)\\)-fractile of \\(\\pi(\\theta \\mid x)\\) is a Bayes estimator.\nWhen \\(K_0 = K_1\\): the \\(1/2\\)-fractile is the median, recovering Result 5.\nWhen \\(K_0 &gt; K_1\\) (underestimation is worse): the Bayes estimator is a fractile above the median – the estimator shifts upward to protect against underestimation."
+  },
+  {
+    "objectID": "lecture-04.html#hypothesis-testing-under-01-loss-berger-4.4.3",
+    "href": "lecture-04.html#hypothesis-testing-under-01-loss-berger-4.4.3",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "6.7 Hypothesis testing under 0–1 loss (Berger $$4.4.3)",
+    "text": "6.7 Hypothesis testing under 0–1 loss (Berger $$4.4.3)\nTest \\(H_0: \\theta \\in \\Theta_0\\) vs. \\(H_1: \\theta \\in \\Theta_1\\). Actions: \\(a_0\\) (accept \\(H_0\\)), \\(a_1\\) (reject \\(H_0\\)). Under 0–1 loss:\n\\[\n\\mathbb{E}^{\\pi(\\theta \\mid x)}[L(\\theta, a_1)] = P(\\Theta_0 \\mid x), \\qquad \\mathbb{E}^{\\pi(\\theta \\mid x)}[L(\\theta, a_0)] = P(\\Theta_1 \\mid x).\n\\]\nThe Bayes action is to accept the hypothesis with the larger posterior probability.\nUnder weighted 0–1 loss (\\(K_0\\) for Type I, \\(K_1\\) for Type II): accept \\(H_0\\) if \\(K_0\\, P(\\Theta_0 \\mid x) \\leq K_1\\, P(\\Theta_1 \\mid x)\\), equivalently if the posterior odds \\(P(\\Theta_1 \\mid x)/P(\\Theta_0 \\mid x)\\) exceed \\(K_0/K_1\\)."
+  },
+  {
+    "objectID": "220B-2206.html",
+    "href": "220B-2206.html",
+    "title": "220B-2206",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "220B-2206.html#quarto",
+    "href": "220B-2206.html#quarto",
+    "title": "220B-2206",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "lecture4.html#recap",
+    "href": "lecture4.html#recap",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Recap",
+    "text": "Recap\nIn Lectures 1–2 we built the decision-theoretic framework: \\(\\Theta\\), \\(\\mathcal{A}\\), \\(L(\\theta, a)\\), \\(\\delta\\), \\(R(\\theta, \\delta)\\), \\(\\rho(\\pi, a)\\), \\(r(\\pi, \\delta)\\), admissibility, three selection principles, randomized rules.\nWe proved three structural results: sufficiency reduces the problem (Theorem 1), convex loss eliminates randomization (Theorem 3), and the Rao–Blackwell theorem combines them.\nIn Lecture 3 we grounded the framework: utility theory justifies the loss function and expected loss as the aggregation criterion.\nToday we address two topics:\n\nHow to construct priors when no prior information is available (Berger, Section 3.3).\nThe mechanics of Bayesian decision theory: how a prior and a loss function determine an optimal action (Berger, Sections 4.1–4.4).\n\nReading: Berger, Section 3.3; Sections 4.1–4.4."
+  },
+  {
+    "objectID": "lecture4.html#why-noninformative-priors-berger-3.3.1",
+    "href": "lecture4.html#why-noninformative-priors-berger-3.3.1",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Why noninformative priors? (Berger $$3.3.1)",
+    "text": "Why noninformative priors? (Berger $$3.3.1)\nIn many decision problems there is no natural prior distribution for \\(\\theta\\). A noninformative prior is intended to represent prior ignorance and let the data speak for themselves.\nWe need these priors because they appear throughout the rest of the course:\n\nAs candidates for least favorable priors in minimax theory (Chapter 5).\nAs the natural priors in invariant decision problems (Chapter 6).\nAs the object of admissibility analysis for generalized Bayes rules (Chapter 8)."
+  },
+  {
+    "objectID": "lecture4.html#two-problems-with-the-naive-approach",
+    "href": "lecture4.html#two-problems-with-the-naive-approach",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Two problems with the naive approach",
+    "text": "Two problems with the naive approach\nThe first idea: set \\(\\pi(\\theta) = \\text{constant}\\). This fails immediately.\nProblem 1: Parameterization dependence. Suppose \\(\\theta \\in \\mathbb{R}\\) and \\(\\pi(\\theta) = 1\\). Reparameterize: \\(\\eta = e^\\theta\\). The induced prior on \\(\\eta\\) is \\[\n\\pi^*(\\eta) = \\pi(\\log \\eta) \\cdot \\left|\\frac{d\\theta}{d\\eta}\\right| = \\frac{1}{\\eta},\n\\] which is not constant. “Constant” depends on the parameterization.\nProblem 2: Impropriety. On \\(\\mathbb{R}\\), a constant function does not integrate to a finite value. It is not a proper probability density."
+  },
+  {
+    "objectID": "lecture4.html#location-parameters-setup-berger-example-5",
+    "href": "lecture4.html#location-parameters-setup-berger-example-5",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Location parameters: setup (Berger, Example 5)",
+    "text": "Location parameters: setup (Berger, Example 5)\nSuppose \\(\\mathcal{X}= \\Theta = \\mathbb{R}^p\\) and the density of \\(X\\) has the form \\[\nf(x \\mid \\theta) = f(x - \\theta),\n\\] depending on the data only through \\(x - \\theta\\). Such a density is a location density, and \\(\\theta\\) is a location parameter.\nStandard examples:\n\n\\(\\mathcal{N}(\\theta, \\sigma^2)\\) with \\(\\sigma^2\\) known\n\\(t(\\alpha, \\theta, \\sigma^2)\\) with \\(\\alpha, \\sigma^2\\) known\n\\(\\text{Uniform}(\\theta - 1, \\theta + 1)\\)"
+  },
+  {
+    "objectID": "lecture4.html#location-parameters-derivation-via-invariance",
+    "href": "lecture4.html#location-parameters-derivation-via-invariance",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Location parameters: derivation via invariance",
+    "text": "Location parameters: derivation via invariance\nInstead of observing \\(X\\), observe \\(Y = X + c\\) for fixed \\(c \\in \\mathbb{R}^p\\). Define \\(\\mu = \\theta + c\\). Then \\(Y\\) has density \\(f(y - \\mu)\\): structurally identical to the original.\nIf the problems are structurally identical, they should share the same noninformative prior. Writing \\(\\pi\\) for both: \\[\nP_\\pi(\\theta \\in A) = P_\\pi(\\theta \\in A - c) \\quad \\text{for all } c \\in \\mathbb{R}^p.\n\\] Any prior satisfying this is location invariant. In terms of densities: \\[\n\\int_A \\pi(\\theta)\\, d\\theta = \\int_A \\pi(\\theta - c)\\, d\\theta \\quad \\text{for all } A.\n\\] This forces \\(\\pi(\\theta) = \\pi(\\theta - c)\\) for all \\(\\theta, c\\), so \\(\\pi\\) is constant.\n\nThe noninformative prior for a location parameter is \\(\\pi(\\theta) = 1\\).\n\nImproper on \\(\\mathbb{R}^p\\): \\(\\int_{\\mathbb{R}^p} 1\\, d\\theta = \\infty\\)."
+  },
+  {
+    "objectID": "lecture4.html#the-non-uniqueness-issue",
+    "href": "lecture4.html#the-non-uniqueness-issue",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "The non-uniqueness issue",
+    "text": "The non-uniqueness issue\nThe argument required \\(\\pi = \\pi^*\\) exactly. But \\(\\pi\\) and \\(K\\pi\\) produce identical posteriors. Relaxing to proportionality: \\[\n\\pi(\\theta) = h(c)\\, \\pi(\\theta - c)\n\\] for some positive function \\(h\\). Setting \\(\\theta = c\\): \\(h(c) = \\pi(c)/\\pi(0)\\), giving \\[\n\\pi(\\theta - c) = \\frac{\\pi(\\theta)\\, \\pi(0)}{\\pi(c)}.\n\\]\nAny such prior is relatively location invariant. Besides \\(\\pi(\\theta) = 1\\), this includes \\(\\pi(\\theta) = \\exp(\\theta' z)\\) for any fixed \\(z\\).\nSelecting among them requires more structure. For certain problems, the natural choice is the right invariant Haar measure on the transformation group. We return to this in Chapter 6."
+  },
+  {
+    "objectID": "lecture4.html#scale-parameters-berger-example-6",
+    "href": "lecture4.html#scale-parameters-berger-example-6",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Scale parameters (Berger, Example 6)",
+    "text": "Scale parameters (Berger, Example 6)\nA scale density has the form \\(f(x \\mid \\sigma) = \\sigma^{-1} g(x/\\sigma)\\), \\(\\sigma &gt; 0\\).\nStandard examples: \\(\\mathcal{N}(0, \\sigma^2)\\); \\(\\text{Gamma}(\\alpha, \\beta)\\) with \\(\\alpha\\) fixed; \\(\\text{Exponential}(\\sigma)\\).\nDerivation. Observe \\(Y = cX\\), \\(c &gt; 0\\), define \\(\\eta = c\\sigma\\). Then \\(Y\\) has density \\(\\eta^{-1}g(y/\\eta)\\): structurally identical. The scale-invariance condition: \\[\n\\pi(\\sigma) = c^{-1}\\pi(c^{-1}\\sigma) \\quad \\text{for all } \\sigma, c.\n\\] Setting \\(\\sigma = c\\): \\(\\pi(c) = c^{-1}\\pi(1)\\).\n\nThe noninformative prior for a scale parameter is \\(\\pi(\\sigma) = \\sigma^{-1}\\).\n\nImproper: \\(\\int_0^\\infty \\sigma^{-1}\\, d\\sigma = \\infty\\)."
+  },
+  {
+    "objectID": "lecture4.html#benfords-law-berger-example-6-continued",
+    "href": "lecture4.html#benfords-law-berger-example-6-continued",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Benford’s law (Berger, Example 6 continued)",
+    "text": "Benford’s law (Berger, Example 6 continued)\nThe distribution of first significant digits in tables of physical constants, population sizes, etc., follows Benford’s law: digit \\(i\\) occurs with relative frequency \\(\\log(1 + i^{-1})/\\log 10\\).\nIf table entries have a scale-invariant distribution \\(\\pi(u) = u^{-1}\\), normalizing on \\((1, 10)\\): \\[\nP(\\text{first digit} = i) = \\int_i^{i+1} \\frac{u^{-1}}{\\log 10}\\, du = \\frac{\\log(1 + i^{-1})}{\\log 10},\n\\] matching the empirical observation. As \\((a, b) \\to (0, \\infty)\\), the probabilities converge to the same values regardless of \\(a, b\\)."
+  },
+  {
+    "objectID": "lecture4.html#location-scale-problems-berger-example-7",
+    "href": "lecture4.html#location-scale-problems-berger-example-7",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Location-scale problems (Berger, Example 7)",
+    "text": "Location-scale problems (Berger, Example 7)\nDensity: \\(\\sigma^{-1}f\\bigl((x - \\theta)/\\sigma\\bigr)\\), both \\(\\theta \\in \\mathbb{R}\\) and \\(\\sigma &gt; 0\\) unknown. Two approaches:\nApproach 1 (Jeffreys’ rule). Fisher information for \\(\\mathcal{N}(\\theta, \\sigma^2)\\): \\[\n\\mathcal{I}(\\theta, \\sigma) = \\begin{pmatrix} \\sigma^{-2} & 0 \\\\ 0 & 2\\sigma^{-2} \\end{pmatrix}.\n\\] Gives \\(\\pi(\\theta, \\sigma) = [\\det \\mathcal{I}(\\theta, \\sigma)]^{1/2} \\propto \\sigma^{-2}\\).\nApproach 2 (Independence). Multiply marginal noninformative priors: \\(\\pi(\\theta, \\sigma) = 1 \\cdot \\sigma^{-1} = \\sigma^{-1}\\).\nThese disagree. Jeffreys himself recommended \\(\\sigma^{-1}\\), arguing that \\([\\det \\mathcal{I}]^{1/2}\\) sometimes gives inferior results in multiparameter settings. The prior \\(\\sigma^{-1}\\) is also the right invariant Haar density.\n\nConvention. For location-scale problems, use \\(\\pi(\\theta, \\sigma) = \\sigma^{-1}\\)."
+  },
+  {
+    "objectID": "lecture4.html#definition-scalar-case",
+    "href": "lecture4.html#definition-scalar-case",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Definition: scalar case",
+    "text": "Definition: scalar case\nFor a general one-dimensional parameter \\(\\theta\\), Jeffreys (1961) proposed \\[\n\\pi(\\theta) = [I(\\theta)]^{1/2},\n\\] where \\(I(\\theta)\\) is the expected Fisher information: \\[\nI(\\theta) = -\\mathbb{E}_{P_\\theta}\\!\\left[\\frac{\\partial^2 \\log f(X \\mid \\theta)}{\\partial \\theta^2}\\right].\n\\]"
+  },
+  {
+    "objectID": "lecture4.html#reparameterization-invariance",
+    "href": "lecture4.html#reparameterization-invariance",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Reparameterization invariance",
+    "text": "Reparameterization invariance\nUnder \\(\\eta = h(\\theta)\\), Fisher information transforms as \\(I_\\eta(\\eta) = I_\\theta(\\theta)/[h'(\\theta)]^2\\). The Jeffreys prior: \\[\n\\pi_\\eta(\\eta) = [I_\\eta(\\eta)]^{1/2} = \\frac{[I_\\theta(\\theta)]^{1/2}}{|h'(\\theta)|}.\n\\] The change-of-variables formula for densities gives the same expression: \\(\\pi_\\eta(\\eta) = \\pi_\\theta(\\theta)/|h'(\\theta)|\\).\nSo the Jeffreys prior is invariant under reparameterization: compute it in one parameterization and transform, or compute directly in the new parameterization – the answer is the same.\nThis is the property that distinguishes it from the naive constant prior."
+  },
+  {
+    "objectID": "lecture4.html#definition-vector-case",
+    "href": "lecture4.html#definition-vector-case",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Definition: vector case",
+    "text": "Definition: vector case\nFor \\(\\theta = (\\theta_1, \\ldots, \\theta_p)'\\): \\[\n\\pi(\\theta) = [\\det \\mathcal{I}(\\theta)]^{1/2},\n\\] where \\(\\mathcal{I}(\\theta)\\) is the \\(p \\times p\\) Fisher information matrix with \\((i,j)\\) entry \\[\n\\mathcal{I}_{ij}(\\theta) = -\\mathbb{E}_{P_\\theta}\\!\\left[\\frac{\\partial^2 \\log f(X \\mid \\theta)}{\\partial \\theta_i\\, \\partial \\theta_j}\\right].\n\\]"
+  },
+  {
+    "objectID": "lecture4.html#verification-for-location-and-scale",
+    "href": "lecture4.html#verification-for-location-and-scale",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Verification for location and scale",
+    "text": "Verification for location and scale\nLocation. If \\(f(x \\mid \\theta) = f(x - \\theta)\\), then \\(\\frac{\\partial^2}{\\partial \\theta^2}\\log f(x \\mid \\theta)\\) depends on \\(x - \\theta\\). The expectation under \\(P_\\theta\\) does not depend on \\(\\theta\\) (substitute \\(z = x - \\theta\\)). So \\(I(\\theta)\\) is constant, and \\(\\pi(\\theta) \\propto 1\\). Recovers the location-invariance result.\nScale. If \\(f(x \\mid \\sigma) = \\sigma^{-1}g(x/\\sigma)\\), a computation shows \\(I(\\sigma) \\propto \\sigma^{-2}\\), giving \\(\\pi(\\sigma) \\propto \\sigma^{-1}\\). Recovers the scale-invariance result.\nThe Jeffreys prior unifies both cases under a single formula."
+  },
+  {
+    "objectID": "lecture4.html#board-examples",
+    "href": "lecture4.html#board-examples",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Board examples",
+    "text": "Board examples\nBernoulli. \\(X \\sim \\text{Bernoulli}(\\theta)\\), \\(\\theta \\in (0,1)\\). \\[\nI(\\theta) = \\frac{1}{\\theta} + \\frac{1}{1-\\theta} = [\\theta(1-\\theta)]^{-1}. \\quad \\Longrightarrow \\quad \\pi(\\theta) = [\\theta(1-\\theta)]^{-1/2}.\n\\] This is a \\(\\text{Beta}(1/2, 1/2)\\) density. Proper.\nPoisson. \\(X \\sim \\text{Poisson}(\\theta)\\), \\(\\theta &gt; 0\\). \\[\nI(\\theta) = \\theta^{-1}. \\quad \\Longrightarrow \\quad \\pi(\\theta) = \\theta^{-1/2}. \\quad \\text{Improper.}\n\\]\nNormal mean. \\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), \\(\\sigma^2\\) known. \\[\nI(\\theta) = \\sigma^{-2}. \\quad \\Longrightarrow \\quad \\pi(\\theta) \\propto 1. \\quad \\text{Improper.}\n\\]"
+  },
+  {
+    "objectID": "lecture4.html#the-multiplicity-of-noninformative-priors-berger-example-8",
+    "href": "lecture4.html#the-multiplicity-of-noninformative-priors-berger-example-8",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "The multiplicity of noninformative priors (Berger, Example 8)",
+    "text": "The multiplicity of noninformative priors (Berger, Example 8)\nFor the binomial parameter \\(\\theta \\in [0,1]\\), several noninformative priors:\n\n\n\n\n\n\n\n\nPrior\nSource\nFormula\n\n\n\n\n\\(\\pi_1(\\theta) = 1\\)\nBayes, Laplace\n\\(\\text{Beta}(1,1)\\)\n\n\n\\(\\pi_2(\\theta) = [\\theta(1-\\theta)]^{-1}\\)\nNovick–Hall, Jaynes\nImproper\n\n\n\\(\\pi_3(\\theta) \\propto [\\theta(1-\\theta)]^{-1/2}\\)\nJeffreys, Box–Tiao\n\\(\\text{Beta}(1/2, 1/2)\\)\n\n\n\nAll three are defensible. For large \\(n\\), the posteriors are nearly identical. For small \\(n\\), they can differ – but for small \\(n\\) one typically has real prior information that should be used."
+  },
+  {
+    "objectID": "lecture4.html#criticisms-and-caveats-berger-3.3.4",
+    "href": "lecture4.html#criticisms-and-caveats-berger-3.3.4",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Criticisms and caveats (Berger $$3.3.4)",
+    "text": "Criticisms and caveats (Berger $$3.3.4)\n1. Violation of the Likelihood Principle. The Jeffreys prior depends on the expected Fisher information, which depends on the sampling model, not just the likelihood. Different experimental designs with the same likelihood can produce different Jeffreys priors.\n2. The marginalization paradox (Dawid, Stone, and Zidek, 1973). In certain multiparameter problems, marginalizing under an improper prior can give results that depend on the order of integration.\n3. Poor performance in high dimensions. The prior \\(\\pi(\\theta) = 1\\) for \\(\\theta \\in \\mathbb{R}^p\\) implicitly assigns increasing weight to large \\(\\|\\theta\\|^2\\) as \\(p\\) grows. The resulting generalized Bayes estimator \\(\\delta^0(x) = x\\) is inadmissible for \\(p \\geq 3\\) (James–Stein). Not an indictment of the Bayesian machinery; an indictment of the specific prior.\nConvention (restricted parameter spaces). If \\(\\theta &gt; 0\\) in a location problem, the noninformative prior is still \\(\\pi(\\theta) = 1\\) on \\((0, \\infty)\\). Inherited from the unrestricted space."
+  },
+  {
+    "objectID": "lecture4.html#why-this-section-matters-berger-4.1",
+    "href": "lecture4.html#why-this-section-matters-berger-4.1",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Why this section matters (Berger $$4.1)",
+    "text": "Why this section matters (Berger $$4.1)\nThe posterior distribution \\(\\pi(\\theta \\mid x)\\) is the key computational object in Bayesian decision theory. Once we have it, choosing the optimal action reduces to a one-dimensional minimization (Section 4.4).\nThe posterior is not the goal; it is the intermediate step.\nThe mechanics of computing posteriors and conjugate families are review from 220A. The new content is the treatment of improper priors (Section 4.2.3), which connects to the noninformative priors we just derived."
+  },
+  {
+    "objectID": "lecture4.html#bayes-theorem-and-conjugate-families-berger-4.2.14.2.2",
+    "href": "lecture4.html#bayes-theorem-and-conjugate-families-berger-4.2.14.2.2",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Bayes’ theorem and conjugate families (Berger $$4.2.1–4.2.2)",
+    "text": "Bayes’ theorem and conjugate families (Berger $$4.2.1–4.2.2)\nFor a proper prior \\(\\pi(\\theta)\\): \\[\n\\pi(\\theta \\mid x) = \\frac{f(x \\mid \\theta)\\, \\pi(\\theta)}{m(x)}, \\qquad m(x) = \\int_\\Theta f(x \\mid \\theta)\\, \\pi(\\theta)\\, d\\theta.\n\\]\nA class \\(\\mathcal{G}\\) of priors is conjugate for \\(\\mathcal{F}\\) if the posterior stays in \\(\\mathcal{G}\\).\nRunning example. \\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), prior \\(\\theta \\sim \\mathcal{N}(\\mu, \\tau^2)\\). Posterior: \\[\n\\pi(\\theta \\mid x) = \\mathcal{N}\\!\\left(\\frac{\\tau^2}{\\sigma^2 + \\tau^2}\\, x + \\frac{\\sigma^2}{\\sigma^2 + \\tau^2}\\, \\mu,\\; \\frac{\\sigma^2 \\tau^2}{\\sigma^2 + \\tau^2}\\right).\n\\]\nPosterior mean: weighted average of \\(x\\) and \\(\\mu\\), weights proportional to precisions. Posterior variance: smaller than both \\(\\sigma^2\\) and \\(\\tau^2\\)."
+  },
+  {
+    "objectID": "lecture4.html#improper-priors-and-formal-posteriors-berger-4.2.3",
+    "href": "lecture4.html#improper-priors-and-formal-posteriors-berger-4.2.3",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Improper priors and formal posteriors (Berger $$4.2.3)",
+    "text": "Improper priors and formal posteriors (Berger $$4.2.3)\nThe mechanics carry over. If \\(\\pi(\\theta)\\) is improper, define \\[\nm(x) = \\int_\\Theta f(x \\mid \\theta)\\, \\pi(\\theta)\\, d\\theta,\n\\] and whenever \\(0 &lt; m(x) &lt; \\infty\\): \\[\n\\pi(\\theta \\mid x) = \\frac{f(x \\mid \\theta)\\, \\pi(\\theta)}{m(x)}.\n\\]\nThis is the formal posterior. Not rigorously a conditional distribution, but justified heuristically: if \\(\\{\\pi_n\\}\\) is a sequence of proper priors converging to \\(\\pi\\), then \\(\\pi_n(\\theta \\mid x) \\to \\pi(\\theta \\mid x)\\) under regularity conditions.\nThe computation is valid if and only if \\(m(x)\\) is finite and positive for (almost) all \\(x\\)."
+  },
+  {
+    "objectID": "lecture4.html#normal-location-it-works",
+    "href": "lecture4.html#normal-location-it-works",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Normal location – it works",
+    "text": "Normal location – it works\n\\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), \\(\\pi(\\theta) = 1\\). \\[\nm(x) = \\int_{-\\infty}^\\infty (2\\pi\\sigma^2)^{-1/2} \\exp\\!\\left\\{-\\frac{(x - \\theta)^2}{2\\sigma^2}\\right\\} d\\theta = 1.\n\\] Posterior: \\(\\pi(\\theta \\mid x) = \\mathcal{N}(x, \\sigma^2)\\). Proper.\nThis is the running example with \\(\\mathcal{N}(\\mu, \\tau^2)\\) taken to its limit: as \\(\\tau^2 \\to \\infty\\), the posterior mean \\(\\to x\\), posterior variance \\(\\to \\sigma^2\\)."
+  },
+  {
+    "objectID": "lecture4.html#normal-scale-it-works",
+    "href": "lecture4.html#normal-scale-it-works",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Normal scale – it works",
+    "text": "Normal scale – it works\n\\(X_1, \\ldots, X_n \\overset{\\text{iid}}{\\sim} \\mathcal{N}(0, \\sigma^2)\\), \\(\\pi(\\sigma) = \\sigma^{-1}\\), \\(n \\geq 1\\). \\[\nm(x) = \\int_0^\\infty \\sigma^{-n}(2\\pi)^{-n/2} \\exp\\!\\left\\{-\\frac{\\sum x_i^2}{2\\sigma^2}\\right\\}\\sigma^{-1}\\, d\\sigma.\n\\] Substitution \\(u = 1/\\sigma^2\\): Gamma integral, finite when \\(n \\geq 1\\) and \\(\\sum x_i^2 &gt; 0\\).\nPosterior for \\(\\sigma^2\\): Inverse-Gamma. Proper."
+  },
+  {
+    "objectID": "lecture4.html#a-case-where-it-fails",
+    "href": "lecture4.html#a-case-where-it-fails",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "A case where it fails",
+    "text": "A case where it fails\n\\(X \\sim \\mathcal{N}(\\theta, \\theta^2)\\) with \\(\\theta &gt; 0\\) (the mean equals the standard deviation). Prior \\(\\pi(\\theta) = \\theta^{-1}\\). \\[\nm(x) = \\int_0^\\infty \\frac{1}{\\theta^2\\sqrt{2\\pi}} \\exp\\!\\left\\{-\\frac{(x - \\theta)^2}{2\\theta^2}\\right\\} d\\theta.\n\\] The substitution \\(u = x/\\theta\\) transforms this to an integral that diverges. The formal posterior is improper, and the Bayes computation is not valid.\nThis is a case where the “natural” noninformative prior fails."
+  },
+  {
+    "objectID": "lecture4.html#posterior-expected-loss-berger-definition-8",
+    "href": "lecture4.html#posterior-expected-loss-berger-definition-8",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Posterior expected loss (Berger, Definition 8)",
+    "text": "Posterior expected loss (Berger, Definition 8)\nThe posterior expected loss of an action \\(a\\), when the posterior is \\(\\pi(\\theta \\mid x)\\): \\[\n\\rho(\\pi(\\theta \\mid x),\\, a) = \\int_\\Theta L(\\theta, a)\\, dF^{\\pi(\\theta \\mid x)}(\\theta).\n\\]\nA (posterior) Bayes action \\(\\delta^\\pi(x)\\) is any action \\(a \\in \\mathcal{A}\\) that minimizes \\(\\rho(\\pi(\\theta \\mid x), a)\\)."
+  },
+  {
+    "objectID": "lecture4.html#normal-form-equals-extensive-form-berger-result-1",
+    "href": "lecture4.html#normal-form-equals-extensive-form-berger-result-1",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Normal form equals extensive form (Berger, Result 1)",
+    "text": "Normal form equals extensive form (Berger, Result 1)\nResult 1. A Bayes rule \\(\\delta^\\pi\\) (minimizing \\(r(\\pi, \\delta)\\)) can be found by choosing, for each \\(x\\) with \\(m(x) &gt; 0\\), an action minimizing the posterior expected loss.\nProof. By Fubini’s theorem (applicable since \\(L(\\theta, a) \\geq -K &gt; -\\infty\\)): \\[\nr(\\pi, \\delta) = \\int_\\Theta R(\\theta, \\delta)\\, dF^\\pi(\\theta) = \\int_{\\{x:\\, m(x)&gt;0\\}} \\rho(\\pi(\\theta \\mid x),\\, \\delta(x))\\, dm(x).\n\\] Minimize the integrand pointwise in \\(x\\). \\(\\square\\)\nThe normal form (minimizing \\(r(\\pi, \\delta)\\) over all rules) and the extensive form (minimizing posterior expected loss for each \\(x\\)) give the same answer. We will virtually always work in the extensive form."
+  },
+  {
+    "objectID": "lecture4.html#generalized-bayes-rules-berger-definition-9",
+    "href": "lecture4.html#generalized-bayes-rules-berger-definition-9",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Generalized Bayes rules (Berger, Definition 9)",
+    "text": "Generalized Bayes rules (Berger, Definition 9)\nIf \\(\\pi\\) is an improper prior but \\(\\delta^\\pi(x)\\) minimizes the posterior expected loss for each \\(x\\) with \\(m(x) &gt; 0\\), then \\(\\delta^\\pi\\) is called a generalized Bayes rule.\nGeneralized Bayes rules inherit the computational machinery of Bayesian decision theory. Their decision-theoretic properties (admissibility, minimaxity) are more delicate.\nWe study this in the next lecture (Section 4.8)."
+  },
+  {
+    "objectID": "lecture4.html#squared-error-loss-posterior-mean-berger-result-3",
+    "href": "lecture4.html#squared-error-loss-posterior-mean-berger-result-3",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Squared-error loss: posterior mean (Berger, Result 3)",
+    "text": "Squared-error loss: posterior mean (Berger, Result 3)\nResult 3. If \\(L(\\theta, a) = (\\theta - a)^2\\), the Bayes rule is \\[\n\\delta^\\pi(x) = \\mathbb{E}^{\\pi(\\theta \\mid x)}[\\theta].\n\\]\nProof. Differentiate \\(\\mathbb{E}^{\\pi(\\theta \\mid x)}[(\\theta - a)^2]\\) with respect to \\(a\\): \\[\n-2\\,\\mathbb{E}^{\\pi(\\theta \\mid x)}[\\theta] + 2a = 0 \\quad \\Longrightarrow \\quad a = \\mathbb{E}^{\\pi(\\theta \\mid x)}[\\theta]. \\quad \\square\n\\]\nFor quadratic loss \\(L(\\theta, a) = (\\theta - a)'Q(\\theta - a)\\) with \\(Q\\) positive definite, the Bayes estimator is still the posterior mean. The matrix \\(Q\\) has no effect on the point estimate."
+  },
+  {
+    "objectID": "lecture4.html#running-example-under-squared-error-loss",
+    "href": "lecture4.html#running-example-under-squared-error-loss",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Running example under squared-error loss",
+    "text": "Running example under squared-error loss\n\\(X \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), prior \\(\\mathcal{N}(\\mu, \\tau^2)\\). The posterior mean is \\[\n\\delta^\\pi(x) = \\frac{\\tau^2}{\\sigma^2 + \\tau^2}\\, x + \\frac{\\sigma^2}{\\sigma^2 + \\tau^2}\\, \\mu.\n\\] Weighted average, shrinking \\(x\\) toward \\(\\mu\\). The shrinkage depends on \\(\\tau^2/\\sigma^2\\): the more spread the prior, the less shrinkage.\nUnder the noninformative prior \\(\\pi(\\theta) = 1\\): formal posterior is \\(\\mathcal{N}(x, \\sigma^2)\\), generalized Bayes estimator is \\(\\delta^0(x) = x\\). The sample mean. The noninformative prior recovers it automatically.\nThis is Example 4 from Lecture 1 with \\(c = \\tau^2/(\\sigma^2 + \\tau^2)\\): the Bayes rule under a normal prior gives the “optimal shrinkage” we could not determine there."
+  },
+  {
+    "objectID": "lecture4.html#absolute-error-loss-posterior-median-berger-result-5",
+    "href": "lecture4.html#absolute-error-loss-posterior-median-berger-result-5",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Absolute-error loss: posterior median (Berger, Result 5)",
+    "text": "Absolute-error loss: posterior median (Berger, Result 5)\nResult 5. If \\(L(\\theta, a) = |\\theta - a|\\), any median of \\(\\pi(\\theta \\mid x)\\) is a Bayes estimator.\nProof. Let \\(m\\) be a median, \\(a &gt; m\\). Then \\[\nL(\\theta, m) - L(\\theta, a) \\leq (m-a)\\,\\mathbf{1}_{(-\\infty, m]}(\\theta) + (a-m)\\,\\mathbf{1}_{(m, \\infty)}(\\theta).\n\\] Posterior expectation: \\[\n\\leq (m-a)\\cdot P(\\theta \\leq m \\mid x) + (a-m)\\cdot P(\\theta &gt; m \\mid x) \\leq 0\n\\] since \\(P(\\theta \\leq m \\mid x) \\geq 1/2\\). Symmetric argument for \\(a &lt; m\\). \\(\\square\\)\nWhen the posterior is unimodal and symmetric, the posterior mean and median coincide. The Bayes estimator is the same under squared-error and absolute-error loss."
+  },
+  {
+    "objectID": "lecture4.html#linear-loss-posterior-fractile-berger-result-6",
+    "href": "lecture4.html#linear-loss-posterior-fractile-berger-result-6",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Linear loss: posterior fractile (Berger, Result 6)",
+    "text": "Linear loss: posterior fractile (Berger, Result 6)\nResult 6. If \\[\nL(\\theta, a) = \\begin{cases} K_0(\\theta - a) & \\text{if } \\theta \\geq a \\\\ K_1(a - \\theta) & \\text{if } \\theta &lt; a, \\end{cases}\n\\] any \\(\\bigl(K_0/(K_0 + K_1)\\bigr)\\)-fractile of \\(\\pi(\\theta \\mid x)\\) is a Bayes estimator.\n\\(K_0 = K_1\\): the \\(1/2\\)-fractile is the median (recovering Result 5).\n\\(K_0 &gt; K_1\\) (underestimation is worse): Bayes estimator is above the median.\n\\(K_0 &lt; K_1\\) (overestimation is worse): Bayes estimator is below the median."
+  },
+  {
+    "objectID": "lecture4.html#hypothesis-testing-under-01-loss-berger-4.4.3",
+    "href": "lecture4.html#hypothesis-testing-under-01-loss-berger-4.4.3",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Hypothesis testing under 0–1 loss (Berger $$4.4.3)",
+    "text": "Hypothesis testing under 0–1 loss (Berger $$4.4.3)\nTest \\(H_0: \\theta \\in \\Theta_0\\) vs. \\(H_1: \\theta \\in \\Theta_1\\). Actions: \\(a_0\\) (accept \\(H_0\\)), \\(a_1\\) (reject \\(H_0\\)).\nUnder 0–1 loss: \\[\n\\mathbb{E}^{\\pi(\\theta \\mid x)}[L(\\theta, a_1)] = P(\\Theta_0 \\mid x), \\qquad \\mathbb{E}^{\\pi(\\theta \\mid x)}[L(\\theta, a_0)] = P(\\Theta_1 \\mid x).\n\\]\nBayes action: accept the hypothesis with the larger posterior probability.\nUnder weighted 0–1 loss (\\(K_0\\) for Type I, \\(K_1\\) for Type II): accept \\(H_0\\) if \\[\nK_0\\, P(\\Theta_0 \\mid x) \\leq K_1\\, P(\\Theta_1 \\mid x),\n\\] equivalently if the posterior odds exceed \\(K_0/K_1\\)."
+  },
+  {
+    "objectID": "lecture4.html#summary",
+    "href": "lecture4.html#summary",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Summary",
+    "text": "Summary\nNoninformative priors (Berger $$3.3):\n\nLocation: \\(\\pi(\\theta) = 1\\). Scale: \\(\\pi(\\sigma) = \\sigma^{-1}\\). Location-scale: \\(\\pi(\\theta, \\sigma) = \\sigma^{-1}\\).\nGeneral: Jeffreys prior \\(\\pi(\\theta) = [I(\\theta)]^{1/2}\\), reparameterization invariant.\nImproper, can fail (improper posteriors), but succeed in most standard problems.\n\nBayesian decision theory (Berger $$4.4):\n\nPosterior expected loss \\(\\to\\) minimize pointwise in \\(x\\) (extensive form = normal form).\nSquared-error \\(\\to\\) posterior mean. Absolute-error \\(\\to\\) posterior median. 0–1 loss \\(\\to\\) larger posterior probability.\nGeneralized Bayes rules: same machinery, but admissibility not guaranteed.\n\nNext lecture: When is a Bayes rule admissible, and when does it fail? (Berger $$4.8.)"
+  },
+  {
+    "objectID": "lecture4.html#reading",
+    "href": "lecture4.html#reading",
+    "title": "Noninformative Priors and Bayesian Decision Theory",
+    "section": "Reading",
+    "text": "Reading\nBerger, Section 3.3; Sections 4.1–4.4.\nExercises: Berger 3.3 Exercises 8–17; Berger 4.4 Exercises 41, 43, 44."
+  },
+  {
+    "objectID": "lecture3.html#recap",
+    "href": "lecture3.html#recap",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Recap",
+    "text": "Recap\nIn Lectures 1–2 we built the decision-theoretic framework: \\(\\Theta\\), \\(\\mathcal{A}\\), \\(L(\\theta, a)\\), \\(\\delta\\), \\(R(\\theta, \\delta)\\), \\(\\rho(\\pi, a)\\), \\(r(\\pi, \\delta)\\), admissibility, three selection principles, randomized rules.\nWe proved three structural results: sufficiency reduces the problem (Theorem 1), convex loss eliminates randomization (Theorem 3), and the Rao–Blackwell theorem combines them.\nThroughout, we used the loss function \\(L(\\theta, a)\\) without asking two questions:\n\nWhere does the loss function come from?\nWhy is expected loss the right way to aggregate it?\n\nToday we address both. Reading: Berger, Chapter 2 (except Section 2.3)."
+  },
+  {
+    "objectID": "lecture3.html#two-problems-with-value",
+    "href": "lecture3.html#two-problems-with-value",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Two problems with “value”",
+    "text": "Two problems with “value”\nIn evaluating consequences of actions, two problems arise:\n1. Some consequences have no natural scale. Prestige, customer goodwill, reputation – important to businesses, but hard to quantify. A company considering selling its name-brand product in discount stores can estimate the immediate profit, but the long-term effect on prestige is much harder to measure.\n2. Even when a monetary scale exists, it may not reflect true value. Suppose you can do an unpleasant task for $100. At your current income, you might do it. After receiving a million dollars, you probably would not. The value of $100 depends on context."
+  },
+  {
+    "objectID": "lecture3.html#value-is-not-linear-in-money",
+    "href": "lecture3.html#value-is-not-linear-in-money",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Value is not linear in money",
+    "text": "Value is not linear in money\nSuppose you are offered a choice:\n\\(\\quad\\) (A) Receive $200,000 for certain.\n\\(\\quad\\) (B) A 50–50 chance of receiving $0 or $410,000.\nThe expected monetary value of (B) is $205,000 \\(&gt;\\) $200,000. Yet most people prefer (A).\nThis means the “value” of money is not linear in the amount. The marginal value of money is decreasing: the difference in value between $0 and $200,000 is larger than the difference between $200,000 and $410,000.\nWe need a way to assign numerical values to consequences that reflects the decision maker’s true preferences. That is what utility theory does."
+  },
+  {
+    "objectID": "lecture3.html#the-setup",
+    "href": "lecture3.html#the-setup",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The setup",
+    "text": "The setup\nLet \\(\\mathcal{R}\\) be the set of all possible consequences (rewards). Let \\(\\mathcal{P}\\) be the set of all probability distributions on \\(\\mathcal{R}\\).\nWe assume the decision maker can state preferences among elements of \\(\\mathcal{P}\\):\n\n\\(P_1 \\prec P_2\\): \\(P_2\\) is preferred to \\(P_1\\).\n\\(P_1 \\approx P_2\\): \\(P_1\\) and \\(P_2\\) are equivalent.\n\\(P_1 \\preceq P_2\\): \\(P_1\\) is not preferred to \\(P_2\\).\n\nA reward \\(r \\in \\mathcal{R}\\) is identified with the degenerate distribution \\((r)\\) that puts probability one on \\(r\\). So preferences apply to rewards as well.\nThe goal: find a function \\(U: \\mathcal{R}\\to \\mathbb{R}\\) such that \\(P_1 \\prec P_2 \\iff E^{P_1}[U(r)] &lt; E^{P_2}[U(r)]\\). Such a \\(U\\) is called a utility function."
+  },
+  {
+    "objectID": "lecture3.html#constructing-a-utility-function",
+    "href": "lecture3.html#constructing-a-utility-function",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Constructing a utility function",
+    "text": "Constructing a utility function\nAssume a utility function exists. Here is one way to build it.\nStep 1. Choose two rewards \\(r_1 \\prec r_2\\). Set \\(U(r_1) = 0\\), \\(U(r_2) = 1\\). (This fixes the scale.)\nStep 2. For any \\(r_3\\) with \\(r_1 \\prec r_3 \\prec r_2\\): find \\(\\alpha \\in (0,1)\\) such that \\(r_3 \\approx \\alpha(r_1) + (1-\\alpha)(r_2)\\). Then \\(U(r_3) = 1 - \\alpha\\).\nThe idea: \\(r_3\\) is equivalent to a gamble between \\(r_1\\) (prob. \\(\\alpha\\)) and \\(r_2\\) (prob. \\(1-\\alpha\\)). Then \\(U(r_3) = \\alpha U(r_1) + (1-\\alpha)U(r_2) = 1-\\alpha\\).\nStep 3. For \\(r_3 \\prec r_1\\): find \\(\\alpha\\) such that \\(r_1 \\approx \\alpha(r_3) + (1-\\alpha)(r_2)\\). Then \\(0 = \\alpha U(r_3) + (1-\\alpha)\\), giving \\(U(r_3) = -(1-\\alpha)/\\alpha &lt; 0\\).\nStep 4. For \\(r_2 \\prec r_3\\): find \\(\\alpha\\) such that \\(r_2 \\approx \\alpha(r_1) + (1-\\alpha)(r_3)\\). Then \\(1 = (1-\\alpha)U(r_3)\\), giving \\(U(r_3) = 1/(1-\\alpha) &gt; 1\\).\nStep 5 (Consistency). If \\(U(r_3), U(r_4), U(r_5)\\) are found with \\(r_3 \\prec r_4 \\prec r_5\\), find \\(\\alpha\\) with \\(r_4 \\approx \\alpha(r_3) + (1-\\alpha)(r_5)\\). Check: \\(U(r_4) = \\alpha U(r_3) + (1-\\alpha)U(r_5)\\)."
+  },
+  {
+    "objectID": "lecture3.html#example-football-or-movie-berger-ex.-1-setup",
+    "href": "lecture3.html#example-football-or-movie-berger-ex.-1-setup",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: football or movie? (Berger, Ex. 1) – setup",
+    "text": "Example: football or movie? (Berger, Ex. 1) – setup\nSaturday afternoon: \\(a_1\\) = football game, \\(a_2\\) = movie. There is a 40% chance of rain (\\(\\theta_1\\)).\nFour possible outcomes (action, weather):\n\n\n\n\n\n\n\n\n\\(r_1 = (a_1, \\theta_1)\\):\nfootball, rain\n(ruined afternoon – worst)\n\n\n\\(r_2 = (a_1, \\theta_2)\\):\nfootball, no rain\n(great day – best)\n\n\n\\(r_3 = (a_2, \\theta_1)\\):\nmovie, rain\n(good movie, smart choice)\n\n\n\\(r_4 = (a_2, \\theta_2)\\):\nmovie, no rain\n(okay, slight regret)\n\n\n\nPreference ordering: \\(r_1 \\prec r_4 \\prec r_3 \\prec r_2\\).\nFix the scale: \\(U(r_1) = 0\\), \\(U(r_2) = 1\\). We need to determine \\(U(r_3)\\) and \\(U(r_4)\\)."
+  },
+  {
+    "objectID": "lecture3.html#determining-the-utilities-two-subjective-judgments",
+    "href": "lecture3.html#determining-the-utilities-two-subjective-judgments",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Determining the utilities: two subjective judgments",
+    "text": "Determining the utilities: two subjective judgments\nTo find \\(U(r_4)\\) and \\(U(r_3)\\), the decision maker asks: “at what gamble between \\(r_1\\) (worst) and \\(r_2\\) (best) am I indifferent to this reward?”\nJudgment 1: “I am indifferent between \\(r_4\\) (movie, no rain) and a gamble that gives \\(r_1\\) with probability 0.4 and \\(r_2\\) with probability 0.6.” That is: \\(r_4 \\approx 0.4(r_1) + 0.6(r_2)\\).\nThis gives \\(U(r_4) = 0.4 \\cdot 0 + 0.6 \\cdot 1 = 0.6\\).\nJudgment 2: “I am indifferent between \\(r_3\\) (movie, rain) and a gamble that gives \\(r_1\\) with probability 0.3 and \\(r_2\\) with probability 0.7.” That is: \\(r_3 \\approx 0.3(r_1) + 0.7(r_2)\\).\nThis gives \\(U(r_3) = 0.3 \\cdot 0 + 0.7 \\cdot 1 = 0.7\\).\nBoth are subjective: they come from introspection. Different people could reasonably give different numbers."
+  },
+  {
+    "objectID": "lecture3.html#the-consistency-check-a-third-judgment-that-is-not-free",
+    "href": "lecture3.html#the-consistency-check-a-third-judgment-that-is-not-free",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The consistency check: a third judgment that is not free",
+    "text": "The consistency check: a third judgment that is not free\nWe now have \\(U(r_1) = 0\\), \\(U(r_4) = 0.6\\), \\(U(r_3) = 0.7\\), \\(U(r_2) = 1\\).\nJudgment 3: The decision maker compares \\(r_3\\) to a gamble between \\(r_4\\) and \\(r_2\\). “At what \\(\\alpha\\) am I indifferent between \\(r_3\\) and \\(\\alpha(r_4) + (1-\\alpha)(r_2)\\)?” After reflection: \\(\\alpha = 0.6\\).\nBut if the utility function from Judgments 1 and 2 is correct: \\[\nU(r_3) = \\alpha\\, U(r_4) + (1-\\alpha)\\, U(r_2) \\quad \\implies \\quad 0.7 = 0.6\\alpha + (1-\\alpha) \\quad \\implies \\quad \\alpha = 0.75.\n\\]\nThe decision maker said \\(\\alpha = 0.6\\), but the first two judgments force \\(\\alpha = 0.75\\). At least one of the three judgments is wrong.\nThis is the point: once two utilities are fixed, the third comparison is determined. If it disagrees, the decision maker must revise. Suppose the revised values are \\(U(r_4) = 0.6\\) and \\(U(r_3) = 0.75\\)."
+  },
+  {
+    "objectID": "lecture3.html#making-the-decision",
+    "href": "lecture3.html#making-the-decision",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Making the decision",
+    "text": "Making the decision\nWith the consistent utilities \\(U(r_1) = 0\\), \\(U(r_3) = 0.75\\), \\(U(r_4) = 0.6\\), \\(U(r_2) = 1\\):\nExpected utility of each action: \\[\n\\begin{aligned}\na_1 \\text{ (football)}: \\quad &\\pi(\\theta_1)\\, U(r_1) + \\pi(\\theta_2)\\, U(r_2) = (0.4)(0) + (0.6)(1) = 0.6. \\\\\na_2 \\text{ (movie)}: \\quad &\\pi(\\theta_1)\\, U(r_3) + \\pi(\\theta_2)\\, U(r_4) = (0.4)(0.75) + (0.6)(0.6) = 0.66.\n\\end{aligned}\n\\]\nThe optimal action: go to the movie.\nThe raw payoffs might have suggested football (higher upside). But the utility function encodes an asymmetry: a ruined afternoon (\\(U = 0\\)) is much worse than the mild regret of missing the game when it did not rain (\\(U = 0.6\\), not that bad). That asymmetry tips the balance."
+  },
+  {
+    "objectID": "lecture3.html#the-axioms",
+    "href": "lecture3.html#the-axioms",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The axioms",
+    "text": "The axioms\nFor the construction to work and for \\(U\\) to represent preferences, the preference ordering must be “rational.” Four axioms:\nAxiom 1 (Completeness): For any \\(P_1, P_2 \\in \\mathcal{P}\\), either \\(P_1 \\prec P_2\\), \\(P_1 \\approx P_2\\), or \\(P_2 \\prec P_1\\).\nAxiom 2 (Transitivity): If \\(P_1 \\preceq P_2\\) and \\(P_2 \\preceq P_3\\), then \\(P_1 \\preceq P_3\\).\nAxiom 3 (Independence): If \\(P_1 \\prec P_2\\), then \\(\\alpha P_1 + (1-\\alpha)P_3 \\prec \\alpha P_2 + (1-\\alpha)P_3\\) for any \\(0 &lt; \\alpha &lt; 1\\) and \\(P_3 \\in \\mathcal{P}\\).\nAxiom 4 (Continuity): If \\(P_1 \\prec P_2 \\prec P_3\\), there exist \\(0 &lt; \\alpha, \\beta &lt; 1\\) such that \\(\\alpha P_1 + (1-\\alpha) P_3 \\prec P_2\\) and \\(P_2 \\prec \\beta P_1 + (1-\\beta) P_3\\)."
+  },
+  {
+    "objectID": "lecture3.html#interpreting-the-axioms",
+    "href": "lecture3.html#interpreting-the-axioms",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Interpreting the axioms",
+    "text": "Interpreting the axioms\nAxioms 1 and 2 are housekeeping: you can compare anything, and your comparisons are transitive.\nAxiom 3 (independence): if you prefer \\(P_2\\) to \\(P_1\\), mixing both with the same \\(P_3\\) does not reverse the preference. Replacing \\(P_1\\) by \\(P_2\\) in one component of a mixture is always an improvement.\nAxiom 4 (continuity): no consequence is infinitely good or infinitely bad. If \\(P_1\\) were infinitely bad (say, death), there would be no \\(\\beta &gt; 0\\) for which you would risk it to get \\(P_3\\) instead of \\(P_2\\). But if death were truly infinitely bad, you would never cross a street, never drive a car. People do these things, so Axiom 4 holds in practice."
+  },
+  {
+    "objectID": "lecture3.html#the-existence-theorem-and-uniqueness",
+    "href": "lecture3.html#the-existence-theorem-and-uniqueness",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The existence theorem and uniqueness",
+    "text": "The existence theorem and uniqueness\nTheorem. If the preference ordering on \\(\\mathcal{P}\\) satisfies Axioms 1–4, there exists a utility function \\(U: \\mathcal{R}\\to \\mathbb{R}\\) such that \\(P_1 \\prec P_2 \\iff E^{P_1}[U(r)] &lt; E^{P_2}[U(r)]\\).\nWe will not prove existence. The proof constructs \\(U\\) using the procedure from earlier and verifies it represents the preferences; see DeGroot (1970). What we will prove are two properties of \\(U\\) that we will use.\nUniqueness up to affine transformation. If \\(U\\) is a utility function, so is \\(V = bU + c\\) for any \\(b &gt; 0\\). Proof: \\[\n\\begin{aligned}\nE^{P_1}[U(r)] &lt; E^{P_2}[U(r)] &\\iff b\\,E^{P_1}[U(r)] + c &lt; b\\,E^{P_2}[U(r)] + c \\\\\n&\\iff E^{P_1}[V(r)] &lt; E^{P_2}[V(r)].\n\\end{aligned}\n\\] The preferences are unchanged. \\(\\square\\)\nThis means \\(U(r_1) = 0\\), \\(U(r_2) = 1\\) is just a convention. Any two reference points give an equivalent utility function."
+  },
+  {
+    "objectID": "lecture3.html#axiom-4-implies-boundedness",
+    "href": "lecture3.html#axiom-4-implies-boundedness",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Axiom 4 implies boundedness",
+    "text": "Axiom 4 implies boundedness\nProposition. If the preference ordering satisfies Axioms 1–4 and \\(U\\) is the resulting utility function, then \\(U\\) is bounded.\nProof. Suppose for contradiction that \\(U\\) is unbounded above: there exist rewards \\(s_1, s_2, \\ldots \\in \\mathcal{R}\\) with \\(U(s_n) \\to \\infty\\).\nChoose weights \\(p_n &gt; 0\\) with \\(\\sum p_n = 1\\) and \\(\\sum p_n U(s_n) = \\infty\\). Define \\(Q = \\sum p_n (s_n) \\in \\mathcal{P}\\).\nPick any two rewards \\(a \\prec b\\). Since \\(E^Q[U(r)] = \\infty &gt; U(b) &gt; U(a)\\): \\((a) \\prec (b) \\prec Q\\).\nAxiom 4 says: there exists \\(\\alpha \\in (0,1)\\) such that \\(\\alpha(a) + (1-\\alpha)Q \\prec (b)\\), i.e., \\(E^{\\alpha(a) + (1-\\alpha)Q}[U(r)] &lt; U(b)\\).\nBut for any \\(\\alpha \\in (0,1)\\): \\[\nE^{\\alpha(a)+(1-\\alpha)Q}[U(r)] = \\alpha\\, U(a) + (1-\\alpha)\\cdot \\infty = \\infty &gt; U(b).\n\\]\nNo such \\(\\alpha\\) exists. Contradiction. Symmetric argument for unbounded below. \\(\\square\\)"
+  },
+  {
+    "objectID": "lecture3.html#properties-of-monetary-utility-functions",
+    "href": "lecture3.html#properties-of-monetary-utility-functions",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Properties of monetary utility functions",
+    "text": "Properties of monetary utility functions\nWhen \\(\\mathcal{R}\\) is monetary, \\(U(r)\\) typically has four features:\n(i) Linear for small \\(r\\). You would take a fair coin flip on \\(\\pm 25\\) cents. So \\(U\\) is linear near \\(r = 0\\). The “small” range depends on context: 25 cents for a student, millions for a large corporation.\n(ii) Concave for \\(r &gt; 0\\). Marginal utility \\(U'(r)\\) is decreasing, so \\(U''(r) &lt; 0\\). An additional $100 matters more at $0 than at $1,000,000.\n(iii) Different shape for gains and losses. People are often risk-seeking for losses (willing to gamble to avoid a sure loss) but risk-averse for gains. So \\(U(r)\\) may be convex for \\(r &lt; 0\\) and concave for \\(r &gt; 0\\).\n(iv) Bounded. Few would assign meaningful additional utility to money beyond $10\\(^{100}\\)."
+  },
+  {
+    "objectID": "lecture3.html#defining-the-loss-function",
+    "href": "lecture3.html#defining-the-loss-function",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Defining the loss function",
+    "text": "Defining the loss function\nEach pair \\((\\theta, a)\\) determines a consequence with utility \\(U(\\theta, a)\\). The loss function is \\[\nL(\\theta, a) = -U(\\theta, a).\n\\]\nMaximizing expected utility is the same as minimizing expected loss.\nThis is the answer to our second question: why is expected loss the right criterion? Because the utility axioms tell us that expected utility is the correct measure of value under uncertainty. Expected loss inherits this justification.\nThe Bayesian expected loss \\(\\rho(\\pi, a) = E_\\pi[L(\\theta, a)]\\), the risk \\(R(\\theta, \\delta) = E_{P_\\theta}[L(\\theta, \\delta(X))]\\), the Bayes risk \\(r(\\pi, \\delta)\\), and the loss of a randomized rule – all are justified by this construction."
+  },
+  {
+    "objectID": "lecture3.html#when-consequences-are-random",
+    "href": "lecture3.html#when-consequences-are-random",
+    "title": "Utility Theory and the Loss Function",
+    "section": "When consequences are random",
+    "text": "When consequences are random\nOften \\((\\theta, a)\\) does not directly determine the consequence. The reward is a random variable \\(Z\\) whose distribution depends on \\(\\theta\\) and \\(a\\). Then: \\[\nU(\\theta, a) = E_{\\theta, a}[U(Z)], \\qquad L(\\theta, a) = -E_{\\theta, a}[U(Z)].\n\\]\nOne must be careful to define \\(Z\\) as the overall outcome."
+  },
+  {
+    "objectID": "lecture3.html#properties-of-loss-functions",
+    "href": "lecture3.html#properties-of-loss-functions",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Properties of loss functions",
+    "text": "Properties of loss functions\n1. Invariance under positive affine transformations.\nClaim: If \\(L\\) is a valid loss, then \\(L' = bL + c\\) (with \\(b &gt; 0\\)) leads to the same optimal decisions.\nProof (for the Bayes case): The Bayes risk is \\(r(\\pi, \\delta) = E_\\pi[R(\\theta, \\delta)]\\). Under \\(L'\\): \\[\nr'(\\pi, \\delta) = E_\\pi[E_{P_\\theta}[bL(\\theta, \\delta(X)) + c]] = b\\, r(\\pi, \\delta) + c.\n\\] Since \\(b &gt; 0\\), the \\(\\delta\\) minimizing \\(r'\\) is the same as the \\(\\delta\\) minimizing \\(r\\). \\(\\square\\)\nSo we can always shift: \\(L^*(\\theta, a) = L(\\theta, a) - \\inf_{\\theta, a} L(\\theta, a) \\geq 0\\).\n2. Regret loss. \\(\\ell(\\theta, a) = \\sup_{a'} U(\\theta, a') - U(\\theta, a)\\): the loss relative to the best action for the true \\(\\theta\\). Equivalent to \\(L\\) for Bayesian analysis, but can differ for minimax. We return to this in Chapter 5."
+  },
+  {
+    "objectID": "lecture3.html#i.-squared-error-loss",
+    "href": "lecture3.html#i.-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "I. Squared-error loss",
+    "text": "I. Squared-error loss\n\\[\nL(\\theta, a) = (\\theta - a)^2.\n\\]\nWhy is it popular?\n\nFor unbiased estimators, \\(R(\\theta, \\delta) = \\mathrm{Var}_{P_\\theta}(\\delta(X))\\).\nRelated to least squares theory.\nCalculations are often tractable.\n\nBerger’s honest assessment: “The above justifications really have very little merit. The question is – does squared-error loss typically reflect the true loss?”\nSquared-error loss is unbounded and convex: large errors are penalized very severely. In many real problems, the loss should be bounded and (for large errors) concave."
+  },
+  {
+    "objectID": "lecture3.html#example-risk-of-the-sample-mean-under-squared-error-loss",
+    "href": "lecture3.html#example-risk-of-the-sample-mean-under-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: risk of the sample mean under squared-error loss",
+    "text": "Example: risk of the sample mean under squared-error loss\n\\(X_1, \\ldots, X_n \\overset{\\text{iid}}{\\sim} \\mathcal{N}(\\theta, \\sigma^2)\\). Estimate \\(\\theta\\) with \\(\\delta(X) = \\bar{X}\\).\n\\[\nR(\\theta, \\delta) = E_{P_\\theta}[(\\theta - \\bar{X})^2] = \\mathrm{Var}_{P_\\theta}(\\bar{X}) = \\frac{\\sigma^2}{n}.\n\\]\nThe risk is constant in \\(\\theta\\) and decreases in \\(n\\).\nNow consider \\(\\delta_c(X) = c\\bar{X}\\) for some \\(c \\in \\mathbb{R}\\). Then: \\[\nR(\\theta, \\delta_c) = E_{P_\\theta}[(\\theta - c\\bar{X})^2] = c^2 \\frac{\\sigma^2}{n} + (1-c)^2\\theta^2.\n\\]\nThis is Example 4 from Lecture 1 with \\(\\sigma^2/n\\) replacing 1. Minimizing over \\(c\\) for a fixed \\(\\theta\\) gives \\(c^* = \\theta^2/(\\theta^2 + \\sigma^2/n)\\), which depends on \\(\\theta\\) – so the “optimal shrinkage” is unknowable. This tension is at the heart of the course."
+  },
+  {
+    "objectID": "lecture3.html#the-taylor-expansion-defense-of-squared-error-loss",
+    "href": "lecture3.html#the-taylor-expansion-defense-of-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "The Taylor expansion defense of squared-error loss",
+    "text": "The Taylor expansion defense of squared-error loss\nSuppose the reward is \\(Z = h(\\theta - a, Y)\\), where \\(Y\\) is an extraneous random variable independent of \\(\\theta\\) and \\(a\\).\nDefine \\(g(\\theta - a, Y) = U(h(\\theta - a, Y))\\). If the sample information is accurate, \\(\\theta - a\\) is small. Expand in Taylor series around 0: \\[\ng(\\theta - a, Y) \\approx g(0, Y) + (\\theta - a)g'(0, Y) + \\tfrac{1}{2}(\\theta - a)^2 g''(0, Y).\n\\]\nTaking expectations over \\(Y\\), with \\(K_1 = -E_Y[g(0,Y)]\\), \\(K_2 = -E_Y[g'(0,Y)]\\), \\(K_3 = -\\frac{1}{2}E_Y[g''(0,Y)]\\): \\[\nL(\\theta, a) \\approx K_1 + K_2(\\theta - a) + K_3(\\theta - a)^2.\n\\]\nCompleting the square (assuming \\(K_3 &gt; 0\\)): \\[\nL(\\theta, a) \\approx K_3\\!\\left(\\theta - a + \\frac{K_2}{2K_3}\\right)^{\\!2} + \\text{const}.\n\\]\nWhen \\(K_2 = 0\\) (symmetric utility, symmetric \\(Y\\)), this is squared-error loss."
+  },
+  {
+    "objectID": "lecture3.html#variants-of-squared-error-loss",
+    "href": "lecture3.html#variants-of-squared-error-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Variants of squared-error loss",
+    "text": "Variants of squared-error loss\nWeighted squared-error: \\(L(\\theta, a) = w(\\theta)(\\theta - a)^2\\).\nThe weight \\(w(\\theta) &gt; 0\\) encodes that a given error may matter more at some parameter values than others.\nExample: estimating a Poisson rate \\(\\theta &gt; 0\\). An error of 1 when \\(\\theta = 0.5\\) is much worse than the same error when \\(\\theta = 100\\). The weight \\(w(\\theta) = 1/\\theta^2\\) normalizes for scale, giving \\(L(\\theta, a) = (1 - a/\\theta)^2\\).\nQuadratic loss (multivariate): \\(\\theta, a \\in \\mathbb{R}^p\\), \\(Q\\) positive definite: \\[\nL(\\theta, a) = (\\theta - a)^T Q (\\theta - a).\n\\] When \\(Q = I_p\\): \\(L(\\theta, a) = \\|\\theta - a\\|^2 = \\sum_{i=1}^p (\\theta_i - a_i)^2\\).\nWe will encounter this extensively when studying Stein estimation in Week 6."
+  },
+  {
+    "objectID": "lecture3.html#example-risk-under-sum-of-squares-loss",
+    "href": "lecture3.html#example-risk-under-sum-of-squares-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: risk under sum-of-squares loss",
+    "text": "Example: risk under sum-of-squares loss\n\\(X = (X_1, \\ldots, X_p)^T\\) with \\(X_i \\overset{\\text{ind}}{\\sim} \\mathcal{N}(\\theta_i, 1)\\). Estimate \\(\\theta = (\\theta_1, \\ldots, \\theta_p)^T\\) under \\(L(\\theta, a) = \\|\\theta - a\\|^2\\).\nThe natural estimator is \\(\\delta(X) = X\\). Its risk: \\[\nR(\\theta, \\delta) = E_{P_\\theta}\\!\\left[\\sum_{i=1}^p (\\theta_i - X_i)^2\\right] = \\sum_{i=1}^p \\mathrm{Var}_{P_\\theta}(X_i) = p.\n\\]\nConstant risk \\(p\\), for all \\(\\theta\\). Seems hard to improve.\nFor \\(p \\geq 3\\), James and Stein (1960) showed the estimator \\[\n\\delta^{JS}(X) = \\left(1 - \\frac{p-2}{\\|X\\|^2}\\right)X\n\\] satisfies \\(R(\\theta, \\delta^{JS}) &lt; p\\) for all \\(\\theta\\). The sample mean vector is inadmissible.\nThat result is one of the major topics later in the course."
+  },
+  {
+    "objectID": "lecture3.html#ii.-linear-loss",
+    "href": "lecture3.html#ii.-linear-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "II. Linear loss",
+    "text": "II. Linear loss\nWhen the utility function is approximately linear over the relevant range, the loss is approximately linear: \\[\nL(\\theta, a) = \\begin{cases} K_0(\\theta - a) & \\text{if } \\theta - a \\geq 0 \\quad \\text{(underestimation)} \\\\ K_1(a - \\theta) & \\text{if } \\theta - a &lt; 0 \\quad \\text{(overestimation)} \\end{cases}\n\\]\n\\(K_0\\) and \\(K_1\\) encode the relative cost of under- vs. overestimation.\nWhen \\(K_0 = K_1\\): absolute error loss \\(L(\\theta, a) = |\\theta - a|\\).\nRecall Lecture 1, Example 1 (drug company): \\(L(\\theta_2, a) = (\\theta_2 - a)\\) if \\(\\theta_2 \\geq a\\) and \\(2(a - \\theta_2)\\) if \\(\\theta_2 &lt; a\\). That is linear loss with \\(K_0 = 1\\), \\(K_1 = 2\\): overestimating the adverse reaction rate costs twice as much as underestimating."
+  },
+  {
+    "objectID": "lecture3.html#example-car-production-under-linear-loss-berger-ex.-17",
+    "href": "lecture3.html#example-car-production-under-linear-loss-berger-ex.-17",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: car production under linear loss (Berger, Ex. 17)",
+    "text": "Example: car production under linear loss (Berger, Ex. 17)\nA company must decide how many cars \\(a\\) to produce. The demand is \\(\\theta\\) (unknown). Each car sold yields $500 profit. Each unsold car yields $1000 loss.\nIf \\(a \\leq \\theta\\): all cars sell, profit = \\(500a\\). If \\(a &gt; \\theta\\): \\(\\theta\\) cars sell, \\(a - \\theta\\) do not, profit = \\(500\\theta - 1000(a - \\theta) = 1500\\theta - 1000a\\).\nThe regret loss: the best action is \\(a^* = \\theta\\), profit \\(500\\theta\\). So: \\[\n\\ell(\\theta, a) = 500\\theta - \\text{profit}(a) = \\begin{cases} 500(\\theta - a) & \\text{if } a \\leq \\theta \\\\ 1500(a - \\theta) & \\text{if } a &gt; \\theta \\end{cases}\n\\]\nLinear loss with \\(K_0 = 500\\) (opportunity cost of underproduction) and \\(K_1 = 1500\\) (cost of overproduction). The asymmetry \\(K_1/K_0 = 3\\) reflects that unsold cars are much worse than unmet demand."
+  },
+  {
+    "objectID": "lecture3.html#iii.-01-loss",
+    "href": "lecture3.html#iii.-01-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "III. “0–1” loss",
+    "text": "III. “0–1” loss\nIn a two-action problem (testing \\(H_0: \\theta \\in \\Theta_0\\) vs. \\(H_1: \\theta \\in \\Theta_1\\)): \\[\nL(\\theta, a_i) = \\begin{cases} 0 & \\text{if } \\theta \\in \\Theta_i \\quad \\text{(correct)} \\\\ 1 & \\text{if } \\theta \\in \\Theta_j,\\ j \\neq i \\quad \\text{(incorrect)} \\end{cases}\n\\]\nThe risk function:\n\nWhen \\(\\theta \\in \\Theta_0\\): \\(R(\\theta, \\delta) = P_{P_\\theta}(\\text{reject } H_0)\\) = Type I error.\nWhen \\(\\theta \\in \\Theta_1\\): \\(R(\\theta, \\delta) = P_{P_\\theta}(\\text{accept } H_0)\\) = Type II error.\n\nThe Bayesian expected loss: \\(\\rho(\\pi^*, a_i) = 1 - \\pi^*(\\theta \\in \\Theta_i)\\).\nThe error probabilities from Neyman–Pearson theory are the risk function under 0–1 loss. Testing is a special case of decision theory."
+  },
+  {
+    "objectID": "lecture3.html#example-01-loss-for-a-normal-test",
+    "href": "lecture3.html#example-01-loss-for-a-normal-test",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: 0–1 loss for a normal test",
+    "text": "Example: 0–1 loss for a normal test\n\\(X \\sim \\mathcal{N}(\\theta, 1)\\). Test \\(H_0: \\theta \\leq 0\\) vs. \\(H_1: \\theta &gt; 0\\). Decision rule: reject \\(H_0\\) if \\(X &gt; c\\).\nUnder 0–1 loss, the risk function is: \\[\nR(\\theta, \\delta_c) = \\begin{cases}\nP_{P_\\theta}(X &gt; c) = 1 - \\Phi(c - \\theta) & \\text{if } \\theta \\leq 0 \\quad \\text{(Type I)} \\\\\nP_{P_\\theta}(X \\leq c) = \\Phi(c - \\theta) & \\text{if } \\theta &gt; 0 \\quad \\text{(Type II)}\n\\end{cases}\n\\]\nFor \\(c = 0\\): Type I error at \\(\\theta = 0\\) is \\(1 - \\Phi(0) = 0.5\\). Type II error at \\(\\theta = 1\\) is \\(\\Phi(-1) = 0.159\\).\nFor \\(c = 1.645\\): Type I error at \\(\\theta = 0\\) is \\(1 - \\Phi(1.645) = 0.05\\). Type II error at \\(\\theta = 1\\) is \\(\\Phi(0.645) = 0.74\\).\nThe familiar tradeoff: making \\(R(\\theta, \\delta_c)\\) smaller for \\(\\theta \\leq 0\\) makes it larger for \\(\\theta &gt; 0\\), and vice versa."
+  },
+  {
+    "objectID": "lecture3.html#weighted-01-loss",
+    "href": "lecture3.html#weighted-01-loss",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Weighted 0–1 loss",
+    "text": "Weighted 0–1 loss\nBasic 0–1 loss treats the two types of error as equally costly. Rarely appropriate.\nMore realistic: \\[\nL(\\theta, a_i) = \\begin{cases} 0 & \\text{if correct} \\\\ K_0 & \\text{if reject } H_0 \\text{ when } \\theta \\in \\Theta_0 \\quad \\text{(Type I)} \\\\ K_1 & \\text{if accept } H_0 \\text{ when } \\theta \\in \\Theta_1 \\quad \\text{(Type II)} \\end{cases}\n\\]\nThe risk becomes \\(K_0 \\cdot P_{P_\\theta}(\\text{reject } H_0)\\) for \\(\\theta \\in \\Theta_0\\) and \\(K_1 \\cdot P_{P_\\theta}(\\text{accept } H_0)\\) for \\(\\theta \\in \\Theta_1\\).\nEven more generally: \\(L(\\theta, a_1) = K_0(\\theta)\\) for \\(\\theta \\in \\Theta_0\\), where the weight varies within \\(\\Theta_0\\). A Type I error may be worse when \\(\\theta\\) is far from the boundary."
+  },
+  {
+    "objectID": "lecture3.html#inference-as-a-decision-problem",
+    "href": "lecture3.html#inference-as-a-decision-problem",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Inference as a decision problem",
+    "text": "Inference as a decision problem\nThe most common use: representing standard inference measures as a risk or Bayesian expected loss.\nConfidence sets. Let \\(C(x) \\subseteq \\Theta\\) be a confidence rule. The loss \\[\nL(\\theta, C(x)) = 1 - I_{C(x)}(\\theta) = \\begin{cases} 0 & \\text{if } \\theta \\in C(x) \\\\ 1 & \\text{if } \\theta \\notin C(x) \\end{cases}\n\\] gives \\(R(\\theta, C) = 1 - P_{P_\\theta}(C(X) \\ni \\theta)\\): one minus the coverage probability.\nUnbiased estimation. Restrict to \\(E_{P_\\theta}[\\delta(X)] = \\theta\\) for all \\(\\theta\\). Under squared-error loss, \\(R(\\theta, \\delta) = \\mathrm{Var}_{P_\\theta}(\\delta(X))\\). The UMVUE is the decision-theoretic optimum within this restricted class."
+  },
+  {
+    "objectID": "lecture3.html#scoring-rules-quantifying-how-well-confidence-works-berger-ex.-4",
+    "href": "lecture3.html#scoring-rules-quantifying-how-well-confidence-works-berger-ex.-4",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Scoring rules: quantifying how well confidence works (Berger, Ex. 4)",
+    "text": "Scoring rules: quantifying how well confidence works (Berger, Ex. 4)\nA confidence rule \\(C(x)\\) with associated “confidence” \\(\\alpha(x)\\): after observing \\(x\\), we report \\(\\alpha(x)\\) as our confidence that \\(\\theta \\in C(x)\\). How well does \\(\\alpha(x)\\) reflect reality?\nThe Brier scoring rule: \\[\nL_C(\\theta, \\alpha(x)) = (\\alpha(x) - I_{C(x)}(\\theta))^2.\n\\]\nWhen \\(\\theta \\in C(x)\\): loss = \\((\\alpha(x) - 1)^2\\), small if \\(\\alpha(x) \\approx 1\\).\nWhen \\(\\theta \\notin C(x)\\): loss = \\(\\alpha(x)^2\\), small if \\(\\alpha(x) \\approx 0\\)."
+  },
+  {
+    "objectID": "lecture3.html#scoring-rules-continued-constant-vs.-data-dependent-confidence",
+    "href": "lecture3.html#scoring-rules-continued-constant-vs.-data-dependent-confidence",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Scoring rules continued: constant vs. data-dependent confidence",
+    "text": "Scoring rules continued: constant vs. data-dependent confidence\nConsider two choices: \\(\\alpha_1(x) \\equiv 0.75\\) (constant frequentist confidence) and \\(\\alpha_2(x) = P(\\theta \\in C(x) \\mid x)\\) (posterior probability, data-dependent confidence).\nThe risk of \\(\\alpha_1\\) under the Brier loss: \\[\nR(\\theta, \\alpha_1) = E_{P_\\theta}\\!\\left[(\\alpha_1(X) - I_{C(X)}(\\theta))^2\\right] = 0.75^2 \\cdot P_{P_\\theta}(\\theta \\notin C(X)) + 0.25^2 \\cdot P_{P_\\theta}(\\theta \\in C(X)).\n\\]\nIf \\(C\\) has 75% coverage: \\(R(\\theta, \\alpha_1) = (0.5625)(0.25) + (0.0625)(0.75) = 0.1875\\).\nThe data-dependent confidence \\(\\alpha_2\\) adapts: it reports high confidence when the data are informative and low confidence when they are not. One can show (and we will, in Chapter 4) that \\(R(\\theta, \\alpha_2) \\leq R(\\theta, \\alpha_1)\\) for all \\(\\theta\\), with strict inequality for some \\(\\theta\\).\nThe data-dependent confidence dominates the constant one."
+  },
+  {
+    "objectID": "lecture3.html#predictive-problems",
+    "href": "lecture3.html#predictive-problems",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Predictive problems",
+    "text": "Predictive problems\nPredict a future observation \\(Z\\) with density \\(g(z|\\theta)\\), given data \\(X\\) with density \\(f(x|\\theta)\\).\nIf the original loss is \\(L^*(z, a)\\), the decision-theoretic reduction is: \\[\nL(\\theta, a) = E_{P_\\theta}[L^*(Z, a)] = \\int L^*(z, a)\\, g(z|\\theta)\\, dz.\n\\]\nThis reduces the prediction problem to a standard decision problem involving \\(\\theta\\)."
+  },
+  {
+    "objectID": "lecture3.html#example-predicting-a-normal-berger-ex.-5",
+    "href": "lecture3.html#example-predicting-a-normal-berger-ex.-5",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Example: predicting a normal (Berger, Ex. 5)",
+    "text": "Example: predicting a normal (Berger, Ex. 5)\n\\(Z \\sim \\mathcal{N}(\\theta, \\sigma^2)\\), \\(L^*(z, a) = (z - a)^2\\). Then: \\[\n\\begin{aligned}\nL(\\theta, a) &= E_{P_\\theta}[(Z - a)^2] = E_{P_\\theta}[(Z - \\theta)^2 + 2(Z - \\theta)(\\theta - a) + (\\theta - a)^2] \\\\\n&= \\mathrm{Var}_{P_\\theta}(Z) + 0 + (\\theta - a)^2 = \\sigma^2 + (\\theta - a)^2.\n\\end{aligned}\n\\]\nThe cross term vanishes because \\(E_{P_\\theta}[Z - \\theta] = 0\\).\nThe constant \\(\\sigma^2\\) does not affect the choice of \\(a\\). Choosing the best prediction of \\(Z\\) is equivalent to estimating \\(\\theta\\) under squared-error loss.\nThis partially explains why decision theorists focus on estimating unknown parameters rather than predicting future observations: prediction problems often reduce to parameter estimation through the loss."
+  },
+  {
+    "objectID": "lecture3.html#vector-valued-loss-functions-berger-2.4.5",
+    "href": "lecture3.html#vector-valued-loss-functions-berger-2.4.5",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Vector-valued loss functions (Berger $$2.4.5)",
+    "text": "Vector-valued loss functions (Berger $$2.4.5)\nIt is common to evaluate procedures by several criteria simultaneously. Confidence sets are judged by (size, coverage). Sequential analysis deals with (sample size, decision loss). In medical problems one may face (“death of a patient”, “cost of a drug”) – consequences that are very hard to compare.\nThe practical response. Carry the components separately. If one action dominates on all components, the choice is clear. If not, perform the utility comparison only when needed. Initial subjective inputs may be crude, with refinements made only if necessary.\nThe theoretical reduction (Cohen and Sackrowitz, 1984). Given a vector loss \\(L = (L_1, \\ldots, L_J)\\), treat the component index \\(i\\) as a parameter. Define: \\[\nL^*((\\theta, i),\\, a) = L_i(\\theta, a).\n\\] This \\(L^*\\) is real-valued. Risk dominance with respect to \\(L^*\\) (for all \\(\\theta\\) and all \\(i\\)) corresponds exactly to vector risk dominance. So decision-theoretic results established for scalar losses transfer directly to vector-valued losses."
+  },
+  {
+    "objectID": "lecture3.html#criticisms-berger-2.5",
+    "href": "lecture3.html#criticisms-berger-2.5",
+    "title": "Utility Theory and the Loss Function",
+    "section": "Criticisms (Berger $$2.5)",
+    "text": "Criticisms (Berger $$2.5)\nThe use of loss functions is criticized on three grounds.\n(i) Inappropriate for inference. Some statisticians argue that inference problems (estimation, testing, confidence sets) should not be forced into a decision-theoretic mold. We discussed this in Section 1.2 and Subsection 2.4.3. The moderate position: better inference can often be done with the aid of decision-theoretic machinery and inference losses. The decision-theoretic framework does not replace inference; it can sharpen it.\n(ii) Difficult. Utility analyses can be very hard. The amount of effort depends on the importance of the problem and on the degree of refinement needed. If the conclusion is clear with only crude utility specifications, a detailed construction is unnecessary. If the loss does significantly affect the conclusion, there is no alternative to a careful utility analysis.\n(iii) Nonrobust. Any loss used in practice is uncertain. Small changes in the loss function could, in principle, change the optimal action. The response: perform a sensitivity analysis. Show that reasonable variations in \\(L\\) do not markedly affect the conclusion. If they do, that is a signal that even more careful consideration of the loss is needed, not that the decision-theoretic approach is wrong."
+  }
+]
