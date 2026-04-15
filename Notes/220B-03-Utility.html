@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.5.57">
+
+  <meta name="author" content="Stats 220B">
+  <title>Stats 220B: Statistical Decision Theory – Utility Theory and the Loss Function</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Utility Theory and the Loss Function</h1>
+  <p class="subtitle">STAT 220B – Lecture 3</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Stats 220B 
+</div>
+</div>
+</div>
+
+</section>
+<section class="slide level2">
+
+
+</section>
+<section>
+<section id="where-we-left-off" class="title-slide slide level1 center">
+<h1>Where we left off</h1>
+
+</section>
+<section id="recap" class="slide level2">
+<h2>Recap</h2>
+<p>In Lectures 1–2 we built the decision-theoretic framework: <span class="math inline">\(\Theta\)</span>, <span class="math inline">\(\mathcal{A}\)</span>, <span class="math inline">\(L(\theta, a)\)</span>, <span class="math inline">\(\delta\)</span>, <span class="math inline">\(R(\theta, \delta)\)</span>, <span class="math inline">\(\rho(\pi, a)\)</span>, <span class="math inline">\(r(\pi, \delta)\)</span>, admissibility, three selection principles, randomized rules.</p>
+<p>We proved three structural results: sufficiency reduces the problem (Theorem 1), convex loss eliminates randomization (Theorem 3), and the Rao–Blackwell theorem combines them.</p>
+<p>Throughout, we used the loss function <span class="math inline">\(L(\theta, a)\)</span> without asking two questions:</p>
+<ul>
+<li>Where does the loss function come from?</li>
+<li>Why is <em>expected</em> loss the right way to aggregate it?</li>
+</ul>
+<p>Today we address both. <strong>Reading:</strong> Berger, Chapter 2 (except Section 2.3).</p>
+</section></section>
+<section>
+<section id="why-utility-berger-2.1" class="title-slide slide level1 center">
+<h1>Why utility? (Berger $$2.1)</h1>
+
+</section>
+<section id="two-problems-with-value" class="slide level2">
+<h2>Two problems with “value”</h2>
+<p>In evaluating consequences of actions, two problems arise:</p>
+<p><strong>1. Some consequences have no natural scale.</strong> Prestige, customer goodwill, reputation – important to businesses, but hard to quantify. A company considering selling its name-brand product in discount stores can estimate the immediate profit, but the long-term effect on prestige is much harder to measure.</p>
+<p><strong>2. Even when a monetary scale exists, it may not reflect true value.</strong> Suppose you can do an unpleasant task for $100. At your current income, you might do it. After receiving a million dollars, you probably would not. The value of $100 depends on context.</p>
+</section>
+<section id="value-is-not-linear-in-money" class="slide level2">
+<h2>Value is not linear in money</h2>
+<p>Suppose you are offered a choice:</p>
+<p><span class="math inline">\(\quad\)</span> (A) Receive $200,000 for certain.</p>
+<p><span class="math inline">\(\quad\)</span> (B) A 50–50 chance of receiving $0 or $410,000.</p>
+<p>The expected monetary value of (B) is $205,000 <span class="math inline">\(&gt;\)</span> $200,000. Yet most people prefer (A).</p>
+<p>This means the “value” of money is not linear in the amount. The marginal value of money is decreasing: the difference in value between $0 and $200,000 is larger than the difference between $200,000 and $410,000.</p>
+<p>We need a way to assign numerical values to consequences that reflects the decision maker’s true preferences. That is what utility theory does.</p>
+</section></section>
+<section>
+<section id="utility-theory-berger-2.2" class="title-slide slide level1 center">
+<h1>Utility theory (Berger $$2.2)</h1>
+
+</section>
+<section id="the-setup" class="slide level2">
+<h2>The setup</h2>
+<p>Let <span class="math inline">\(\mathcal{R}\)</span> be the set of all possible consequences (rewards). Let <span class="math inline">\(\mathcal{P}\)</span> be the set of all probability distributions on <span class="math inline">\(\mathcal{R}\)</span>.</p>
+<p>We assume the decision maker can state preferences among elements of <span class="math inline">\(\mathcal{P}\)</span>:</p>
+<ul>
+<li><span class="math inline">\(P_1 \prec P_2\)</span>: <span class="math inline">\(P_2\)</span> is preferred to <span class="math inline">\(P_1\)</span>.</li>
+<li><span class="math inline">\(P_1 \approx P_2\)</span>: <span class="math inline">\(P_1\)</span> and <span class="math inline">\(P_2\)</span> are equivalent.</li>
+<li><span class="math inline">\(P_1 \preceq P_2\)</span>: <span class="math inline">\(P_1\)</span> is not preferred to <span class="math inline">\(P_2\)</span>.</li>
+</ul>
+<p>A reward <span class="math inline">\(r \in \mathcal{R}\)</span> is identified with the degenerate distribution <span class="math inline">\((r)\)</span> that puts probability one on <span class="math inline">\(r\)</span>. So preferences apply to rewards as well.</p>
+<p>The goal: find a function <span class="math inline">\(U: \mathcal{R}\to \mathbb{R}\)</span> such that <span class="math inline">\(P_1 \prec P_2 \iff E^{P_1}[U(r)] &lt; E^{P_2}[U(r)]\)</span>. Such a <span class="math inline">\(U\)</span> is called a <strong>utility function</strong>.</p>
+</section>
+<section id="constructing-a-utility-function" class="slide level2">
+<h2>Constructing a utility function</h2>
+<p>Assume a utility function exists. Here is one way to build it.</p>
+<p><strong>Step 1.</strong> Choose two rewards <span class="math inline">\(r_1 \prec r_2\)</span>. Set <span class="math inline">\(U(r_1) = 0\)</span>, <span class="math inline">\(U(r_2) = 1\)</span>. (This fixes the scale.)</p>
+<p><strong>Step 2.</strong> For any <span class="math inline">\(r_3\)</span> with <span class="math inline">\(r_1 \prec r_3 \prec r_2\)</span>: find <span class="math inline">\(\alpha \in (0,1)\)</span> such that <span class="math inline">\(r_3 \approx \alpha(r_1) + (1-\alpha)(r_2)\)</span>. Then <span class="math inline">\(U(r_3) = 1 - \alpha\)</span>.</p>
+<p>The idea: <span class="math inline">\(r_3\)</span> is equivalent to a gamble between <span class="math inline">\(r_1\)</span> (prob. <span class="math inline">\(\alpha\)</span>) and <span class="math inline">\(r_2\)</span> (prob. <span class="math inline">\(1-\alpha\)</span>). Then <span class="math inline">\(U(r_3) = \alpha U(r_1) + (1-\alpha)U(r_2) = 1-\alpha\)</span>.</p>
+<p><strong>Step 3.</strong> For <span class="math inline">\(r_3 \prec r_1\)</span>: find <span class="math inline">\(\alpha\)</span> such that <span class="math inline">\(r_1 \approx \alpha(r_3) + (1-\alpha)(r_2)\)</span>. Then <span class="math inline">\(0 = \alpha U(r_3) + (1-\alpha)\)</span>, giving <span class="math inline">\(U(r_3) = -(1-\alpha)/\alpha &lt; 0\)</span>.</p>
+<p><strong>Step 4.</strong> For <span class="math inline">\(r_2 \prec r_3\)</span>: find <span class="math inline">\(\alpha\)</span> such that <span class="math inline">\(r_2 \approx \alpha(r_1) + (1-\alpha)(r_3)\)</span>. Then <span class="math inline">\(1 = (1-\alpha)U(r_3)\)</span>, giving <span class="math inline">\(U(r_3) = 1/(1-\alpha) &gt; 1\)</span>.</p>
+<p><strong>Step 5 (Consistency).</strong> If <span class="math inline">\(U(r_3), U(r_4), U(r_5)\)</span> are found with <span class="math inline">\(r_3 \prec r_4 \prec r_5\)</span>, find <span class="math inline">\(\alpha\)</span> with <span class="math inline">\(r_4 \approx \alpha(r_3) + (1-\alpha)(r_5)\)</span>. Check: <span class="math inline">\(U(r_4) = \alpha U(r_3) + (1-\alpha)U(r_5)\)</span>.</p>
+</section>
+<section id="example-football-or-movie-berger-ex.-1-setup" class="slide level2">
+<h2>Example: football or movie? (Berger, Ex. 1) – setup</h2>
+<p>Saturday afternoon: <span class="math inline">\(a_1\)</span> = football game, <span class="math inline">\(a_2\)</span> = movie. There is a 40% chance of rain (<span class="math inline">\(\theta_1\)</span>).</p>
+<p>Four possible outcomes (action, weather):</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 25%">
+<col style="width: 39%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(r_1 = (a_1, \theta_1)\)</span>:</td>
+<td style="text-align: left;">football, rain</td>
+<td style="text-align: left;">(ruined afternoon – worst)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(r_2 = (a_1, \theta_2)\)</span>:</td>
+<td style="text-align: left;">football, no rain</td>
+<td style="text-align: left;">(great day – best)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(r_3 = (a_2, \theta_1)\)</span>:</td>
+<td style="text-align: left;">movie, rain</td>
+<td style="text-align: left;">(good movie, smart choice)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(r_4 = (a_2, \theta_2)\)</span>:</td>
+<td style="text-align: left;">movie, no rain</td>
+<td style="text-align: left;">(okay, slight regret)</td>
+</tr>
+</tbody>
+</table>
+<p>Preference ordering: <span class="math inline">\(r_1 \prec r_4 \prec r_3 \prec r_2\)</span>.</p>
+<p>Fix the scale: <span class="math inline">\(U(r_1) = 0\)</span>, <span class="math inline">\(U(r_2) = 1\)</span>. We need to determine <span class="math inline">\(U(r_3)\)</span> and <span class="math inline">\(U(r_4)\)</span>.</p>
+</section>
+<section id="determining-the-utilities-two-subjective-judgments" class="slide level2">
+<h2>Determining the utilities: two subjective judgments</h2>
+<p>To find <span class="math inline">\(U(r_4)\)</span> and <span class="math inline">\(U(r_3)\)</span>, the decision maker asks: “at what gamble between <span class="math inline">\(r_1\)</span> (worst) and <span class="math inline">\(r_2\)</span> (best) am I indifferent to this reward?”</p>
+<p><strong>Judgment 1:</strong> “I am indifferent between <span class="math inline">\(r_4\)</span> (movie, no rain) and a gamble that gives <span class="math inline">\(r_1\)</span> with probability 0.4 and <span class="math inline">\(r_2\)</span> with probability 0.6.” That is: <span class="math inline">\(r_4 \approx 0.4(r_1) + 0.6(r_2)\)</span>.</p>
+<p>This gives <span class="math inline">\(U(r_4) = 0.4 \cdot 0 + 0.6 \cdot 1 = 0.6\)</span>.</p>
+<p><strong>Judgment 2:</strong> “I am indifferent between <span class="math inline">\(r_3\)</span> (movie, rain) and a gamble that gives <span class="math inline">\(r_1\)</span> with probability 0.3 and <span class="math inline">\(r_2\)</span> with probability 0.7.” That is: <span class="math inline">\(r_3 \approx 0.3(r_1) + 0.7(r_2)\)</span>.</p>
+<p>This gives <span class="math inline">\(U(r_3) = 0.3 \cdot 0 + 0.7 \cdot 1 = 0.7\)</span>.</p>
+<p>Both are subjective: they come from introspection. Different people could reasonably give different numbers.</p>
+</section>
+<section id="the-consistency-check-a-third-judgment-that-is-not-free" class="slide level2">
+<h2>The consistency check: a third judgment that is not free</h2>
+<p>We now have <span class="math inline">\(U(r_1) = 0\)</span>, <span class="math inline">\(U(r_4) = 0.6\)</span>, <span class="math inline">\(U(r_3) = 0.7\)</span>, <span class="math inline">\(U(r_2) = 1\)</span>.</p>
+<p><strong>Judgment 3:</strong> The decision maker compares <span class="math inline">\(r_3\)</span> to a gamble between <span class="math inline">\(r_4\)</span> and <span class="math inline">\(r_2\)</span>. “At what <span class="math inline">\(\alpha\)</span> am I indifferent between <span class="math inline">\(r_3\)</span> and <span class="math inline">\(\alpha(r_4) + (1-\alpha)(r_2)\)</span>?” After reflection: <span class="math inline">\(\alpha = 0.6\)</span>.</p>
+<p>But if the utility function from Judgments 1 and 2 is correct: <span class="math display">\[
+U(r_3) = \alpha\, U(r_4) + (1-\alpha)\, U(r_2) \quad \implies \quad 0.7 = 0.6\alpha + (1-\alpha) \quad \implies \quad \alpha = 0.75.
+\]</span></p>
+<p>The decision maker said <span class="math inline">\(\alpha = 0.6\)</span>, but the first two judgments force <span class="math inline">\(\alpha = 0.75\)</span>. At least one of the three judgments is wrong.</p>
+<p>This is the point: once two utilities are fixed, the third comparison is <em>determined</em>. If it disagrees, the decision maker must revise. Suppose the revised values are <span class="math inline">\(U(r_4) = 0.6\)</span> and <span class="math inline">\(U(r_3) = 0.75\)</span>.</p>
+</section>
+<section id="making-the-decision" class="slide level2">
+<h2>Making the decision</h2>
+<p>With the consistent utilities <span class="math inline">\(U(r_1) = 0\)</span>, <span class="math inline">\(U(r_3) = 0.75\)</span>, <span class="math inline">\(U(r_4) = 0.6\)</span>, <span class="math inline">\(U(r_2) = 1\)</span>:</p>
+<p>Expected utility of each action: <span class="math display">\[
+\begin{aligned}
+a_1 \text{ (football)}: \quad &amp;\pi(\theta_1)\, U(r_1) + \pi(\theta_2)\, U(r_2) = (0.4)(0) + (0.6)(1) = 0.6. \\
+a_2 \text{ (movie)}: \quad &amp;\pi(\theta_1)\, U(r_3) + \pi(\theta_2)\, U(r_4) = (0.4)(0.75) + (0.6)(0.6) = 0.66.
+\end{aligned}
+\]</span></p>
+<p>The optimal action: go to the movie.</p>
+<p>The raw payoffs might have suggested football (higher upside). But the utility function encodes an asymmetry: a ruined afternoon (<span class="math inline">\(U = 0\)</span>) is much worse than the mild regret of missing the game when it did not rain (<span class="math inline">\(U = 0.6\)</span>, not that bad). That asymmetry tips the balance.</p>
+</section>
+<section id="the-axioms" class="slide level2">
+<h2>The axioms</h2>
+<p>For the construction to work and for <span class="math inline">\(U\)</span> to represent preferences, the preference ordering must be “rational.” Four axioms:</p>
+<p><strong>Axiom 1 (Completeness):</strong> For any <span class="math inline">\(P_1, P_2 \in \mathcal{P}\)</span>, either <span class="math inline">\(P_1 \prec P_2\)</span>, <span class="math inline">\(P_1 \approx P_2\)</span>, or <span class="math inline">\(P_2 \prec P_1\)</span>.</p>
+<p><strong>Axiom 2 (Transitivity):</strong> If <span class="math inline">\(P_1 \preceq P_2\)</span> and <span class="math inline">\(P_2 \preceq P_3\)</span>, then <span class="math inline">\(P_1 \preceq P_3\)</span>.</p>
+<p><strong>Axiom 3 (Independence):</strong> If <span class="math inline">\(P_1 \prec P_2\)</span>, then <span class="math inline">\(\alpha P_1 + (1-\alpha)P_3 \prec \alpha P_2 + (1-\alpha)P_3\)</span> for any <span class="math inline">\(0 &lt; \alpha &lt; 1\)</span> and <span class="math inline">\(P_3 \in \mathcal{P}\)</span>.</p>
+<p><strong>Axiom 4 (Continuity):</strong> If <span class="math inline">\(P_1 \prec P_2 \prec P_3\)</span>, there exist <span class="math inline">\(0 &lt; \alpha, \beta &lt; 1\)</span> such that <span class="math inline">\(\alpha P_1 + (1-\alpha) P_3 \prec P_2\)</span> and <span class="math inline">\(P_2 \prec \beta P_1 + (1-\beta) P_3\)</span>.</p>
+</section>
+<section id="interpreting-the-axioms" class="slide level2">
+<h2>Interpreting the axioms</h2>
+<p>Axioms 1 and 2 are housekeeping: you can compare anything, and your comparisons are transitive.</p>
+<p><strong>Axiom 3</strong> (independence): if you prefer <span class="math inline">\(P_2\)</span> to <span class="math inline">\(P_1\)</span>, mixing both with the same <span class="math inline">\(P_3\)</span> does not reverse the preference. Replacing <span class="math inline">\(P_1\)</span> by <span class="math inline">\(P_2\)</span> in one component of a mixture is always an improvement.</p>
+<p><strong>Axiom 4</strong> (continuity): no consequence is infinitely good or infinitely bad. If <span class="math inline">\(P_1\)</span> were infinitely bad (say, death), there would be no <span class="math inline">\(\beta &gt; 0\)</span> for which you would risk it to get <span class="math inline">\(P_3\)</span> instead of <span class="math inline">\(P_2\)</span>. But if death were truly infinitely bad, you would never cross a street, never drive a car. People do these things, so Axiom 4 holds in practice.</p>
+</section>
+<section id="the-existence-theorem-and-uniqueness" class="slide level2">
+<h2>The existence theorem and uniqueness</h2>
+<p><strong>Theorem.</strong> If the preference ordering on <span class="math inline">\(\mathcal{P}\)</span> satisfies Axioms 1–4, there exists a utility function <span class="math inline">\(U: \mathcal{R}\to \mathbb{R}\)</span> such that <span class="math inline">\(P_1 \prec P_2 \iff E^{P_1}[U(r)] &lt; E^{P_2}[U(r)]\)</span>.</p>
+<p>We will not prove existence. The proof constructs <span class="math inline">\(U\)</span> using the procedure from earlier and verifies it represents the preferences; see DeGroot (1970). What we will prove are two properties of <span class="math inline">\(U\)</span> that we will use.</p>
+<p><strong>Uniqueness up to affine transformation.</strong> If <span class="math inline">\(U\)</span> is a utility function, so is <span class="math inline">\(V = bU + c\)</span> for any <span class="math inline">\(b &gt; 0\)</span>. <em>Proof:</em> <span class="math display">\[
+\begin{aligned}
+E^{P_1}[U(r)] &lt; E^{P_2}[U(r)] &amp;\iff b\,E^{P_1}[U(r)] + c &lt; b\,E^{P_2}[U(r)] + c \\
+&amp;\iff E^{P_1}[V(r)] &lt; E^{P_2}[V(r)].
+\end{aligned}
+\]</span> The preferences are unchanged. <span class="math inline">\(\square\)</span></p>
+<p>This means <span class="math inline">\(U(r_1) = 0\)</span>, <span class="math inline">\(U(r_2) = 1\)</span> is just a convention. Any two reference points give an equivalent utility function.</p>
+</section>
+<section id="axiom-4-implies-boundedness" class="slide level2">
+<h2>Axiom 4 implies boundedness</h2>
+<p><strong>Proposition.</strong> If the preference ordering satisfies Axioms 1–4 and <span class="math inline">\(U\)</span> is the resulting utility function, then <span class="math inline">\(U\)</span> is bounded.</p>
+<p><em>Proof.</em> Suppose for contradiction that <span class="math inline">\(U\)</span> is unbounded above: there exist rewards <span class="math inline">\(s_1, s_2, \ldots \in \mathcal{R}\)</span> with <span class="math inline">\(U(s_n) \to \infty\)</span>.</p>
+<p>Choose weights <span class="math inline">\(p_n &gt; 0\)</span> with <span class="math inline">\(\sum p_n = 1\)</span> and <span class="math inline">\(\sum p_n U(s_n) = \infty\)</span>. Define <span class="math inline">\(Q = \sum p_n (s_n) \in \mathcal{P}\)</span>.</p>
+<p>Pick any two rewards <span class="math inline">\(a \prec b\)</span>. Since <span class="math inline">\(E^Q[U(r)] = \infty &gt; U(b) &gt; U(a)\)</span>: <span class="math inline">\((a) \prec (b) \prec Q\)</span>.</p>
+<p>Axiom 4 says: there exists <span class="math inline">\(\alpha \in (0,1)\)</span> such that <span class="math inline">\(\alpha(a) + (1-\alpha)Q \prec (b)\)</span>, i.e., <span class="math inline">\(E^{\alpha(a) + (1-\alpha)Q}[U(r)] &lt; U(b)\)</span>.</p>
+<p>But for any <span class="math inline">\(\alpha \in (0,1)\)</span>: <span class="math display">\[
+E^{\alpha(a)+(1-\alpha)Q}[U(r)] = \alpha\, U(a) + (1-\alpha)\cdot \infty = \infty &gt; U(b).
+\]</span></p>
+<p>No such <span class="math inline">\(\alpha\)</span> exists. Contradiction. Symmetric argument for unbounded below. <span class="math inline">\(\square\)</span></p>
+</section>
+<section id="properties-of-monetary-utility-functions" class="slide level2">
+<h2>Properties of monetary utility functions</h2>
+<p>When <span class="math inline">\(\mathcal{R}\)</span> is monetary, <span class="math inline">\(U(r)\)</span> typically has four features:</p>
+<p><strong>(i) Linear for small</strong> <span class="math inline">\(r\)</span>. You would take a fair coin flip on <span class="math inline">\(\pm 25\)</span> cents. So <span class="math inline">\(U\)</span> is linear near <span class="math inline">\(r = 0\)</span>. The “small” range depends on context: 25 cents for a student, millions for a large corporation.</p>
+<p><strong>(ii) Concave for</strong> <span class="math inline">\(r &gt; 0\)</span>. Marginal utility <span class="math inline">\(U'(r)\)</span> is decreasing, so <span class="math inline">\(U''(r) &lt; 0\)</span>. An additional $100 matters more at $0 than at $1,000,000.</p>
+<p><strong>(iii) Different shape for gains and losses.</strong> People are often risk-seeking for losses (willing to gamble to avoid a sure loss) but risk-averse for gains. So <span class="math inline">\(U(r)\)</span> may be convex for <span class="math inline">\(r &lt; 0\)</span> and concave for <span class="math inline">\(r &gt; 0\)</span>.</p>
+<p><strong>(iv) Bounded.</strong> Few would assign meaningful additional utility to money beyond $10<span class="math inline">\(^{100}\)</span>.</p>
+</section></section>
+<section>
+<section id="from-utility-to-loss-berger-2.4.1" class="title-slide slide level1 center">
+<h1>From utility to loss (Berger $$2.4.1)</h1>
+
+</section>
+<section id="defining-the-loss-function" class="slide level2">
+<h2>Defining the loss function</h2>
+<p>Each pair <span class="math inline">\((\theta, a)\)</span> determines a consequence with utility <span class="math inline">\(U(\theta, a)\)</span>. The loss function is <span class="math display">\[
+L(\theta, a) = -U(\theta, a).
+\]</span></p>
+<p>Maximizing expected utility is the same as minimizing expected loss.</p>
+<p>This is the answer to our second question: <strong>why is expected loss the right criterion?</strong> Because the utility axioms tell us that expected utility is the correct measure of value under uncertainty. Expected loss inherits this justification.</p>
+<p>The Bayesian expected loss <span class="math inline">\(\rho(\pi, a) = E_\pi[L(\theta, a)]\)</span>, the risk <span class="math inline">\(R(\theta, \delta) = E_{P_\theta}[L(\theta, \delta(X))]\)</span>, the Bayes risk <span class="math inline">\(r(\pi, \delta)\)</span>, and the loss of a randomized rule – all are justified by this construction.</p>
+</section>
+<section id="when-consequences-are-random" class="slide level2">
+<h2>When consequences are random</h2>
+<p>Often <span class="math inline">\((\theta, a)\)</span> does not directly determine the consequence. The reward is a random variable <span class="math inline">\(Z\)</span> whose distribution depends on <span class="math inline">\(\theta\)</span> and <span class="math inline">\(a\)</span>. Then: <span class="math display">\[
+U(\theta, a) = E_{\theta, a}[U(Z)], \qquad L(\theta, a) = -E_{\theta, a}[U(Z)].
+\]</span></p>
+<p>One must be careful to define <span class="math inline">\(Z\)</span> as the <em>overall</em> outcome.</p>
+</section>
+<section id="properties-of-loss-functions" class="slide level2">
+<h2>Properties of loss functions</h2>
+<p><strong>1. Invariance under positive affine transformations.</strong></p>
+<p><em>Claim:</em> If <span class="math inline">\(L\)</span> is a valid loss, then <span class="math inline">\(L' = bL + c\)</span> (with <span class="math inline">\(b &gt; 0\)</span>) leads to the same optimal decisions.</p>
+<p><em>Proof (for the Bayes case):</em> The Bayes risk is <span class="math inline">\(r(\pi, \delta) = E_\pi[R(\theta, \delta)]\)</span>. Under <span class="math inline">\(L'\)</span>: <span class="math display">\[
+r'(\pi, \delta) = E_\pi[E_{P_\theta}[bL(\theta, \delta(X)) + c]] = b\, r(\pi, \delta) + c.
+\]</span> Since <span class="math inline">\(b &gt; 0\)</span>, the <span class="math inline">\(\delta\)</span> minimizing <span class="math inline">\(r'\)</span> is the same as the <span class="math inline">\(\delta\)</span> minimizing <span class="math inline">\(r\)</span>. <span class="math inline">\(\square\)</span></p>
+<p>So we can always shift: <span class="math inline">\(L^*(\theta, a) = L(\theta, a) - \inf_{\theta, a} L(\theta, a) \geq 0\)</span>.</p>
+<p><strong>2. Regret loss.</strong> <span class="math inline">\(\ell(\theta, a) = \sup_{a'} U(\theta, a') - U(\theta, a)\)</span>: the loss relative to the best action for the true <span class="math inline">\(\theta\)</span>. Equivalent to <span class="math inline">\(L\)</span> for Bayesian analysis, but can differ for minimax. We return to this in Chapter 5.</p>
+</section></section>
+<section>
+<section id="standard-loss-functions-berger-2.4.2" class="title-slide slide level1 center">
+<h1>Standard loss functions (Berger $$2.4.2)</h1>
+
+</section>
+<section id="i.-squared-error-loss" class="slide level2">
+<h2>I. Squared-error loss</h2>
+<p><span class="math display">\[
+L(\theta, a) = (\theta - a)^2.
+\]</span></p>
+<p>Why is it popular?</p>
+<ul>
+<li>For unbiased estimators, <span class="math inline">\(R(\theta, \delta) = \mathrm{Var}_{P_\theta}(\delta(X))\)</span>.</li>
+<li>Related to least squares theory.</li>
+<li>Calculations are often tractable.</li>
+</ul>
+<p>Berger’s honest assessment: “The above justifications really have very little merit. The question is – does squared-error loss typically reflect the true loss?”</p>
+<p>Squared-error loss is unbounded and convex: large errors are penalized very severely. In many real problems, the loss should be bounded and (for large errors) concave.</p>
+</section>
+<section id="example-risk-of-the-sample-mean-under-squared-error-loss" class="slide level2">
+<h2>Example: risk of the sample mean under squared-error loss</h2>
+<p><span class="math inline">\(X_1, \ldots, X_n \overset{\text{iid}}{\sim} \mathcal{N}(\theta, \sigma^2)\)</span>. Estimate <span class="math inline">\(\theta\)</span> with <span class="math inline">\(\delta(X) = \bar{X}\)</span>.</p>
+<p><span class="math display">\[
+R(\theta, \delta) = E_{P_\theta}[(\theta - \bar{X})^2] = \mathrm{Var}_{P_\theta}(\bar{X}) = \frac{\sigma^2}{n}.
+\]</span></p>
+<p>The risk is constant in <span class="math inline">\(\theta\)</span> and decreases in <span class="math inline">\(n\)</span>.</p>
+<p>Now consider <span class="math inline">\(\delta_c(X) = c\bar{X}\)</span> for some <span class="math inline">\(c \in \mathbb{R}\)</span>. Then: <span class="math display">\[
+R(\theta, \delta_c) = E_{P_\theta}[(\theta - c\bar{X})^2] = c^2 \frac{\sigma^2}{n} + (1-c)^2\theta^2.
+\]</span></p>
+<p>This is Example 4 from Lecture 1 with <span class="math inline">\(\sigma^2/n\)</span> replacing 1. Minimizing over <span class="math inline">\(c\)</span> for a fixed <span class="math inline">\(\theta\)</span> gives <span class="math inline">\(c^* = \theta^2/(\theta^2 + \sigma^2/n)\)</span>, which depends on <span class="math inline">\(\theta\)</span> – so the “optimal shrinkage” is unknowable. This tension is at the heart of the course.</p>
+</section>
+<section id="the-taylor-expansion-defense-of-squared-error-loss" class="slide level2">
+<h2>The Taylor expansion defense of squared-error loss</h2>
+<p>Suppose the reward is <span class="math inline">\(Z = h(\theta - a, Y)\)</span>, where <span class="math inline">\(Y\)</span> is an extraneous random variable independent of <span class="math inline">\(\theta\)</span> and <span class="math inline">\(a\)</span>.</p>
+<p>Define <span class="math inline">\(g(\theta - a, Y) = U(h(\theta - a, Y))\)</span>. If the sample information is accurate, <span class="math inline">\(\theta - a\)</span> is small. Expand in Taylor series around 0: <span class="math display">\[
+g(\theta - a, Y) \approx g(0, Y) + (\theta - a)g'(0, Y) + \tfrac{1}{2}(\theta - a)^2 g''(0, Y).
+\]</span></p>
+<p>Taking expectations over <span class="math inline">\(Y\)</span>, with <span class="math inline">\(K_1 = -E_Y[g(0,Y)]\)</span>, <span class="math inline">\(K_2 = -E_Y[g'(0,Y)]\)</span>, <span class="math inline">\(K_3 = -\frac{1}{2}E_Y[g''(0,Y)]\)</span>: <span class="math display">\[
+L(\theta, a) \approx K_1 + K_2(\theta - a) + K_3(\theta - a)^2.
+\]</span></p>
+<p>Completing the square (assuming <span class="math inline">\(K_3 &gt; 0\)</span>): <span class="math display">\[
+L(\theta, a) \approx K_3\!\left(\theta - a + \frac{K_2}{2K_3}\right)^{\!2} + \text{const}.
+\]</span></p>
+<p>When <span class="math inline">\(K_2 = 0\)</span> (symmetric utility, symmetric <span class="math inline">\(Y\)</span>), this is squared-error loss.</p>
+</section>
+<section id="variants-of-squared-error-loss" class="slide level2">
+<h2>Variants of squared-error loss</h2>
+<p><strong>Weighted squared-error:</strong> <span class="math inline">\(L(\theta, a) = w(\theta)(\theta - a)^2\)</span>.</p>
+<p>The weight <span class="math inline">\(w(\theta) &gt; 0\)</span> encodes that a given error may matter more at some parameter values than others.</p>
+<p><strong>Example:</strong> estimating a Poisson rate <span class="math inline">\(\theta &gt; 0\)</span>. An error of 1 when <span class="math inline">\(\theta = 0.5\)</span> is much worse than the same error when <span class="math inline">\(\theta = 100\)</span>. The weight <span class="math inline">\(w(\theta) = 1/\theta^2\)</span> normalizes for scale, giving <span class="math inline">\(L(\theta, a) = (1 - a/\theta)^2\)</span>.</p>
+<p><strong>Quadratic loss (multivariate):</strong> <span class="math inline">\(\theta, a \in \mathbb{R}^p\)</span>, <span class="math inline">\(Q\)</span> positive definite: <span class="math display">\[
+L(\theta, a) = (\theta - a)^T Q (\theta - a).
+\]</span> When <span class="math inline">\(Q = I_p\)</span>: <span class="math inline">\(L(\theta, a) = \|\theta - a\|^2 = \sum_{i=1}^p (\theta_i - a_i)^2\)</span>.</p>
+<p>We will encounter this extensively when studying Stein estimation in Week 6.</p>
+</section>
+<section id="example-risk-under-sum-of-squares-loss" class="slide level2">
+<h2>Example: risk under sum-of-squares loss</h2>
+<p><span class="math inline">\(X = (X_1, \ldots, X_p)^T\)</span> with <span class="math inline">\(X_i \overset{\text{ind}}{\sim} \mathcal{N}(\theta_i, 1)\)</span>. Estimate <span class="math inline">\(\theta = (\theta_1, \ldots, \theta_p)^T\)</span> under <span class="math inline">\(L(\theta, a) = \|\theta - a\|^2\)</span>.</p>
+<p>The natural estimator is <span class="math inline">\(\delta(X) = X\)</span>. Its risk: <span class="math display">\[
+R(\theta, \delta) = E_{P_\theta}\!\left[\sum_{i=1}^p (\theta_i - X_i)^2\right] = \sum_{i=1}^p \mathrm{Var}_{P_\theta}(X_i) = p.
+\]</span></p>
+<p>Constant risk <span class="math inline">\(p\)</span>, for all <span class="math inline">\(\theta\)</span>. Seems hard to improve.</p>
+<p>For <span class="math inline">\(p \geq 3\)</span>, James and Stein (1960) showed the estimator <span class="math display">\[
+\delta^{JS}(X) = \left(1 - \frac{p-2}{\|X\|^2}\right)X
+\]</span> satisfies <span class="math inline">\(R(\theta, \delta^{JS}) &lt; p\)</span> for <em>all</em> <span class="math inline">\(\theta\)</span>. The sample mean vector is inadmissible.</p>
+<p>That result is one of the major topics later in the course.</p>
+</section>
+<section id="ii.-linear-loss" class="slide level2">
+<h2>II. Linear loss</h2>
+<p>When the utility function is approximately linear over the relevant range, the loss is approximately linear: <span class="math display">\[
+L(\theta, a) = \begin{cases} K_0(\theta - a) &amp; \text{if } \theta - a \geq 0 \quad \text{(underestimation)} \\ K_1(a - \theta) &amp; \text{if } \theta - a &lt; 0 \quad \text{(overestimation)} \end{cases}
+\]</span></p>
+<p><span class="math inline">\(K_0\)</span> and <span class="math inline">\(K_1\)</span> encode the relative cost of under- vs.&nbsp;overestimation.</p>
+<p>When <span class="math inline">\(K_0 = K_1\)</span>: <strong>absolute error loss</strong> <span class="math inline">\(L(\theta, a) = |\theta - a|\)</span>.</p>
+<p>Recall Lecture 1, Example 1 (drug company): <span class="math inline">\(L(\theta_2, a) = (\theta_2 - a)\)</span> if <span class="math inline">\(\theta_2 \geq a\)</span> and <span class="math inline">\(2(a - \theta_2)\)</span> if <span class="math inline">\(\theta_2 &lt; a\)</span>. That is linear loss with <span class="math inline">\(K_0 = 1\)</span>, <span class="math inline">\(K_1 = 2\)</span>: overestimating the adverse reaction rate costs twice as much as underestimating.</p>
+</section>
+<section id="example-car-production-under-linear-loss-berger-ex.-17" class="slide level2">
+<h2>Example: car production under linear loss (Berger, Ex. 17)</h2>
+<p>A company must decide how many cars <span class="math inline">\(a\)</span> to produce. The demand is <span class="math inline">\(\theta\)</span> (unknown). Each car sold yields $500 profit. Each unsold car yields $1000 loss.</p>
+<p>If <span class="math inline">\(a \leq \theta\)</span>: all cars sell, profit = <span class="math inline">\(500a\)</span>. If <span class="math inline">\(a &gt; \theta\)</span>: <span class="math inline">\(\theta\)</span> cars sell, <span class="math inline">\(a - \theta\)</span> do not, profit = <span class="math inline">\(500\theta - 1000(a - \theta) = 1500\theta - 1000a\)</span>.</p>
+<p>The regret loss: the best action is <span class="math inline">\(a^* = \theta\)</span>, profit <span class="math inline">\(500\theta\)</span>. So: <span class="math display">\[
+\ell(\theta, a) = 500\theta - \text{profit}(a) = \begin{cases} 500(\theta - a) &amp; \text{if } a \leq \theta \\ 1500(a - \theta) &amp; \text{if } a &gt; \theta \end{cases}
+\]</span></p>
+<p>Linear loss with <span class="math inline">\(K_0 = 500\)</span> (opportunity cost of underproduction) and <span class="math inline">\(K_1 = 1500\)</span> (cost of overproduction). The asymmetry <span class="math inline">\(K_1/K_0 = 3\)</span> reflects that unsold cars are much worse than unmet demand.</p>
+</section>
+<section id="iii.-01-loss" class="slide level2">
+<h2>III. “0–1” loss</h2>
+<p>In a two-action problem (testing <span class="math inline">\(H_0: \theta \in \Theta_0\)</span> vs.&nbsp;<span class="math inline">\(H_1: \theta \in \Theta_1\)</span>): <span class="math display">\[
+L(\theta, a_i) = \begin{cases} 0 &amp; \text{if } \theta \in \Theta_i \quad \text{(correct)} \\ 1 &amp; \text{if } \theta \in \Theta_j,\ j \neq i \quad \text{(incorrect)} \end{cases}
+\]</span></p>
+<p>The risk function:</p>
+<ul>
+<li>When <span class="math inline">\(\theta \in \Theta_0\)</span>: <span class="math inline">\(R(\theta, \delta) = P_{P_\theta}(\text{reject } H_0)\)</span> = Type I error.</li>
+<li>When <span class="math inline">\(\theta \in \Theta_1\)</span>: <span class="math inline">\(R(\theta, \delta) = P_{P_\theta}(\text{accept } H_0)\)</span> = Type II error.</li>
+</ul>
+<p>The Bayesian expected loss: <span class="math inline">\(\rho(\pi^*, a_i) = 1 - \pi^*(\theta \in \Theta_i)\)</span>.</p>
+<p>The error probabilities from Neyman–Pearson theory are the risk function under 0–1 loss. Testing is a special case of decision theory.</p>
+</section>
+<section id="example-01-loss-for-a-normal-test" class="slide level2">
+<h2>Example: 0–1 loss for a normal test</h2>
+<p><span class="math inline">\(X \sim \mathcal{N}(\theta, 1)\)</span>. Test <span class="math inline">\(H_0: \theta \leq 0\)</span> vs.&nbsp;<span class="math inline">\(H_1: \theta &gt; 0\)</span>. Decision rule: reject <span class="math inline">\(H_0\)</span> if <span class="math inline">\(X &gt; c\)</span>.</p>
+<p>Under 0–1 loss, the risk function is: <span class="math display">\[
+R(\theta, \delta_c) = \begin{cases}
+P_{P_\theta}(X &gt; c) = 1 - \Phi(c - \theta) &amp; \text{if } \theta \leq 0 \quad \text{(Type I)} \\
+P_{P_\theta}(X \leq c) = \Phi(c - \theta) &amp; \text{if } \theta &gt; 0 \quad \text{(Type II)}
+\end{cases}
+\]</span></p>
+<p>For <span class="math inline">\(c = 0\)</span>: Type I error at <span class="math inline">\(\theta = 0\)</span> is <span class="math inline">\(1 - \Phi(0) = 0.5\)</span>. Type II error at <span class="math inline">\(\theta = 1\)</span> is <span class="math inline">\(\Phi(-1) = 0.159\)</span>.</p>
+<p>For <span class="math inline">\(c = 1.645\)</span>: Type I error at <span class="math inline">\(\theta = 0\)</span> is <span class="math inline">\(1 - \Phi(1.645) = 0.05\)</span>. Type II error at <span class="math inline">\(\theta = 1\)</span> is <span class="math inline">\(\Phi(0.645) = 0.74\)</span>.</p>
+<p>The familiar tradeoff: making <span class="math inline">\(R(\theta, \delta_c)\)</span> smaller for <span class="math inline">\(\theta \leq 0\)</span> makes it larger for <span class="math inline">\(\theta &gt; 0\)</span>, and vice versa.</p>
+</section>
+<section id="weighted-01-loss" class="slide level2">
+<h2>Weighted 0–1 loss</h2>
+<p>Basic 0–1 loss treats the two types of error as equally costly. Rarely appropriate.</p>
+<p>More realistic: <span class="math display">\[
+L(\theta, a_i) = \begin{cases} 0 &amp; \text{if correct} \\ K_0 &amp; \text{if reject } H_0 \text{ when } \theta \in \Theta_0 \quad \text{(Type I)} \\ K_1 &amp; \text{if accept } H_0 \text{ when } \theta \in \Theta_1 \quad \text{(Type II)} \end{cases}
+\]</span></p>
+<p>The risk becomes <span class="math inline">\(K_0 \cdot P_{P_\theta}(\text{reject } H_0)\)</span> for <span class="math inline">\(\theta \in \Theta_0\)</span> and <span class="math inline">\(K_1 \cdot P_{P_\theta}(\text{accept } H_0)\)</span> for <span class="math inline">\(\theta \in \Theta_1\)</span>.</p>
+<p>Even more generally: <span class="math inline">\(L(\theta, a_1) = K_0(\theta)\)</span> for <span class="math inline">\(\theta \in \Theta_0\)</span>, where the weight varies within <span class="math inline">\(\Theta_0\)</span>. A Type I error may be worse when <span class="math inline">\(\theta\)</span> is far from the boundary.</p>
+</section></section>
+<section>
+<section id="loss-for-inference-problems-berger-2.4.3" class="title-slide slide level1 center">
+<h1>Loss for inference problems (Berger $$2.4.3)</h1>
+
+</section>
+<section id="inference-as-a-decision-problem" class="slide level2">
+<h2>Inference as a decision problem</h2>
+<p>The most common use: representing standard inference measures as a risk or Bayesian expected loss.</p>
+<p><strong>Confidence sets.</strong> Let <span class="math inline">\(C(x) \subseteq \Theta\)</span> be a confidence rule. The loss <span class="math display">\[
+L(\theta, C(x)) = 1 - I_{C(x)}(\theta) = \begin{cases} 0 &amp; \text{if } \theta \in C(x) \\ 1 &amp; \text{if } \theta \notin C(x) \end{cases}
+\]</span> gives <span class="math inline">\(R(\theta, C) = 1 - P_{P_\theta}(C(X) \ni \theta)\)</span>: one minus the coverage probability.</p>
+<p><strong>Unbiased estimation.</strong> Restrict to <span class="math inline">\(E_{P_\theta}[\delta(X)] = \theta\)</span> for all <span class="math inline">\(\theta\)</span>. Under squared-error loss, <span class="math inline">\(R(\theta, \delta) = \mathrm{Var}_{P_\theta}(\delta(X))\)</span>. The UMVUE is the decision-theoretic optimum within this restricted class.</p>
+</section>
+<section id="scoring-rules-quantifying-how-well-confidence-works-berger-ex.-4" class="slide level2">
+<h2>Scoring rules: quantifying how well confidence works (Berger, Ex. 4)</h2>
+<p>A confidence rule <span class="math inline">\(C(x)\)</span> with associated “confidence” <span class="math inline">\(\alpha(x)\)</span>: after observing <span class="math inline">\(x\)</span>, we report <span class="math inline">\(\alpha(x)\)</span> as our confidence that <span class="math inline">\(\theta \in C(x)\)</span>. How well does <span class="math inline">\(\alpha(x)\)</span> reflect reality?</p>
+<p>The Brier scoring rule: <span class="math display">\[
+L_C(\theta, \alpha(x)) = (\alpha(x) - I_{C(x)}(\theta))^2.
+\]</span></p>
+<p>When <span class="math inline">\(\theta \in C(x)\)</span>: loss = <span class="math inline">\((\alpha(x) - 1)^2\)</span>, small if <span class="math inline">\(\alpha(x) \approx 1\)</span>.</p>
+<p>When <span class="math inline">\(\theta \notin C(x)\)</span>: loss = <span class="math inline">\(\alpha(x)^2\)</span>, small if <span class="math inline">\(\alpha(x) \approx 0\)</span>.</p>
+</section>
+<section id="scoring-rules-continued-constant-vs.-data-dependent-confidence" class="slide level2">
+<h2>Scoring rules continued: constant vs.&nbsp;data-dependent confidence</h2>
+<p>Consider two choices: <span class="math inline">\(\alpha_1(x) \equiv 0.75\)</span> (constant frequentist confidence) and <span class="math inline">\(\alpha_2(x) = P(\theta \in C(x) \mid x)\)</span> (posterior probability, data-dependent confidence).</p>
+<p>The risk of <span class="math inline">\(\alpha_1\)</span> under the Brier loss: <span class="math display">\[
+R(\theta, \alpha_1) = E_{P_\theta}\!\left[(\alpha_1(X) - I_{C(X)}(\theta))^2\right] = 0.75^2 \cdot P_{P_\theta}(\theta \notin C(X)) + 0.25^2 \cdot P_{P_\theta}(\theta \in C(X)).
+\]</span></p>
+<p>If <span class="math inline">\(C\)</span> has 75% coverage: <span class="math inline">\(R(\theta, \alpha_1) = (0.5625)(0.25) + (0.0625)(0.75) = 0.1875\)</span>.</p>
+<p>The data-dependent confidence <span class="math inline">\(\alpha_2\)</span> adapts: it reports high confidence when the data are informative and low confidence when they are not. One can show (and we will, in Chapter 4) that <span class="math inline">\(R(\theta, \alpha_2) \leq R(\theta, \alpha_1)\)</span> for all <span class="math inline">\(\theta\)</span>, with strict inequality for some <span class="math inline">\(\theta\)</span>.</p>
+<p>The data-dependent confidence <em>dominates</em> the constant one.</p>
+</section></section>
+<section>
+<section id="loss-for-prediction-berger-2.4.4" class="title-slide slide level1 center">
+<h1>Loss for prediction (Berger $$2.4.4)</h1>
+
+</section>
+<section id="predictive-problems" class="slide level2">
+<h2>Predictive problems</h2>
+<p>Predict a future observation <span class="math inline">\(Z\)</span> with density <span class="math inline">\(g(z|\theta)\)</span>, given data <span class="math inline">\(X\)</span> with density <span class="math inline">\(f(x|\theta)\)</span>.</p>
+<p>If the original loss is <span class="math inline">\(L^*(z, a)\)</span>, the decision-theoretic reduction is: <span class="math display">\[
+L(\theta, a) = E_{P_\theta}[L^*(Z, a)] = \int L^*(z, a)\, g(z|\theta)\, dz.
+\]</span></p>
+<p>This reduces the prediction problem to a standard decision problem involving <span class="math inline">\(\theta\)</span>.</p>
+</section>
+<section id="example-predicting-a-normal-berger-ex.-5" class="slide level2">
+<h2>Example: predicting a normal (Berger, Ex. 5)</h2>
+<p><span class="math inline">\(Z \sim \mathcal{N}(\theta, \sigma^2)\)</span>, <span class="math inline">\(L^*(z, a) = (z - a)^2\)</span>. Then: <span class="math display">\[
+\begin{aligned}
+L(\theta, a) &amp;= E_{P_\theta}[(Z - a)^2] = E_{P_\theta}[(Z - \theta)^2 + 2(Z - \theta)(\theta - a) + (\theta - a)^2] \\
+&amp;= \mathrm{Var}_{P_\theta}(Z) + 0 + (\theta - a)^2 = \sigma^2 + (\theta - a)^2.
+\end{aligned}
+\]</span></p>
+<p>The cross term vanishes because <span class="math inline">\(E_{P_\theta}[Z - \theta] = 0\)</span>.</p>
+<p>The constant <span class="math inline">\(\sigma^2\)</span> does not affect the choice of <span class="math inline">\(a\)</span>. Choosing the best prediction of <span class="math inline">\(Z\)</span> is equivalent to estimating <span class="math inline">\(\theta\)</span> under squared-error loss.</p>
+<p>This partially explains why decision theorists focus on estimating unknown parameters rather than predicting future observations: prediction problems often reduce to parameter estimation through the loss.</p>
+</section></section>
+<section>
+<section id="vector-valued-loss-and-criticisms" class="title-slide slide level1 center">
+<h1>Vector-valued loss and criticisms</h1>
+
+</section>
+<section id="vector-valued-loss-functions-berger-2.4.5" class="slide level2">
+<h2>Vector-valued loss functions (Berger $$2.4.5)</h2>
+<p>It is common to evaluate procedures by several criteria simultaneously. Confidence sets are judged by (size, coverage). Sequential analysis deals with (sample size, decision loss). In medical problems one may face (“death of a patient”, “cost of a drug”) – consequences that are very hard to compare.</p>
+<p><strong>The practical response.</strong> Carry the components separately. If one action dominates on all components, the choice is clear. If not, perform the utility comparison only when needed. Initial subjective inputs may be crude, with refinements made only if necessary.</p>
+<p><strong>The theoretical reduction</strong> (Cohen and Sackrowitz, 1984). Given a vector loss <span class="math inline">\(L = (L_1, \ldots, L_J)\)</span>, treat the component index <span class="math inline">\(i\)</span> as a parameter. Define: <span class="math display">\[
+L^*((\theta, i),\, a) = L_i(\theta, a).
+\]</span> This <span class="math inline">\(L^*\)</span> is real-valued. Risk dominance with respect to <span class="math inline">\(L^*\)</span> (for all <span class="math inline">\(\theta\)</span> and all <span class="math inline">\(i\)</span>) corresponds exactly to vector risk dominance. So decision-theoretic results established for scalar losses transfer directly to vector-valued losses.</p>
+</section>
+<section id="criticisms-berger-2.5" class="slide level2">
+<h2>Criticisms (Berger $$2.5)</h2>
+<p>The use of loss functions is criticized on three grounds.</p>
+<p><strong>(i) Inappropriate for inference.</strong> Some statisticians argue that inference problems (estimation, testing, confidence sets) should not be forced into a decision-theoretic mold. We discussed this in Section 1.2 and Subsection 2.4.3. The moderate position: better inference can often be done with the aid of decision-theoretic machinery and inference losses. The decision-theoretic framework does not replace inference; it can sharpen it.</p>
+<p><strong>(ii) Difficult.</strong> Utility analyses can be very hard. The amount of effort depends on the importance of the problem and on the degree of refinement needed. If the conclusion is clear with only crude utility specifications, a detailed construction is unnecessary. If the loss does significantly affect the conclusion, there is no alternative to a careful utility analysis.</p>
+<p><strong>(iii) Nonrobust.</strong> Any loss used in practice is uncertain. Small changes in the loss function could, in principle, change the optimal action. The response: perform a sensitivity analysis. Show that reasonable variations in <span class="math inline">\(L\)</span> do not markedly affect the conclusion. If they do, that is a signal that even more careful consideration of the loss is needed, not that the decision-theoretic approach is wrong.</p>
+
+<div class="quarto-auto-generated-content">
+<div class="footer footer-default">
+
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': true,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 5.0e-2,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
