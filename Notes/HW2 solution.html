@@ -444,7 +444,7 @@
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content>
-  <title>Stats 220B: Statistical Decision Theory – 220B Homework 2: Solutions</title>
+  <title>Stats 220B: Statistical Decision Theory – 220B Homework 2</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -1143,86 +1143,119 @@ margin-right: 0; }
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">220B Homework 2: Solutions</h1>
+  <h1 class="title">220B Homework 2</h1>
+  <p class="subtitle">Solutions</p>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section class="slide level2">
-
-<p>Problem 1: Posterior functionals and the Bayes rule</p>
-<p>(a) The posterior expected loss given <span class="math inline">\(x\)</span> is <span class="math display">\[
+<section id="problem-1-posterior-functionals-and-the-bayes-rule-25-pts" class="slide level2">
+<h2>Problem 1: Posterior functionals and the Bayes rule (25 pts)</h2>
+<p>Let <span class="math inline">\(\pi\)</span> be a proper prior and let <span class="math inline">\(\pi(\cdot \mid x)\)</span> denote the posterior given <span class="math inline">\(X = x\)</span>, assumed to have a finite first absolute moment for every <span class="math inline">\(x\)</span>.</p>
+<ol type="a">
+<li><p>Prove that under squared-error loss <span class="math inline">\(L(\theta, a) = (\theta - a)^2\)</span>, the Bayes action given <span class="math inline">\(x\)</span> is the posterior mean <span class="math inline">\(\mathbb{E}[\theta \mid X = x]\)</span>, provided the posterior has finite second moment.</p></li>
+<li><p>Prove that under absolute-error loss <span class="math inline">\(L(\theta, a) = |\theta - a|\)</span>, every posterior median is a Bayes action given <span class="math inline">\(x\)</span>. Give an example (with a discrete posterior) showing the Bayes action need not be unique.</p></li>
+<li><p>For <span class="math inline">\(c_1, c_2 &gt; 0\)</span>, consider the asymmetric linear loss <span class="math display">\[
+L(\theta, a) = c_1 (\theta - a) \mathbf{1}(a \leq \theta) + c_2 (a - \theta) \mathbf{1}(a &gt; \theta).
+\]</span> Characterize the Bayes action given <span class="math inline">\(x\)</span> as a posterior quantile, identifying the quantile level in terms of <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span>.</p></li>
+</ol>
+<p>Hint (b): split the integral <span class="math inline">\(\int |\theta - a| \, \pi(d\theta \mid x)\)</span> at <span class="math inline">\(a\)</span> and differentiate in <span class="math inline">\(a\)</span> using Leibniz; use caution where the posterior has atoms.</p>
+</section>
+<section id="problem-1a" class="slide level2">
+<h2>Problem 1(a)</h2>
+<p>The posterior expected loss given <span class="math inline">\(x\)</span> is <span class="math display">\[
 \rho(a) = \mathbb{E}[(\theta - a)^2 \mid X = x] = \mathbb{E}[\theta^2 \mid X = x] - 2 a \, \mathbb{E}[\theta \mid X = x] + a^2,
 \]</span> a strictly convex quadratic in <span class="math inline">\(a\)</span>, finite under the second-moment assumption, minimized at <span class="math inline">\(a^\ast = \mathbb{E}[\theta \mid X = x]\)</span> with minimum value <span class="math inline">\(\mathrm{Var}(\theta \mid X = x)\)</span>. The Bayes action is the posterior mean, and is unique.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 1 (continued)</p>
-<p>(b) Let <span class="math inline">\(F(\cdot \mid x)\)</span> be the posterior CDF. Because <span class="math inline">\(|\theta - a|\)</span> is convex in <span class="math inline">\(a\)</span> for every <span class="math inline">\(\theta\)</span>, the function <span class="math display">\[
+<section id="problem-1b" class="slide level2">
+<h2>Problem 1(b)</h2>
+<p>Let <span class="math inline">\(F(\cdot \mid x)\)</span> be the posterior CDF. Because <span class="math inline">\(|\theta - a|\)</span> is convex in <span class="math inline">\(a\)</span> for every <span class="math inline">\(\theta\)</span>, the function <span class="math display">\[
 \rho(a) = \int_{-\infty}^{a} (a - \theta) \, \pi(d\theta \mid x) + \int_{a}^{\infty} (\theta - a) \, \pi(d\theta \mid x)
 \]</span> is convex. Its right- and left-derivatives are <span class="math display">\[
 \rho&#39;_+(a) = 2 F(a \mid x) - 1, \qquad \rho&#39;_-(a) = 2 F(a^- \mid x) - 1.
 \]</span> The minimum is attained at <span class="math inline">\(a\)</span> iff <span class="math inline">\(\rho&#39;_-(a) \leq 0 \leq \rho&#39;_+(a)\)</span>, equivalently <span class="math inline">\(F(a^- \mid x) \leq \tfrac{1}{2} \leq F(a \mid x)\)</span>, the definition of a posterior median.</p>
-<p><em>Non-uniqueness.</em> Take posterior <span class="math inline">\(\pi(\theta = 0 \mid x) = \pi(\theta = 1 \mid x) = \tfrac{1}{2}\)</span>. Every <span class="math inline">\(a \in [0, 1]\)</span> is a median; direct check: <span class="math inline">\(\rho(a) = \tfrac{1}{2} a + \tfrac{1}{2}(1 - a) = \tfrac{1}{2}\)</span> on <span class="math inline">\([0, 1]\)</span>.</p>
+<p>Non-uniqueness. Take posterior <span class="math inline">\(\pi(\theta = 0 \mid x) = \pi(\theta = 1 \mid x) = \tfrac{1}{2}\)</span>. Every <span class="math inline">\(a \in [0, 1]\)</span> is a median; direct check: <span class="math inline">\(\rho(a) = \tfrac{1}{2} a + \tfrac{1}{2}(1 - a) = \tfrac{1}{2}\)</span> on <span class="math inline">\([0, 1]\)</span>.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 1 (continued)</p>
-<p>(c) The posterior expected loss is <span class="math display">\[
+<section id="problem-1c" class="slide level2">
+<h2>Problem 1(c)</h2>
+<p>The posterior expected loss is <span class="math display">\[
 \rho(a) = c_1 \int_{a}^{\infty} (\theta - a) \, \pi(d\theta \mid x) + c_2 \int_{-\infty}^{a} (a - \theta) \, \pi(d\theta \mid x).
 \]</span> By Leibniz, <span class="math display">\[
 \rho&#39;_+(a) = -c_1 (1 - F(a \mid x)) + c_2 F(a \mid x) = (c_1 + c_2) F(a \mid x) - c_1.
 \]</span> Convexity makes the first-order condition sufficient, so the minimum is at <span class="math inline">\(a\)</span> with <span class="math inline">\(F(a \mid x) = c_1/(c_1 + c_2)\)</span>. The Bayes action is the posterior <span class="math inline">\(c_1/(c_1+c_2)\)</span>-quantile; at <span class="math inline">\(c_1 = c_2\)</span> this reduces to the median.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 2: Admissibility of <span class="math inline">\(\delta_0(X) = X\)</span> via Blyth’s method</p>
-<p>(a) <span class="math inline">\(R(\theta, \delta_0) = \mathbb{E}_{P_\theta}[(X - \theta)^2] = \mathrm{Var}_{P_\theta}(X) = 1\)</span>.</p>
-<p>(b) With <span class="math inline">\(X \mid \theta \sim N(\theta, 1)\)</span> and <span class="math inline">\(\theta \sim N(0, k)\)</span>, the joint density factors as <span class="math display">\[
+<section id="problem-2-admissibility-of-delta_0x-x-via-blyths-method-25-pts" class="slide level2">
+<h2>Problem 2: Admissibility of <span class="math inline">\(\delta_0(X) = X\)</span> via Blyth’s method (25 pts)</h2>
+<p>Let <span class="math inline">\(X \sim N(\theta, 1)\)</span> with <span class="math inline">\(\theta \in \mathbb{R}\)</span> and squared-error loss <span class="math inline">\(L(\theta, a) = (\theta - a)^2\)</span>. Let <span class="math inline">\(\delta_0(X) = X\)</span>.</p>
+<ol type="a">
+<li><p>Compute <span class="math inline">\(R(\theta, \delta_0)\)</span>.</p></li>
+<li><p>For each <span class="math inline">\(k &gt; 0\)</span>, let <span class="math inline">\(\pi_k\)</span> be the <span class="math inline">\(N(0, k)\)</span> prior on <span class="math inline">\(\theta\)</span>. Derive the Bayes estimator <span class="math inline">\(\delta^{\pi_k}\)</span> and the posterior variance, and show that <span class="math display">\[
+r(\pi_k, \delta_0) - r(\pi_k, \delta^{\pi_k}) = \frac{1}{k+1}.
+\]</span></p></li>
+<li><p>Prove that <span class="math inline">\(\delta_0\)</span> is admissible. You may assume that for every rule <span class="math inline">\(\delta\)</span>, the function <span class="math inline">\(\theta \mapsto R(\theta, \delta)\)</span> is continuous in <span class="math inline">\(\theta\)</span>.</p></li>
+</ol>
+<p>Hint: suppose toward contradiction that <span class="math inline">\(\delta&#39;\)</span> dominates <span class="math inline">\(\delta_0\)</span> with <span class="math inline">\(R(\theta^\ast, \delta&#39;) &lt; 1\)</span> at some <span class="math inline">\(\theta^\ast\)</span>. Using the <span class="math inline">\(\pi_k\)</span> in (b), lower-bound <span class="math inline">\(r(\pi_k, \delta_0) - r(\pi_k, \delta&#39;)\)</span> via continuity of <span class="math inline">\(R(\cdot, \delta&#39;)\)</span> near <span class="math inline">\(\theta^\ast\)</span> together with the <span class="math inline">\(N(0, k)\)</span> density, and upper-bound it via the Bayes property of <span class="math inline">\(\delta^{\pi_k}\)</span>. Identify the rates of the two bounds in <span class="math inline">\(k\)</span> and send <span class="math inline">\(k \to \infty\)</span>. This is Blyth’s (1951) method.</p>
+</section>
+<section id="problem-2a" class="slide level2">
+<h2>Problem 2(a)</h2>
+<p><span class="math inline">\(R(\theta, \delta_0) = \mathbb{E}_{P_\theta}[(X - \theta)^2] = \mathrm{Var}_{P_\theta}(X) = 1\)</span>.</p>
+</section>
+<section id="problem-2b" class="slide level2">
+<h2>Problem 2(b)</h2>
+<p>With <span class="math inline">\(X \mid \theta \sim N(\theta, 1)\)</span> and <span class="math inline">\(\theta \sim N(0, k)\)</span>, the joint density factors as <span class="math display">\[
 \pi(\theta \mid x) \propto \exp\!\left(-\tfrac{1}{2}\!\left[\theta^2(1/k + 1) - 2 \theta x\right]\right) = \exp\!\left(-\tfrac{k+1}{2k}\!\left[\theta - \tfrac{k}{k+1} x\right]^2\right),
 \]</span> so <span class="math inline">\(\theta \mid X = x \sim N(\tfrac{k}{k+1} x, \tfrac{k}{k+1})\)</span>. The Bayes estimator is the posterior mean <span class="math inline">\(\delta^{\pi_k}(x) = \tfrac{k}{k+1} x\)</span>; the posterior variance is the constant <span class="math inline">\(\tfrac{k}{k+1}\)</span>. Hence <span class="math display">\[
 r(\pi_k, \delta^{\pi_k}) = \mathbb{E}[\mathrm{Var}(\theta \mid X)] = \tfrac{k}{k+1}, \qquad r(\pi_k, \delta_0) = \int 1 \, \pi_k(d\theta) = 1,
 \]</span> so <span class="math inline">\(r(\pi_k, \delta_0) - r(\pi_k, \delta^{\pi_k}) = 1 - \tfrac{k}{k+1} = \tfrac{1}{k+1}\)</span>.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 2 (continued)</p>
-<p>(c) Suppose toward contradiction that some <span class="math inline">\(\delta&#39;\)</span> has <span class="math inline">\(R(\theta, \delta&#39;) \leq 1\)</span> for all <span class="math inline">\(\theta\)</span> and <span class="math inline">\(R(\theta^\ast, \delta&#39;) &lt; 1\)</span> at some <span class="math inline">\(\theta^\ast\)</span>.</p>
-<p><em>Lower bound.</em> Set <span class="math inline">\(\varepsilon = (1 - R(\theta^\ast, \delta&#39;))/2 &gt; 0\)</span>. By continuity of <span class="math inline">\(\theta \mapsto R(\theta, \delta&#39;)\)</span> there exists <span class="math inline">\(\eta &gt; 0\)</span> with <span class="math inline">\(R(\theta, \delta&#39;) \leq 1 - \varepsilon\)</span> on <span class="math inline">\([\theta^\ast - \eta, \theta^\ast + \eta]\)</span>. Since <span class="math inline">\(R(\theta, \delta_0) - R(\theta, \delta&#39;) \geq 0\)</span> everywhere, <span class="math display">\[
+<section id="problem-2c-lower-bound" class="slide level2">
+<h2>Problem 2(c): lower bound</h2>
+<p>Suppose toward contradiction that some <span class="math inline">\(\delta&#39;\)</span> has <span class="math inline">\(R(\theta, \delta&#39;) \leq 1\)</span> for all <span class="math inline">\(\theta\)</span> and <span class="math inline">\(R(\theta^\ast, \delta&#39;) &lt; 1\)</span> at some <span class="math inline">\(\theta^\ast\)</span>.</p>
+<p>Lower bound. Set <span class="math inline">\(\varepsilon = (1 - R(\theta^\ast, \delta&#39;))/2 &gt; 0\)</span>. By continuity of <span class="math inline">\(\theta \mapsto R(\theta, \delta&#39;)\)</span> there exists <span class="math inline">\(\eta &gt; 0\)</span> with <span class="math inline">\(R(\theta, \delta&#39;) \leq 1 - \varepsilon\)</span> on <span class="math inline">\([\theta^\ast - \eta, \theta^\ast + \eta]\)</span>. Since <span class="math inline">\(R(\theta, \delta_0) - R(\theta, \delta&#39;) \geq 0\)</span> everywhere, <span class="math display">\[
 r(\pi_k, \delta_0) - r(\pi_k, \delta&#39;) \geq \varepsilon \int_{\theta^\ast - \eta}^{\theta^\ast + \eta} \frac{1}{\sqrt{2 \pi k}} e^{-\theta^2/(2k)} d\theta.
 \]</span> Let <span class="math inline">\(M = |\theta^\ast| + \eta\)</span>; for <span class="math inline">\(k \geq M^2\)</span>, <span class="math inline">\(e^{-\theta^2/(2k)} \geq e^{-1/2}\)</span> on the interval, so for some constant <span class="math inline">\(C &gt; 0\)</span>, <span class="math display">\[
 r(\pi_k, \delta_0) - r(\pi_k, \delta&#39;) \geq \frac{C}{\sqrt{k}} \qquad (k \geq M^2).
 \]</span></p>
 </section>
-<section class="slide level2">
-
-<p>Problem 2 (continued)</p>
-<p><em>Upper bound.</em> <span class="math inline">\(\delta^{\pi_k}\)</span> minimizes Bayes risk under <span class="math inline">\(\pi_k\)</span>, so <span class="math inline">\(r(\pi_k, \delta&#39;) \geq r(\pi_k, \delta^{\pi_k})\)</span>, hence <span class="math display">\[
+<section id="problem-2c-upper-bound-and-contradiction" class="slide level2">
+<h2>Problem 2(c): upper bound and contradiction</h2>
+<p>Upper bound. <span class="math inline">\(\delta^{\pi_k}\)</span> minimizes Bayes risk under <span class="math inline">\(\pi_k\)</span>, so <span class="math inline">\(r(\pi_k, \delta&#39;) \geq r(\pi_k, \delta^{\pi_k})\)</span>, hence <span class="math display">\[
 r(\pi_k, \delta_0) - r(\pi_k, \delta&#39;) \leq r(\pi_k, \delta_0) - r(\pi_k, \delta^{\pi_k}) = \tfrac{1}{k+1}.
 \]</span></p>
-<p><em>Contradiction.</em> For all <span class="math inline">\(k \geq M^2\)</span>, <span class="math inline">\(C/\sqrt{k} \leq 1/(k+1)\)</span>, equivalently <span class="math inline">\(C(k+1)/\sqrt{k} \leq 1\)</span>. As <span class="math inline">\(k \to \infty\)</span>, <span class="math inline">\((k+1)/\sqrt{k} \to \infty\)</span>, so the left side eventually exceeds <span class="math inline">\(1\)</span>. No such <span class="math inline">\(\delta&#39;\)</span> exists; <span class="math inline">\(\delta_0\)</span> is admissible.</p>
+<p>Contradiction. For all <span class="math inline">\(k \geq M^2\)</span>, <span class="math inline">\(C/\sqrt{k} \leq 1/(k+1)\)</span>, equivalently <span class="math inline">\(C(k+1)/\sqrt{k} \leq 1\)</span>. As <span class="math inline">\(k \to \infty\)</span>, <span class="math inline">\((k+1)/\sqrt{k} \to \infty\)</span>, so the left side eventually exceeds <span class="math inline">\(1\)</span>. No such <span class="math inline">\(\delta&#39;\)</span> exists; <span class="math inline">\(\delta_0\)</span> is admissible.</p>
 <p>The mechanism is the rate gap: lower bound at <span class="math inline">\(k^{-1/2}\)</span> (Gaussian density at fixed compact set), upper bound at <span class="math inline">\(k^{-1}\)</span> (Bayes-risk gap). The same argument fails in dimension <span class="math inline">\(\geq 3\)</span>, where the density rate is <span class="math inline">\(k^{-p/2}\)</span> matching the Bayes-risk gap, which is exactly why Stein shrinkage exists.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 3: Neyman–Scott and the inconsistency of joint Jeffreys</p>
+<section id="problem-3-neymanscott-and-the-inconsistency-of-joint-jeffreys-25-pts" class="slide level2">
+<h2>Problem 3: Neyman–Scott and the inconsistency of joint Jeffreys (25 pts)</h2>
+<p>Let <span class="math inline">\(X_{ij} \overset{\text{iid}}{\sim} N(\mu_i, \sigma^2)\)</span> for <span class="math inline">\(i = 1, \ldots, n\)</span> and <span class="math inline">\(j = 1, 2\)</span>, with parameter <span class="math inline">\((\mu_1, \ldots, \mu_n, \sigma^2)\)</span>. Write <span class="math inline">\(T = \tfrac{1}{2}\sum_{i=1}^n (X_{i1} - X_{i2})^2\)</span>.</p>
+<ol type="a">
+<li><p>Derive <span class="math inline">\(\hat\sigma^2_{\text{MLE}}\)</span> in closed form and show <span class="math inline">\(\hat\sigma^2_{\text{MLE}} \xrightarrow{p} \sigma^2/2\)</span>. The MLE is inconsistent.</p></li>
+<li><p>Compute the Fisher information matrix in the parameterization <span class="math inline">\((\mu_1, \ldots, \mu_n, \sigma)\)</span> and show that <span class="math inline">\(\pi^J(\mu_1, \ldots, \mu_n, \sigma) \propto \sigma^{-(n+1)}\)</span>.</p></li>
+<li><p>Under <span class="math inline">\(\pi^J\)</span>, show that <span class="math inline">\(\sigma^2 \mid X \sim \mathrm{InvGamma}(n, T/2)\)</span>, and that <span class="math inline">\(\mathbb{E}[\sigma^2 \mid X] \xrightarrow{p} \sigma^2/2\)</span> as <span class="math inline">\(n \to \infty\)</span>. The Jeffreys posterior inherits the MLE’s inconsistency.</p></li>
+<li><p>Under <span class="math inline">\(\pi^{IJ}(\mu_1, \ldots, \mu_n, \sigma) \propto 1/\sigma\)</span>, derive <span class="math inline">\(\mathbb{E}[\sigma^2 \mid X]\)</span> in closed form and show it is consistent. Comment on treating “joint Jeffreys” as a default when the number of nuisance parameters grows.</p></li>
+</ol>
+<p>Hint: <span class="math inline">\(\sum_{j=1}^2 (X_{ij} - \bar X_i)^2 = (X_{i1} - X_{i2})^2 / 2\)</span> where <span class="math inline">\(\bar X_i = (X_{i1} + X_{i2})/2\)</span>. In (c), integrate out the <span class="math inline">\(\mu_i\)</span> first; the substitution <span class="math inline">\(v = \sigma^2\)</span> then puts the remaining <span class="math inline">\(\sigma\)</span>-marginal in inverse-gamma form.</p>
+</section>
+<section id="problem-3-setup" class="slide level2">
+<h2>Problem 3: setup</h2>
 <p>Throughout: <span class="math inline">\(\bar X_i = (X_{i1} + X_{i2})/2\)</span>, <span class="math inline">\(T = \tfrac{1}{2}\sum_{i=1}^n (X_{i1} - X_{i2})^2\)</span>, and <span class="math inline">\(\sum_{j=1}^2 (X_{ij} - \mu_i)^2 = \tfrac{1}{2}(X_{i1} - X_{i2})^2 + 2(\bar X_i - \mu_i)^2\)</span>.</p>
-<p>(a) Maximizing in <span class="math inline">\(\mu_i\)</span> gives <span class="math inline">\(\hat\mu_i = \bar X_i\)</span>. Plugging back, <span class="math display">\[
+</section>
+<section id="problem-3a" class="slide level2">
+<h2>Problem 3(a)</h2>
+<p>Maximizing in <span class="math inline">\(\mu_i\)</span> gives <span class="math inline">\(\hat\mu_i = \bar X_i\)</span>. Plugging back, <span class="math display">\[
 \hat\sigma^2_{\text{MLE}} = \frac{1}{2n}\sum_{i=1}^n \sum_{j=1}^2 (X_{ij} - \bar X_i)^2 = \frac{1}{2n}\sum_{i=1}^n \frac{(X_{i1} - X_{i2})^2}{2} = \frac{T}{2n}.
 \]</span> Since <span class="math inline">\(X_{i1} - X_{i2} \sim N(0, 2\sigma^2)\)</span>, <span class="math inline">\(\mathbb{E}[(X_{i1} - X_{i2})^2] = 2\sigma^2\)</span> and <span class="math inline">\(\mathbb{E}[T] = n\sigma^2\)</span>, so <span class="math inline">\(\mathbb{E}[\hat\sigma^2_{\text{MLE}}] = \sigma^2/2\)</span>. By LLN, <span class="math inline">\(T/n \xrightarrow{p} \sigma^2\)</span>, hence <span class="math inline">\(\hat\sigma^2_{\text{MLE}} \xrightarrow{p} \sigma^2/2\)</span>. Inconsistent.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 3 (continued)</p>
-<p>(b) From <span class="math inline">\(\log f(x_{ij} \mid \mu_i, \sigma) = -\tfrac{1}{2}\log(2\pi) - \log\sigma - (x_{ij} - \mu_i)^2/(2\sigma^2)\)</span>, expected second derivatives give per single observation <span class="math inline">\(I_{\mu_i \mu_i}^{(1)} = 1/\sigma^2\)</span>, <span class="math inline">\(I_{\sigma\sigma}^{(1)} = 2/\sigma^2\)</span>, all cross-terms zero. Aggregating over the two observations per <span class="math inline">\(i\)</span>, <span class="math display">\[
+<section id="problem-3b" class="slide level2">
+<h2>Problem 3(b)</h2>
+<p>From <span class="math inline">\(\log f(x_{ij} \mid \mu_i, \sigma) = -\tfrac{1}{2}\log(2\pi) - \log\sigma - (x_{ij} - \mu_i)^2/(2\sigma^2)\)</span>, expected second derivatives give per single observation <span class="math inline">\(I_{\mu_i \mu_i}^{(1)} = 1/\sigma^2\)</span>, <span class="math inline">\(I_{\sigma\sigma}^{(1)} = 2/\sigma^2\)</span>, all cross-terms zero. Aggregating over the two observations per <span class="math inline">\(i\)</span>, <span class="math display">\[
 I(\mu_1, \ldots, \mu_n, \sigma) = \mathrm{diag}\!\left(\tfrac{2}{\sigma^2}, \ldots, \tfrac{2}{\sigma^2}, \tfrac{4n}{\sigma^2}\right),
 \]</span> and <span class="math inline">\(|I| = (2/\sigma^2)^n \cdot (4n/\sigma^2) \propto \sigma^{-2(n+1)}\)</span>. Hence <span class="math inline">\(\pi^J \propto |I|^{1/2} \propto \sigma^{-(n+1)}\)</span>.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 3 (continued)</p>
-<p>(c) The joint posterior under <span class="math inline">\(\pi^J\)</span> is <span class="math display">\[
+<section id="problem-3c" class="slide level2">
+<h2>Problem 3(c)</h2>
+<p>The joint posterior under <span class="math inline">\(\pi^J\)</span> is <span class="math display">\[
 \begin{aligned}
 p(\mu_1, \ldots, \mu_n, \sigma \mid X) &amp;\propto \sigma^{-2n} \exp\!\left(-\tfrac{1}{2\sigma^2}\sum_{i,j}(X_{ij} - \mu_i)^2\right) \cdot \sigma^{-(n+1)} \\
 &amp;= \sigma^{-(3n+1)} \exp\!\left(-\tfrac{T + 2\sum_i (\bar X_i - \mu_i)^2}{2\sigma^2}\right).
@@ -1233,22 +1266,35 @@ p(\sigma \mid X) \propto \sigma^n \cdot \sigma^{-(3n+1)} e^{-T/(2\sigma^2)} = \s
 \mathbb{E}[\sigma^2 \mid X] = \frac{T}{2(n-1)} = \frac{T}{2n} \cdot \frac{n}{n-1} \;\xrightarrow{p}\; \frac{\sigma^2}{2}.
 \]</span> The Jeffreys posterior mean inherits the MLE’s inconsistency.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 3 (continued)</p>
-<p>(d) Under <span class="math inline">\(\pi^{IJ} \propto 1/\sigma\)</span> the prior contribution is one power of <span class="math inline">\(1/\sigma\)</span> regardless of <span class="math inline">\(n\)</span>. Repeating the marginalization, <span class="math display">\[
+<section id="problem-3d" class="slide level2">
+<h2>Problem 3(d)</h2>
+<p>Under <span class="math inline">\(\pi^{IJ} \propto 1/\sigma\)</span> the prior contribution is one power of <span class="math inline">\(1/\sigma\)</span> regardless of <span class="math inline">\(n\)</span>. Repeating the marginalization, <span class="math display">\[
 p(\sigma \mid X) \propto \sigma^n \cdot \sigma^{-(2n+1)} e^{-T/(2\sigma^2)} = \sigma^{-(n+1)} e^{-T/(2\sigma^2)},
 \]</span> so <span class="math inline">\(p(v \mid X) \propto v^{-(n+2)/2} e^{-T/(2v)}\)</span>, i.e. <span class="math inline">\(\mathrm{InvGamma}(n/2, T/2)\)</span>, with mean <span class="math display">\[
 \mathbb{E}[\sigma^2 \mid X] = \frac{T}{n - 2} \;\xrightarrow{p}\; \sigma^2.
 \]</span> Consistent.</p>
-<p><em>Moral.</em> Joint Jeffreys deposits <span class="math inline">\(\sigma^{-n}\)</span> from the nuisance parameters; when <span class="math inline">\(n\)</span> grows with sample size, this prior factor overpowers the data and biases the scale by a factor of two. The independence Jeffreys deposits <span class="math inline">\(\sigma^{-1}\)</span> regardless of dimension and is consistent. “Noninformative” is a property of the prior together with the likelihood, not of the prior alone, and the joint Jeffreys recipe is not a safe default in problems with growing nuisance dimension.</p>
+<p>Moral. Joint Jeffreys deposits <span class="math inline">\(\sigma^{-n}\)</span> from the nuisance parameters; when <span class="math inline">\(n\)</span> grows with sample size, this prior factor overpowers the data and biases the scale by a factor of two. The independence Jeffreys deposits <span class="math inline">\(\sigma^{-1}\)</span> regardless of dimension and is consistent. “Noninformative” is a property of the prior together with the likelihood, not of the prior alone, and the joint Jeffreys recipe is not a safe default in problems with growing nuisance dimension.</p>
 </section>
-<section class="slide level2">
-
-<p>Problem 4: Generalized Bayes rules and improper posteriors</p>
-<p>(a) The formal posterior <span class="math inline">\(\pi(\theta \mid x) \propto \exp(-(x - \theta)^2/2)\)</span> is the <span class="math inline">\(N(x, 1)\)</span> density in <span class="math inline">\(\theta\)</span> and integrates to <span class="math inline">\(1\)</span>. Proper. Under squared-error loss the generalized Bayes estimator is the posterior mean <span class="math inline">\(\delta^{GB}(x) = x\)</span>, with frequentist risk <span class="math inline">\(R(\theta, \delta^{GB}) = \mathrm{Var}_{P_\theta}(X) = 1\)</span>.</p>
-<p>(b) The formal posterior is <span class="math inline">\(\pi(\theta \mid X) \propto \theta^{X - 1}(1 - \theta)^{n - X - 1}\)</span> on <span class="math inline">\((0,1)\)</span>. The integral <span class="math inline">\(\int_0^1 \theta^{\alpha - 1}(1 - \theta)^{\beta - 1} d\theta\)</span> is finite iff <span class="math inline">\(\alpha &gt; 0\)</span> and <span class="math inline">\(\beta &gt; 0\)</span>. Here <span class="math inline">\(\alpha = X\)</span>, <span class="math inline">\(\beta = n - X\)</span>. Divergence at <span class="math inline">\(\theta = 0\)</span> when <span class="math inline">\(X = 0\)</span> (<span class="math inline">\(\alpha = 0\)</span>); divergence at <span class="math inline">\(\theta = 1\)</span> when <span class="math inline">\(X = n\)</span> (<span class="math inline">\(\beta = 0\)</span>). Hence <span class="math inline">\(A = \{0, n\}\)</span>.</p>
-<p>(c) For <span class="math inline">\(X \in \{1, \ldots, n - 1\}\)</span> the posterior is <span class="math inline">\(\mathrm{Beta}(X, n - X)\)</span>, with mean <span class="math display">\[
+<section id="problem-4-generalized-bayes-rules-and-improper-posteriors-25-pts" class="slide level2">
+<h2>Problem 4: Generalized Bayes rules and improper posteriors (25 pts)</h2>
+<ol type="a">
+<li><p>Let <span class="math inline">\(X \mid \theta \sim N(\theta, 1)\)</span> with formal prior <span class="math inline">\(\pi(\theta) \propto 1\)</span> on <span class="math inline">\(\mathbb{R}\)</span>. Verify that the formal posterior <span class="math inline">\(\pi(\theta \mid x) \propto f(x \mid \theta) \pi(\theta)\)</span> is a proper density for every <span class="math inline">\(x\)</span>. Derive the generalized Bayes estimator of <span class="math inline">\(\theta\)</span> under squared-error loss and compute its frequentist risk.</p></li>
+<li><p>Let <span class="math inline">\(X \mid \theta \sim \mathrm{Binomial}(n, \theta)\)</span> with formal prior <span class="math inline">\(\pi(\theta) \propto \theta^{-1}(1 - \theta)^{-1}\)</span> on <span class="math inline">\((0, 1)\)</span>. Identify the set <span class="math inline">\(A \subseteq \{0, 1, \ldots, n\}\)</span> of data values for which the formal posterior fails to be integrable, and justify by explicit integration.</p></li>
+<li><p>For <span class="math inline">\(X \in \{0, 1, \ldots, n\} \setminus A\)</span>, derive the generalized Bayes estimator of <span class="math inline">\(\theta\)</span> under squared-error loss in closed form and compare with the MLE <span class="math inline">\(\hat\theta = X/n\)</span>.</p></li>
+</ol>
+<p>Hint (b): examine the behavior of <span class="math inline">\(\theta^{X-1}(1-\theta)^{n-X-1}\)</span> near the endpoints <span class="math inline">\(\theta = 0\)</span> and <span class="math inline">\(\theta = 1\)</span>.</p>
+</section>
+<section id="problem-4a" class="slide level2">
+<h2>Problem 4(a)</h2>
+<p>The formal posterior <span class="math inline">\(\pi(\theta \mid x) \propto \exp(-(x - \theta)^2/2)\)</span> is the <span class="math inline">\(N(x, 1)\)</span> density in <span class="math inline">\(\theta\)</span> and integrates to <span class="math inline">\(1\)</span>. Proper. Under squared-error loss the generalized Bayes estimator is the posterior mean <span class="math inline">\(\delta^{GB}(x) = x\)</span>, with frequentist risk <span class="math inline">\(R(\theta, \delta^{GB}) = \mathrm{Var}_{P_\theta}(X) = 1\)</span>.</p>
+</section>
+<section id="problem-4b" class="slide level2">
+<h2>Problem 4(b)</h2>
+<p>The formal posterior is <span class="math inline">\(\pi(\theta \mid X) \propto \theta^{X - 1}(1 - \theta)^{n - X - 1}\)</span> on <span class="math inline">\((0,1)\)</span>. The integral <span class="math inline">\(\int_0^1 \theta^{\alpha - 1}(1 - \theta)^{\beta - 1} d\theta\)</span> is finite iff <span class="math inline">\(\alpha &gt; 0\)</span> and <span class="math inline">\(\beta &gt; 0\)</span>. Here <span class="math inline">\(\alpha = X\)</span>, <span class="math inline">\(\beta = n - X\)</span>. Divergence at <span class="math inline">\(\theta = 0\)</span> when <span class="math inline">\(X = 0\)</span> (<span class="math inline">\(\alpha = 0\)</span>); divergence at <span class="math inline">\(\theta = 1\)</span> when <span class="math inline">\(X = n\)</span> (<span class="math inline">\(\beta = 0\)</span>). Hence <span class="math inline">\(A = \{0, n\}\)</span>.</p>
+</section>
+<section id="problem-4c" class="slide level2">
+<h2>Problem 4(c)</h2>
+<p>For <span class="math inline">\(X \in \{1, \ldots, n - 1\}\)</span> the posterior is <span class="math inline">\(\mathrm{Beta}(X, n - X)\)</span>, with mean <span class="math display">\[
 \delta^{GB}(X) = \frac{X}{X + (n - X)} = \frac{X}{n} = \hat\theta_{\text{MLE}}.
 \]</span> The Haldane prior recovers the MLE on the interior, and is undefined at the boundary <span class="math inline">\(X \in \{0, n\}\)</span> where the MLE is also degenerate.</p>
 
